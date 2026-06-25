@@ -1,0 +1,11 @@
+{
+ "cash": 1000,
+ "starting_cash": 1000,
+ "realized_pnl": 0.0,
+ "daily": {},
+ "day_start_equity": {
+  "2026-06-11": 1000
+ },
+ "positions": {},
+ "trades": []
+}

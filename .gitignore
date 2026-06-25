@@ -1,0 +1,14 @@
+# Secrets — NEVER commit
+.env
+
+# Environment / caches
+.venv/
+__pycache__/
+*.pyc
+
+# Transient runtime state (logs, heartbeat) — not persisted in git.
+# NOTE: state/*.json (watchlist, tracked wallets, resolution cache) IS tracked
+# on purpose — that's how GitHub Actions remembers state between runs.
+state/logs/
+state/last_check.txt
+state/alerts.log

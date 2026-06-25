@@ -1,0 +1,736 @@
+"""Copy-trade scout: identify consistently profitable sports bettors on
+Polymarket from the public leaderboard, watch their wallets, and report
+their fresh bets to the head trader as a "smart money" signal.
+
+All data comes from Polymarket's public data API — every wallet's trades are
+on-chain and queryable. No LLM calls in this module.
+"""
+
+import json
+import logging
+import time
+from dataclasses import asdict, dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Dict, List, Optional
+
+import requests
+
+from .config import GAMMA_API, Config
+from .market_data import fetch_books
+
+log = logging.getLogger("polybot.copytrade")
+
+DATA_API = "https://data-api.polymarket.com"
+LB_API = "https://lb-api.polymarket.com"
+
+_session = requests.Session()
+_session.headers["User-Agent"] = "polybot/0.1"
+# Auto-retry transient network failures (connection resets, 5xx, 429) with
+# backoff. A discovery scan makes ~2000 calls over many minutes — without this
+# a single blip aborts the whole refresh.
+_retry = requests.adapters.Retry(
+    total=4, backoff_factor=1.5,
+    status_forcelist=(429, 500, 502, 503, 504),
+    allowed_methods=frozenset(["GET"]),
+    raise_on_status=False,
+)
+_session.mount("https://", requests.adapters.HTTPAdapter(max_retries=_retry))
+_session.mount("http://", requests.adapters.HTTPAdapter(max_retries=_retry))
+
+# Event-slug prefixes / keywords that mark a market as sports.
+SPORTS_PREFIXES = (
+    "nba-", "nfl-", "mlb-", "nhl-", "wnba-", "mls-", "epl-", "ucl-", "uel-",
+    "laliga-", "la-liga-", "seriea-", "serie-a-", "bundesliga-", "ligue1-",
+    "ligue-1-", "ufc-", "atp-", "wta-", "cfb-", "cbb-", "f1-", "nascar-",
+    "pga-", "boxing-",
+)
+SPORTS_KEYWORDS = (
+    "world-cup", "champions-league", "premier-league", "super-bowl", "tennis",
+    "grand-slam", "wimbledon", "us-open", "stanley-cup", "nba-finals",
+    "march-madness", "olympic",
+)
+
+
+def is_sports_slug(event_slug: str) -> bool:
+    s = (event_slug or "").lower()
+    return s.startswith(SPORTS_PREFIXES) or any(k in s for k in SPORTS_KEYWORDS)
+
+
+@dataclass
+class WatchedTrader:
+    wallet: str
+    pseudonym: str
+    pnl_1m: float
+    pnl_1w: float
+    pnl_all: float = 0.0       # all-time profit (the durability filter)
+    roi_1m: float = 0.0        # monthly pnl / monthly volume
+    roi_all: float = 0.0       # all-time pnl / all-time volume
+    win_rate: float = 0.0      # share of resolved markets they made money on
+    winrate_edge: float = 0.0  # win_rate minus break-even rate from avg entry
+    avg_entry: float = 0.0     # avg price paid (= break-even win rate)
+    resolved_markets: int = 0  # sample size behind win_rate
+    sports_share: float = 0.0  # fraction of recent trades that are sports
+    style: str = ""            # bot / uncertain / human (trade-cadence heuristic)
+    trades_per_day: float = 0.0
+    quiet_hours: int = 0       # longest daily no-trading stretch (humans sleep)
+    trades_sampled: int = 0
+    avg_trade_usd: float = 0.0
+    added_at: str = ""
+    last_seen_ts: int = 0      # newest trade timestamp already reported
+
+
+# ------------------------------------------------------- track record ----
+
+class ResolutionCache:
+    """conditionId -> list of final outcome prices (0/1) for resolved markets.
+    Persisted because watched sports bettors trade the same game slates —
+    lookups overlap heavily across traders and refresh runs."""
+
+    def __init__(self, path: str):
+        self.path = Path(path)
+        self.data: Dict[str, List[float]] = {}
+        if self.path.exists():
+            try:
+                self.data = json.loads(self.path.read_text())
+            except ValueError:
+                self.data = {}
+
+    def save(self) -> None:
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(json.dumps(self.data))
+
+    def get(self, condition_id: str) -> Optional[List[float]]:
+        """Final prices per outcome index, or None if unresolved/unknown."""
+        if condition_id in self.data:
+            return self.data[condition_id]
+        try:
+            resp = _session.get(f"https://clob.polymarket.com/markets/{condition_id}", timeout=15)
+            if not resp.ok:
+                return None
+            m = resp.json()
+        except (requests.RequestException, ValueError):
+            return None
+        tokens = m.get("tokens") or []
+        if not m.get("closed") or not any(t.get("winner") for t in tokens):
+            return None  # open or resolved without a winner (e.g. 50/50) — don't cache
+        finals = [1.0 if t.get("winner") else 0.0 for t in tokens]
+        self.data[condition_id] = finals
+        return finals
+
+
+def compute_track_record(trades: List[dict], cache: ResolutionCache,
+                         max_markets: int = 60,
+                         unresolved_memo: Optional[set] = None) -> dict:
+    """Reconstruct per-market results from a trader's trade history.
+
+    A market counts as a win if the trader's net result there was positive:
+    sell proceeds + final value of net shares at resolution - buy cost.
+    Markets where net shares go negative (they sold tokens bought before our
+    sample window) are skipped as incomplete.
+
+    Also returns avg_entry — the volume-weighted price they paid, which is
+    the win rate needed to break even. A 90% win rate buying at 0.92 is a
+    losing strategy; win_rate must beat avg_entry to indicate skill.
+    """
+    per_market: Dict[str, dict] = {}
+    order: List[str] = []  # most recent first (trades come newest-first)
+    for t in trades:
+        cid = t.get("conditionId")
+        idx = t.get("outcomeIndex")
+        if not cid or idx is None:
+            continue
+        if cid not in per_market:
+            per_market[cid] = {"buy_usd": 0.0, "sell_usd": 0.0,
+                               "buy_shares": 0.0, "net": {}}
+            order.append(cid)
+        rec = per_market[cid]
+        shares = float(t.get("size") or 0)
+        price = float(t.get("price") or 0)
+        if t.get("side") == "BUY":
+            rec["buy_usd"] += shares * price
+            rec["buy_shares"] += shares
+            rec["net"][idx] = rec["net"].get(idx, 0.0) + shares
+        elif t.get("side") == "SELL":
+            rec["sell_usd"] += shares * price
+            rec["net"][idx] = rec["net"].get(idx, 0.0) - shares
+
+    if unresolved_memo is None:
+        unresolved_memo = set()
+    wins = losses = 0
+    entry_usd = entry_shares = 0.0
+    # Walk newest-first until we've scored max_markets RESOLVED markets —
+    # for high-frequency traders the newest markets are mostly still open.
+    for cid in order:
+        if wins + losses >= max_markets:
+            break
+        rec = per_market[cid]
+        if rec["buy_shares"] <= 0:
+            continue
+        if any(v < -1e-6 for v in rec["net"].values()):
+            continue  # incomplete: sold shares bought before the sample window
+        if cid in unresolved_memo:
+            continue
+        finals = cache.get(cid)
+        if finals is None:
+            unresolved_memo.add(cid)  # don't re-query within this run
+            continue
+        final_value = sum(shares * (finals[i] if i < len(finals) else 0.0)
+                          for i, shares in rec["net"].items())
+        pnl = rec["sell_usd"] + final_value - rec["buy_usd"]
+        if pnl > 0:
+            wins += 1
+        else:
+            losses += 1
+        entry_usd += rec["buy_usd"]
+        entry_shares += rec["buy_shares"]
+
+    resolved = wins + losses
+    win_rate = wins / resolved if resolved else 0.0
+    avg_entry = entry_usd / entry_shares if entry_shares else 0.0
+    return {
+        "resolved_markets": resolved,
+        "win_rate": round(win_rate, 4),
+        "avg_entry": round(avg_entry, 4),
+        "winrate_edge": round(win_rate - avg_entry, 4),
+    }
+
+
+# ------------------------------------------------------ style analysis ----
+
+def classify_trading_style(trades: List[dict]) -> dict:
+    """Heuristic bot-vs-human classification from trade cadence.
+
+    The API reports fills, so a single order sweeping several resting orders
+    shows as multiple same-second rows — dedupe to logical trades first
+    (one per timestamp+market+side). Then look at the two strongest tells:
+    sustained trade rate (humans don't place 100+ bets/day) and a daily
+    quiet window (humans sleep; bots fire around the clock).
+    """
+    seen = set()
+    logical: List[int] = []
+    for t in trades:
+        ts = int(t.get("timestamp") or 0)
+        key = (ts, t.get("conditionId"), t.get("side"))
+        if ts and key not in seen:
+            seen.add(key)
+            logical.append(ts)
+    logical.sort()
+    n = len(logical)
+    if n < 20:
+        return {"style": "uncertain", "trades_per_day": 0.0, "quiet_hours": 0}
+
+    span_days = max((logical[-1] - logical[0]) / 86400, 0.25)
+    per_day = n / span_days
+
+    from collections import Counter
+    hours = Counter(time.gmtime(ts).tm_hour for ts in logical)
+    quiet = {h for h in range(24) if hours.get(h, 0) < 0.015 * n}
+    longest = cur = 0
+    for h in range(48):  # wrap past midnight
+        if (h % 24) in quiet:
+            cur += 1
+            longest = max(longest, cur)
+        else:
+            cur = 0
+    quiet_hours = min(longest, 24)
+
+    gaps = [b - a for a, b in zip(logical, logical[1:])]
+    fast_share = sum(1 for g in gaps if g < 60) / len(gaps) if gaps else 0.0
+
+    if per_day > 100 or (quiet_hours < 3 and n >= 200):
+        style = "bot"
+    elif per_day > 30 or quiet_hours < 5 or fast_share > 0.5:
+        style = "uncertain"
+    else:
+        style = "human"
+    return {"style": style, "trades_per_day": round(per_day, 1),
+            "quiet_hours": quiet_hours}
+
+
+# ------------------------------------------------------------ discovery ----
+
+def _leaderboard(period: str, depth: int = 100, rank_type: str = "pnl") -> List[dict]:
+    """period: day | week | month | all; rank_type: pnl | vol.
+    The API caps each page at 50 rows, so page via offset up to `depth`."""
+    rows: List[dict] = []
+    offset = 0
+    while offset < depth:
+        resp = _session.get(
+            f"{DATA_API}/v1/leaderboard",
+            params={"timePeriod": period, "limit": 50, "offset": offset,
+                    "rankType": rank_type},
+            timeout=30,
+        )
+        resp.raise_for_status()
+        page = resp.json()
+        if not page:
+            break
+        rows.extend(page)
+        if len(page) < 50:
+            break
+        offset += len(page)
+    return rows
+
+
+def _wallet_stat(endpoint: str, window: str, wallet: str) -> float:
+    """Per-wallet profit or volume from lb-api. endpoint: 'profit' | 'volume';
+    window: '1d' | '7d' | '30d' | 'all'."""
+    try:
+        resp = _session.get(f"{LB_API}/{endpoint}",
+                            params={"window": window, "address": wallet}, timeout=15)
+        if resp.ok:
+            rows = resp.json()
+            if rows:
+                return float(rows[0].get("amount") or 0)
+    except (requests.RequestException, ValueError):
+        pass
+    return 0.0
+
+
+def _recent_trades(wallet: str, limit: int = 100, offset: int = 0) -> List[dict]:
+    # Never let one wallet's network failure abort a whole discovery scan —
+    # skip the candidate instead (retries already attempted at the adapter).
+    try:
+        resp = _session.get(
+            f"{DATA_API}/trades",
+            params={"user": wallet, "limit": limit, "offset": offset},
+            timeout=30,
+        )
+        if not resp.ok:
+            return []
+        return resp.json()
+    except (requests.RequestException, ValueError):
+        return []
+
+
+def discover_sports_traders(cfg: Config,
+                            grandfather_wallets: Optional[List[str]] = None) -> List[WatchedTrader]:
+    """Build a watchlist of consistently profitable, sports-focused traders.
+
+    grandfather_wallets: current watchlist members. They're re-vetted even if
+    they've slipped off the leaderboards or below a dollar floor, so we never
+    drop a verified winner on a technicality. They are exempt ONLY from the
+    cheap leaderboard/dollar pre-filters — they must still pass the real gates:
+    activity, sports focus, bot screen, and verified win rate. A member whose
+    win rate has actually collapsed still gets cut.
+    """
+    cc = cfg.copytrade
+    cache = ResolutionCache(cfg.resolution_cache_file)
+    gf = {w.lower() for w in (grandfather_wallets or [])}
+    # Two candidate pools, merged: the monthly PnL board (biggest winners) and
+    # the monthly volume board (most active — catches skilled grinders whose
+    # absolute PnL is too small for the PnL board). Both row types carry
+    # monthly pnl + vol, so the same cheap filters apply.
+    by_pnl = _leaderboard("month", cc.leaderboard_depth, "pnl")
+    by_vol = _leaderboard("month", cc.leaderboard_depth, "vol")
+    seen_wallets = set()
+    candidates: List[dict] = []
+    for row in by_pnl + by_vol:
+        w = row["proxyWallet"].lower()
+        if w not in seen_wallets:
+            seen_wallets.add(w)
+            candidates.append(row)
+    # Add grandfathered members not on either board, synthesizing their stats
+    # from the per-wallet endpoints (30d ≈ the monthly leaderboard window).
+    for w in gf:
+        if w not in seen_wallets:
+            seen_wallets.add(w)
+            candidates.append({
+                "proxyWallet": w,
+                "pnl": _wallet_stat("profit", "30d", w),
+                "vol": _wallet_stat("volume", "30d", w),
+            })
+    # Vet grandfathered members first (so the watchlist-size cap never crowds
+    # them out), then everyone else by monthly PnL.
+    candidates.sort(key=lambda r: (r["proxyWallet"].lower() in gf,
+                                   float(r.get("pnl") or 0)), reverse=True)
+    log.info("vetting %d unique candidates (%d grandfathered) from leaderboards",
+             len(candidates), len(gf))
+
+    traders: List[WatchedTrader] = []
+    for row in candidates:
+        wallet = row["proxyWallet"].lower()
+        grandfathered = wallet in gf
+        pnl_1m = float(row.get("pnl") or 0)
+        vol_1m = float(row.get("vol") or 0)
+        pnl_1w = _wallet_stat("profit", "7d", wallet)
+        roi = pnl_1m / vol_1m if vol_1m > 0 else 0.0
+        pnl_all = _wallet_stat("profit", "all", wallet)
+        vol_all = _wallet_stat("volume", "all", wallet)
+        roi_all = pnl_all / vol_all if vol_all > 0 else 0.0
+
+        # Cheap pre-filters: proxies for "is this a real winner". Grandfathered
+        # members are already verified, so they skip these and go straight to
+        # the real gates (activity / sports / bot / win rate) below.
+        if not grandfathered:
+            if pnl_1m < cc.min_monthly_pnl:
+                continue
+            # Circuit-breaker, not a consistency filter: a skilled sports bettor
+            # is routinely down in any single week from variance. Only cut a
+            # weekly loss that's a real collapse vs. their monthly profit.
+            if pnl_1w < -cc.max_weekly_loss_vs_month * pnl_1m:
+                log.info("rejected %s: weekly loss $%.0f exceeds %.0fx monthly profit $%.0f",
+                         row.get("userName", wallet[:10]), pnl_1w,
+                         cc.max_weekly_loss_vs_month, pnl_1m)
+                continue
+            # ROI proxy: profitable on huge volume can still be a thin edge.
+            if vol_1m > 0 and roi < cc.min_roi:
+                continue
+            # Durability: a hot month on a lifetime-losing account is variance.
+            if pnl_all < cc.min_alltime_pnl:
+                log.info("rejected %s: 1m pnl $%.0f but all-time pnl $%.0f",
+                         row.get("userName", wallet[:10]), pnl_1m, pnl_all)
+                continue
+            # Profit must predate this month (not a brand-new hot account).
+            if pnl_all - pnl_1m < cc.min_prior_pnl:
+                log.info("rejected %s: only $%.0f profit before the current month",
+                         row.get("userName", wallet[:10]), pnl_all - pnl_1m)
+                continue
+            if vol_all > 0 and roi_all < cc.min_alltime_roi:
+                log.info("rejected %s: all-time roi %.2f%% below floor",
+                         row.get("userName", wallet[:10]), roi_all * 100)
+                continue
+
+        trades = _recent_trades(wallet, cc.trades_sample)
+        if len(trades) < cc.min_trades_sampled:
+            continue
+        # Activity gate: only worth watching wallets that still bet. Most
+        # recent trade must be fresh and the month must show real activity.
+        now_ts = int(time.time())
+        newest_ts = max((int(t.get("timestamp") or 0) for t in trades), default=0)
+        if now_ts - newest_ts > cc.max_days_inactive * 86400:
+            log.info("rejected %s: inactive %.1f days",
+                     row.get("userName", wallet[:10]), (now_ts - newest_ts) / 86400)
+            continue
+        trades_30d = sum(1 for t in trades if int(t.get("timestamp") or 0) > now_ts - 30 * 86400)
+        if trades_30d < cc.min_trades_30d:
+            log.info("rejected %s: only %d trades in past 30 days",
+                     row.get("userName", wallet[:10]), trades_30d)
+            continue
+        sports = [t for t in trades if is_sports_slug(t.get("eventSlug", ""))]
+        share = len(sports) / len(trades)
+        if share < cc.min_sports_share:
+            continue
+
+        # Bot screen: a speed/scalping bot's win rate isn't copyable — its
+        # edge is reaction time we don't have. Done before the expensive
+        # win-rate stage (bots would trigger deep history paging there).
+        style = classify_trading_style(trades)
+        if cc.exclude_bots and style["style"] == "bot":
+            log.info("rejected %s: bot-like trading (%.0f trades/day, quiet window %dh)",
+                     row.get("userName", wallet[:10]),
+                     style["trades_per_day"], style["quiet_hours"])
+            continue
+
+        # Win-rate vetting: reconstruct their per-market record on resolved
+        # markets. Win rate must clear the floor AND beat their average entry
+        # price (the break-even rate) — otherwise they're just buying
+        # favorites, which looks like winning until it doesn't.
+        unresolved: set = set()
+        record = compute_track_record(trades, cache, cc.max_markets_checked, unresolved)
+        name = row.get("userName") or trades[0].get("pseudonym") or wallet[:10]
+        # High-frequency traders burn through 500 trades in hours — too few
+        # resolved markets to judge. Page deeper into their history until the
+        # sample is big enough or we hit the depth cap.
+        offset = len(trades)
+        while (record["resolved_markets"] < cc.min_resolved_markets
+               and offset < cc.max_trades_depth):
+            more = _recent_trades(wallet, cc.trades_sample, offset)
+            if not more:
+                break
+            trades.extend(more)
+            offset += len(more)
+            record = compute_track_record(trades, cache, cc.max_markets_checked, unresolved)
+        if record["resolved_markets"] < cc.min_resolved_markets:
+            log.info("rejected %s: only %d resolved markets in %d trades",
+                     name, record["resolved_markets"], len(trades))
+            continue
+        if record["win_rate"] < cc.min_win_rate:
+            log.info("rejected %s: win rate %.0f%% over %d markets below %.0f%% floor",
+                     name, record["win_rate"] * 100, record["resolved_markets"],
+                     cc.min_win_rate * 100)
+            continue
+        # Edge gate. Unproven traders must clear a margin so a thin edge isn't
+        # just sample noise. A trader who's *proven* it with real money (big
+        # all-time PnL + solid ROI over thousands of bets) only needs a positive
+        # edge — their realized track record already settles the noise question.
+        proven = pnl_all >= cc.proven_pnl_usd and roi_all >= cc.proven_roi
+        edge_req = cc.proven_min_edge if proven else cc.min_winrate_edge
+        if record["winrate_edge"] < edge_req:
+            log.info("rejected %s: edge %+.1f%% below %.1f%% (avg entry %.2f%s)",
+                     name, record["winrate_edge"] * 100, edge_req * 100,
+                     record["avg_entry"], ", proven" if proven else "")
+            continue
+
+        sized = [t["size"] * t["price"] for t in trades if t.get("size") and t.get("price")]
+        traders.append(
+            WatchedTrader(
+                wallet=wallet,
+                pseudonym=name,
+                pnl_1m=round(pnl_1m, 2),
+                pnl_1w=round(pnl_1w, 2),
+                pnl_all=round(pnl_all, 2),
+                roi_1m=round(roi, 4),
+                roi_all=round(roi_all, 4),
+                win_rate=record["win_rate"],
+                winrate_edge=record["winrate_edge"],
+                avg_entry=record["avg_entry"],
+                resolved_markets=record["resolved_markets"],
+                sports_share=round(share, 3),
+                style=style["style"],
+                trades_per_day=style["trades_per_day"],
+                quiet_hours=style["quiet_hours"],
+                trades_sampled=len(trades),
+                avg_trade_usd=round(sum(sized) / len(sized), 2) if sized else 0.0,
+                added_at=datetime.now(timezone.utc).isoformat(),
+                last_seen_ts=max((int(t.get("timestamp") or 0) for t in trades), default=0),
+            )
+        )
+        time.sleep(0.2)  # be polite to the public API
+        if len(traders) >= cc.watchlist_size:
+            break
+
+    cache.save()
+    # Win rate first — a verified record of being right matters more than
+    # the dollar size of wins. Profitability floors already guaranteed above.
+    # Rank by edge (profit per bet), not raw win rate — a high-win-rate
+    # favorites bettor can be less profitable than a lower-win-rate underdog
+    # specialist. Win rate breaks ties.
+    traders.sort(key=lambda t: (t.winrate_edge, t.win_rate), reverse=True)
+    log.info("discovered %d sports traders from leaderboard", len(traders))
+    return traders
+
+
+# ------------------------------------------------------------ watchlist ----
+
+class Watchlist:
+    def __init__(self, path: str):
+        self.path = Path(path)
+        self.traders: List[WatchedTrader] = []
+        self.refreshed_at: Optional[str] = None
+        self.last_attempt_at: Optional[str] = None  # last refresh ATTEMPT (success or fail)
+        self._load()
+
+    def _load(self) -> None:
+        if self.path.exists():
+            data = json.loads(self.path.read_text())
+            self.refreshed_at = data.get("refreshed_at")
+            self.last_attempt_at = data.get("last_attempt_at")
+            self.traders = [WatchedTrader(**t) for t in data.get("traders", [])]
+
+    def save(self) -> None:
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(json.dumps({
+            "refreshed_at": self.refreshed_at,
+            "last_attempt_at": self.last_attempt_at,
+            "traders": [asdict(t) for t in self.traders],
+        }, indent=1))
+
+    def stale(self, max_age_days: float) -> bool:
+        if not self.refreshed_at or not self.traders:
+            return True
+        age = datetime.now(timezone.utc) - datetime.fromisoformat(self.refreshed_at)
+        return age.total_seconds() > max_age_days * 86400
+
+    def should_refresh(self, max_age_days: float, retry_hours: float) -> bool:
+        """Refresh only if the list is stale AND we haven't just attempted one.
+        Without the attempt cooldown, a refresh that fails (e.g. a network
+        blip mid-scan) would retry the ~40-min scan every poll cycle, starving
+        signal polling. We keep alerting on the existing valid list meanwhile.
+        Exception: if we have no usable list at all, always try."""
+        if not self.traders:
+            return True
+        if not self.stale(max_age_days):
+            return False
+        if self.last_attempt_at:
+            since = datetime.now(timezone.utc) - datetime.fromisoformat(self.last_attempt_at)
+            if since.total_seconds() < retry_hours * 3600:
+                return False
+        return True
+
+    def refresh(self, cfg: Config) -> None:
+        # Record the attempt up front (and persist) so a failure partway
+        # through still starts the retry cooldown.
+        self.last_attempt_at = datetime.now(timezone.utc).isoformat()
+        self.save()
+        # Preserve last_seen_ts for wallets that stay on the list so we
+        # don't re-report old trades after a refresh.
+        seen = {t.wallet: t.last_seen_ts for t in self.traders}
+        # Grandfather current members: re-vet them even if they've slipped off
+        # the leaderboards or a dollar floor, so we never lose a verified
+        # winner to a technicality (they still must pass the real gates).
+        new_traders = discover_sports_traders(cfg, grandfather_wallets=list(seen.keys()))
+        for t in new_traders:
+            t.last_seen_ts = max(t.last_seen_ts, seen.get(t.wallet, 0))
+        self.traders = new_traders
+        self.refreshed_at = datetime.now(timezone.utc).isoformat()
+        self.save()
+
+
+def _parse_game_start(raw: Optional[str]) -> Optional[datetime]:
+    """Gamma returns gameStartTime like '2026-06-10 22:35:00+00' (or ISO-ish
+    variants). Returns an aware datetime or None."""
+    if not raw:
+        return None
+    s = raw.strip().replace(" ", "T", 1).replace("Z", "+00:00")
+    # normalize a bare '+00' / '+0000' offset to '+00:00'
+    if s.endswith("+00"):
+        s += ":00"
+    elif s.endswith("+0000"):
+        s = s[:-5] + "+00:00"
+    try:
+        dt = datetime.fromisoformat(s)
+        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+
+
+def _market_by_slug(slug: Optional[str]) -> Optional[dict]:
+    if not slug:
+        return None
+    try:
+        resp = _session.get(f"{GAMMA_API}/markets", params={"slug": slug}, timeout=15)
+        if resp.ok:
+            rows = resp.json()
+            return rows[0] if rows else None
+    except requests.RequestException:
+        pass
+    return None
+
+
+# ----------------------------------------------------------- copy scout ----
+
+def run_copytrade_scout(cfg: Config, watchlist: Watchlist, held_market_ids: List[str],
+                        report_all_sells: bool = False) -> dict:
+    """Check watched wallets for new trades. Returns a scout-report dict:
+    fresh sports buys (entry signals) and sells (exit signals).
+
+    report_all_sells=True reports every sizable sports sell by a watched
+    trader, not just ones in markets we hold — used by manual watch/alert
+    mode, where the bot can't know what the human copied."""
+    cc = cfg.copytrade
+    if watchlist.should_refresh(cc.refresh_days, cc.refresh_retry_hours):
+        log.info("watchlist stale — refreshing from leaderboard")
+        try:
+            watchlist.refresh(cfg)
+        except requests.RequestException as e:
+            # last_attempt_at was already persisted in refresh(), so the retry
+            # cooldown is in effect; we keep polling the existing list.
+            log.error("watchlist refresh failed (will retry in %.0fh): %s",
+                      cc.refresh_retry_hours, e)
+
+    signals: List[dict] = []
+    exit_signals: List[dict] = []
+    held = set(held_market_ids)
+
+    for trader in watchlist.traders:
+        try:
+            trades = _recent_trades(trader.wallet, 50)
+        except requests.RequestException:
+            continue
+        fresh = [t for t in trades if int(t.get("timestamp") or 0) > trader.last_seen_ts]
+        if trades:
+            trader.last_seen_ts = max(trader.last_seen_ts,
+                                      max(int(t.get("timestamp") or 0) for t in trades))
+        for t in fresh:
+            usd = float(t.get("size") or 0) * float(t.get("price") or 0)
+            slug_ok = is_sports_slug(t.get("eventSlug", ""))
+            sig = {
+                "market_slug": t.get("slug"),
+                "trader": trader.pseudonym,
+                "trader_wallet": trader.wallet,
+                "trader_win_rate": trader.win_rate,
+                "trader_winrate_edge": trader.winrate_edge,
+                "trader_resolved_markets": trader.resolved_markets,
+                "trader_pnl_1m": trader.pnl_1m,
+                "trader_sports_share": trader.sports_share,
+                "side": t.get("side"),
+                "title": t.get("title"),
+                "event_slug": t.get("eventSlug"),
+                "token_id": t.get("asset"),
+                "outcome": t.get("outcome"),
+                "their_price": float(t.get("price") or 0),
+                "their_usd": round(usd, 2),
+                "ts": int(t.get("timestamp") or 0),
+            }
+            if t.get("side") == "SELL":
+                # Smart money leaving: relevant if we hold anything (the
+                # decision agent matches against the portfolio) or, in manual
+                # watch mode, for any sizable sports sell.
+                if held or (report_all_sells and slug_ok and usd >= cc.min_their_trade_usd):
+                    exit_signals.append(sig)
+                continue
+            if t.get("side") != "BUY" or not slug_ok:
+                continue
+            if usd < cc.min_their_trade_usd:
+                continue
+            if not (cc.min_copy_price <= sig["their_price"] <= cc.max_copy_price):
+                continue
+            signals.append(sig)
+    watchlist.save()
+
+    # Verify current prices: only keep signals where the market hasn't already
+    # run away from the watched trader's entry.
+    reports: List[dict] = []
+    if signals:
+        books = fetch_books(list({s["token_id"] for s in signals if s["token_id"]}))
+        # Aggregate by token: multiple smart wallets on the same side is a stronger signal.
+        by_token: Dict[str, List[dict]] = {}
+        for s in signals:
+            by_token.setdefault(s["token_id"], []).append(s)
+        now_ts = int(time.time())
+        for token_id, sigs in by_token.items():
+            book = books.get(token_id)
+            if not book or book.best_ask is None:
+                continue
+            # Stale signals: by the time we act, the edge is the market's, not ours.
+            newest = max(s["ts"] for s in sigs)
+            if now_ts - newest > cc.max_signal_age_minutes * 60:
+                continue
+            avg_entry = sum(s["their_price"] * s["their_usd"] for s in sigs) / sum(s["their_usd"] for s in sigs)
+            drift = book.best_ask - avg_entry
+            # Symmetric: up-drift means we missed the move; down-drift means new
+            # information arrived against the thesis (often the game itself).
+            if abs(drift) > cc.max_price_drift:
+                log.info("copy signal skipped (price drifted %+.3f): %s", drift, sigs[0]["title"])
+                continue
+            market = _market_by_slug(sigs[0].get("market_slug"))
+            if not market or not market.get("acceptingOrders"):
+                continue
+            # Never copy into a game already underway — in-game prices move
+            # faster than an hourly bot. Pre-game entries only.
+            start_dt = _parse_game_start(market.get("gameStartTime"))
+            if start_dt and start_dt <= datetime.now(timezone.utc):
+                log.info("copy signal skipped (game already started): %s", sigs[0]["title"])
+                continue
+            reports.append({
+                "market_id": str(market.get("id")),
+                "end_date": market.get("endDate"),
+                "title": sigs[0]["title"],
+                "event_slug": sigs[0]["event_slug"],
+                "token_id": token_id,
+                "outcome": sigs[0]["outcome"],
+                "current_best_ask": book.best_ask,
+                "current_best_bid": book.best_bid,
+                "smart_money_avg_entry": round(avg_entry, 4),
+                "num_watched_traders": len({s["trader_wallet"] for s in sigs}),
+                "total_smart_money_usd": round(sum(s["their_usd"] for s in sigs), 2),
+                "traders": [
+                    {"name": s["trader"], "win_rate": s["trader_win_rate"],
+                     "winrate_edge": s["trader_winrate_edge"],
+                     "win_rate_sample": s["trader_resolved_markets"],
+                     "pnl_1m": s["trader_pnl_1m"],
+                     "bet_usd": s["their_usd"], "at_price": s["their_price"]}
+                    for s in sigs
+                ],
+            })
+
+    log.info("copytrade scout: %d entry signals, %d exit signals", len(reports), len(exit_signals))
+    return {
+        "scout": "copytrade",
+        "reports": reports,
+        "exit_signals": exit_signals,
+        "scan_notes": f"watching {len(watchlist.traders)} sports traders "
+                      f"(refreshed {watchlist.refreshed_at})",
+    }
