@@ -3,6 +3,7 @@ instead of trading. No LLM calls, no API key, no money at risk."""
 
 import json
 import logging
+import os
 import platform
 import subprocess
 import time
@@ -253,6 +254,16 @@ def watch_loop(cfg: Config, interval_minutes: float) -> None:
     from .tracked import TrackedList
     watchlist = Watchlist(cfg.watchlist_file)
     tracked = TrackedList(cfg.tracked_wallets_file)
+    # On a managed host (Railway/Render) the filesystem is ephemeral and the
+    # committed last_seen_ts can be stale, so a redeploy would re-alert the
+    # whole backlog. Reseed to "now" on startup to alert only going forward.
+    if os.environ.get("TRACKED_RESEED_ON_START", "").strip().lower() in ("1", "true", "yes"):
+        now = int(time.time())
+        for w in tracked.wallets:
+            w.last_seen_ts = now
+        tracked.save()
+        log.info("reseeded %d tracked wallets to now (TRACKED_RESEED_ON_START)",
+                 len(tracked.wallets))
     channels = []
     if cfg.discord_webhook_url and cfg.discord_enabled:
         channels.append("Discord")
