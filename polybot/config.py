@@ -79,7 +79,7 @@ class CopytradeConfig:
     min_resolved_markets: int = 20           # min sample size behind the win rate
     trades_sample: int = 500                 # trade history page size per candidate
     max_trades_depth: int = 2500             # deepest history paged for HF traders
-    max_markets_checked: int = 60            # resolution lookups per candidate
+    max_markets_checked: int = 200           # resolved markets scored per candidate (also feeds per-sport)
     min_sports_share: float = 0.6            # min fraction of trades that are sports
     min_trades_sampled: int = 20             # need enough history to judge
     refresh_days: float = 3.0                # rebuild watchlist this often

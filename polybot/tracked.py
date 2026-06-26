@@ -8,13 +8,14 @@ import json
 import logging
 import re
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional
 
 from .config import Config
-from .copytrade import _recent_trades
+from .copytrade import (_recent_trades, compute_track_record, ResolutionCache,
+                        sport_from_slug)
 
 log = logging.getLogger("polybot.tracked")
 
@@ -36,6 +37,8 @@ class TrackedWallet:
     label: str = ""
     added_at: str = ""
     last_seen_ts: int = 0      # newest trade timestamp already alerted
+    by_sport: dict = field(default_factory=dict)   # sport -> {markets, wins, win_rate, pnl}
+    sports_refreshed_at: str = ""                   # when by_sport was last computed
 
 
 class TrackedList:
@@ -82,9 +85,51 @@ class TrackedList:
         return True
 
 
+def refresh_tracked_sports(cfg: Config, tracked: TrackedList, force: bool = False) -> None:
+    """Compute/refresh each tracked wallet's per-sport record so alerts can be
+    tagged profitable/unprofitable for the bet's sport. Self-gating: only
+    recomputes a wallet whose record is missing or older than refresh_days."""
+    cc = cfg.copytrade
+    cache = ResolutionCache(cfg.resolution_cache_file)
+    now = datetime.now(timezone.utc)
+    changed = False
+    for w in tracked.wallets:
+        if not force and w.sports_refreshed_at:
+            try:
+                age = (now - datetime.fromisoformat(w.sports_refreshed_at)).total_seconds()
+                if age < cc.refresh_days * 86400:
+                    continue
+            except ValueError:
+                pass
+        try:
+            trades = _recent_trades(w.wallet, cc.trades_sample)
+            unresolved: set = set()
+            rec = compute_track_record(trades, cache, cc.max_markets_checked, unresolved)
+            offset = len(trades)
+            while (rec["resolved_markets"] < cc.max_markets_checked
+                   and offset < cc.max_trades_depth):
+                more = _recent_trades(w.wallet, cc.trades_sample, offset)
+                if not more:
+                    break
+                trades.extend(more)
+                offset += len(more)
+                rec = compute_track_record(trades, cache, cc.max_markets_checked, unresolved)
+            w.by_sport = rec["by_sport"]
+            w.sports_refreshed_at = now.isoformat()
+            changed = True
+            log.info("computed per-sport record for %s (%d sports)",
+                     w.label or w.wallet[:10], len(w.by_sport))
+        except Exception as e:  # noqa: BLE001 — one wallet's failure shouldn't block the rest
+            log.warning("per-sport refresh failed for %s: %s", w.label or w.wallet[:10], e)
+    cache.save()
+    if changed:
+        tracked.save()
+
+
 def scan_tracked(cfg: Config, tracked: TrackedList) -> List[dict]:
     """Return alert dicts for every new trade (any market, buy or sell) above
     the minimum size across all tracked wallets. Advances last_seen_ts."""
+    refresh_tracked_sports(cfg, tracked)  # self-gating; recomputes only when stale
     alerts: List[dict] = []
     for w in tracked.wallets:
         try:
@@ -100,6 +145,7 @@ def scan_tracked(cfg: Config, tracked: TrackedList) -> List[dict]:
             usd = float(t.get("size") or 0) * float(t.get("price") or 0)
             if usd < cfg.tracked_min_usd:
                 continue
+            sport = sport_from_slug(t.get("eventSlug", ""))
             alerts.append({
                 "label": w.label or w.wallet[:10],
                 "wallet": w.wallet,
@@ -110,6 +156,8 @@ def scan_tracked(cfg: Config, tracked: TrackedList) -> List[dict]:
                 "usd": round(usd, 2),
                 "event_slug": t.get("eventSlug"),
                 "ts": int(t.get("timestamp") or 0),
+                "sport": sport,
+                "sport_record": w.by_sport.get(sport),  # {markets, wins, win_rate, pnl} or None
             })
         w.last_seen_ts = max(w.last_seen_ts, newest)
     tracked.save()

@@ -57,6 +57,35 @@ def is_sports_slug(event_slug: str) -> bool:
     return s.startswith(SPORTS_PREFIXES) or any(k in s for k in SPORTS_KEYWORDS)
 
 
+# Map the league-code slug prefix to a readable sport bucket. Event slugs are
+# clean league codes (e.g. "nba-sas-nyk-...", "atp-...", "fifwc-jpn-swe-...").
+_SPORT_BY_PREFIX = {
+    "mlb": "MLB", "nba": "NBA", "wnba": "WNBA", "nfl": "NFL", "nhl": "NHL",
+    "cbb": "NCAAB", "cfb": "NCAAF",
+    "atp": "Tennis", "wta": "Tennis",
+    "epl": "Soccer", "lal": "Soccer", "laliga": "Soccer", "bun": "Soccer",
+    "bundesliga": "Soccer", "ucl": "Soccer", "uel": "Soccer", "seriea": "Soccer",
+    "ligue1": "Soccer", "ligue": "Soccer", "mls": "Soccer", "fifwc": "Soccer",
+    "fifa": "Soccer", "wcq": "Soccer", "concacaf": "Soccer", "copa": "Soccer",
+    "ufc": "MMA", "boxing": "Boxing", "f1": "Motorsport", "nascar": "Motorsport",
+    "pga": "Golf",
+}
+
+
+def sport_from_slug(event_slug: str) -> str:
+    """Readable sport/league bucket for an event slug, or 'Other'."""
+    s = (event_slug or "").lower()
+    prefix = s.split("-", 1)[0]
+    if prefix in _SPORT_BY_PREFIX:
+        return _SPORT_BY_PREFIX[prefix]
+    # keyword fallbacks for non-prefixed slugs
+    if "world-cup" in s or "premier-league" in s or "champions-league" in s:
+        return "Soccer"
+    if "tennis" in s or "wimbledon" in s or "-open" in s:
+        return "Tennis"
+    return "Other"
+
+
 @dataclass
 class WatchedTrader:
     wallet: str
@@ -70,6 +99,7 @@ class WatchedTrader:
     winrate_edge: float = 0.0  # win_rate minus break-even rate from avg entry
     avg_entry: float = 0.0     # avg price paid (= break-even win rate)
     resolved_markets: int = 0  # sample size behind win_rate
+    by_sport: dict = field(default_factory=dict)  # sport -> {markets, wins, win_rate, pnl}
     sports_share: float = 0.0  # fraction of recent trades that are sports
     style: str = ""            # bot / uncertain / human (trade-cadence heuristic)
     trades_per_day: float = 0.0
@@ -142,7 +172,8 @@ def compute_track_record(trades: List[dict], cache: ResolutionCache,
             continue
         if cid not in per_market:
             per_market[cid] = {"buy_usd": 0.0, "sell_usd": 0.0,
-                               "buy_shares": 0.0, "net": {}}
+                               "buy_shares": 0.0, "net": {},
+                               "sport": sport_from_slug(t.get("eventSlug", ""))}
             order.append(cid)
         rec = per_market[cid]
         shares = float(t.get("size") or 0)
@@ -159,6 +190,7 @@ def compute_track_record(trades: List[dict], cache: ResolutionCache,
         unresolved_memo = set()
     wins = losses = 0
     entry_usd = entry_shares = 0.0
+    by_sport: Dict[str, dict] = {}  # sport -> {markets, wins, pnl}
     # Walk newest-first until we've scored max_markets RESOLVED markets —
     # for high-frequency traders the newest markets are mostly still open.
     for cid in order:
@@ -184,15 +216,24 @@ def compute_track_record(trades: List[dict], cache: ResolutionCache,
             losses += 1
         entry_usd += rec["buy_usd"]
         entry_shares += rec["buy_shares"]
+        sp = by_sport.setdefault(rec["sport"], {"markets": 0, "wins": 0, "pnl": 0.0})
+        sp["markets"] += 1
+        sp["wins"] += 1 if pnl > 0 else 0
+        sp["pnl"] += pnl
 
     resolved = wins + losses
     win_rate = wins / resolved if resolved else 0.0
     avg_entry = entry_usd / entry_shares if entry_shares else 0.0
+    # Round per-sport pnl and add a win rate for display.
+    for sp in by_sport.values():
+        sp["pnl"] = round(sp["pnl"], 2)
+        sp["win_rate"] = round(sp["wins"] / sp["markets"], 4) if sp["markets"] else 0.0
     return {
         "resolved_markets": resolved,
         "win_rate": round(win_rate, 4),
         "avg_entry": round(avg_entry, 4),
         "winrate_edge": round(win_rate - avg_entry, 4),
+        "by_sport": by_sport,
     }
 
 
@@ -463,6 +504,19 @@ def discover_sports_traders(cfg: Config,
                      record["avg_entry"], ", proven" if proven else "")
             continue
 
+        # Qualified — now page deeper to fill the full per-sport sample
+        # (max_markets_checked). Done only here so we never deep-fetch the many
+        # candidates rejected above.
+        offset = len(trades)
+        while (record["resolved_markets"] < cc.max_markets_checked
+               and offset < cc.max_trades_depth):
+            more = _recent_trades(wallet, cc.trades_sample, offset)
+            if not more:
+                break
+            trades.extend(more)
+            offset += len(more)
+            record = compute_track_record(trades, cache, cc.max_markets_checked, unresolved)
+
         sized = [t["size"] * t["price"] for t in trades if t.get("size") and t.get("price")]
         traders.append(
             WatchedTrader(
@@ -477,6 +531,7 @@ def discover_sports_traders(cfg: Config,
                 winrate_edge=record["winrate_edge"],
                 avg_entry=record["avg_entry"],
                 resolved_markets=record["resolved_markets"],
+                by_sport=record.get("by_sport", {}),
                 sports_share=round(share, 3),
                 style=style["style"],
                 trades_per_day=style["trades_per_day"],

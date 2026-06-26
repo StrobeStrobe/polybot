@@ -4,7 +4,58 @@
    "wallet": "0x6157d529ae129fe08f22a27ed42e741d2eaa9fb4",
    "label": "DaBossHogg",
    "added_at": "2026-06-25T12:47:12.746780+00:00",
-   "last_seen_ts": 1782391632
+   "last_seen_ts": 1782391632,
+   "by_sport": {
+    "Tennis": {
+     "markets": 42,
+     "wins": 26,
+     "pnl": 9042.41,
+     "win_rate": 0.619
+    },
+    "Soccer": {
+     "markets": 72,
+     "wins": 39,
+     "pnl": 63583.54,
+     "win_rate": 0.5417
+    },
+    "WNBA": {
+     "markets": 4,
+     "wins": 1,
+     "pnl": -1776.56,
+     "win_rate": 0.25
+    },
+    "MLB": {
+     "markets": 39,
+     "wins": 20,
+     "pnl": 55035.92,
+     "win_rate": 0.5128
+    },
+    "MMA": {
+     "markets": 6,
+     "wins": 2,
+     "pnl": -2929.87,
+     "win_rate": 0.3333
+    },
+    "NBA": {
+     "markets": 25,
+     "wins": 17,
+     "pnl": 28468.33,
+     "win_rate": 0.68
+    },
+    "NHL": {
+     "markets": 8,
+     "wins": 6,
+     "pnl": 22751.41,
+     "win_rate": 0.75
+    },
+    "Other": {
+     "markets": 4,
+     "wins": 3,
+     "pnl": 1436.31,
+     "win_rate": 0.75
+    }
+   },
+   "sports_refreshed_at": "2026-06-26T15:48:53.241971+00:00"
   }
  ]
 }

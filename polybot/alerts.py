@@ -179,6 +179,20 @@ def send_test_alert(cfg: Config) -> None:
         print("(No DISCORD_WEBHOOK_URL set — add it to .env to enable Discord.)")
 
 
+def _sport_tag(a: dict) -> str:
+    """Human-readable profitability tag for the bet's sport, from the trader's
+    cached per-sport record."""
+    sport = a.get("sport") or "Other"
+    rec = a.get("sport_record")
+    if rec and rec.get("markets"):
+        pnl, wr, n = rec.get("pnl", 0), rec.get("win_rate", 0), rec["markets"]
+        thin = " ⚠️thin" if n < 10 else ""
+        if pnl > 0:
+            return f"✅ profitable at {sport}: {wr:.0%} W, ${pnl:+,.0f} / {n} bets{thin}"
+        return f"❌ UNprofitable at {sport}: {wr:.0%} W, ${pnl:+,.0f} / {n} bets{thin}"
+    return f"❔ no track record at {sport}"
+
+
 def alert_tracked(cfg: Config, a: dict) -> None:
     """Raw-mirror alert for a manually-tracked wallet (any market, buy/sell)."""
     url = _market_url(a.get("event_slug", ""))
@@ -186,22 +200,25 @@ def alert_tracked(cfg: Config, a: dict) -> None:
     emoji = "🟢" if side == "BUY" else "🔴" if side == "SELL" else "🔵"
     title = f"👁 {a.get('label')}: {side} ${a.get('usd', 0):,.0f}"
     msg = f"{a.get('title')} — {a.get('outcome')} @ {a.get('price')}"
+    tag = _sport_tag(a)
     embed = {
         "title": f"{emoji} {title}",
         "color": GREEN if side == "BUY" else RED if side == "SELL" else BLUE,
-        "description": f"**{a.get('title')}**" + (f"\n[View on Polymarket]({url})" if url else ""),
+        "description": f"**{a.get('title')}**\n{tag}"
+                       + (f"\n[View on Polymarket]({url})" if url else ""),
         "fields": [
             {"name": "Side", "value": side or "—", "inline": True},
             {"name": "Outcome", "value": str(a.get("outcome", "—")), "inline": True},
             {"name": "Price", "value": str(a.get("price", "—")), "inline": True},
             {"name": "Size", "value": f"${a.get('usd', 0):,.0f}", "inline": True},
-            {"name": "Wallet", "value": str(a.get("label", "—")), "inline": True},
+            {"name": f"{a.get('label', '—')} at {a.get('sport', 'Other')}",
+             "value": tag, "inline": False},
         ],
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
     post_discord(cfg, embed)
-    print(f"\n{'=' * 70}\n{emoji} {title}\n{msg}\n{url}\n{'=' * 70}")
-    _log_alert(cfg, f"TRACK| {a.get('label')} | {side} {msg} | {url}")
+    print(f"\n{'=' * 70}\n{emoji} {title}\n{msg}\n{tag}\n{url}\n{'=' * 70}")
+    _log_alert(cfg, f"TRACK| {a.get('label')} | {side} {msg} | {tag} | {url}")
 
 
 def _run_cycle(cfg: Config, watchlist, tracked) -> tuple:
@@ -264,6 +281,12 @@ def watch_loop(cfg: Config, interval_minutes: float) -> None:
         tracked.save()
         log.info("reseeded %d tracked wallets to now (TRACKED_RESEED_ON_START)",
                  len(tracked.wallets))
+    # One-time deploy self-test: fire a sample alert so you can confirm Discord
+    # works on this host without waiting for a real trade. Set the env var,
+    # confirm the alert lands, then remove it.
+    if os.environ.get("SEND_TEST_ALERT_ON_START", "").strip().lower() in ("1", "true", "yes"):
+        log.info("SEND_TEST_ALERT_ON_START set — firing one sample alert")
+        send_test_alert(cfg)
     channels = []
     if cfg.discord_webhook_url and cfg.discord_enabled:
         channels.append("Discord")

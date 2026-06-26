@@ -124,6 +124,16 @@ def main() -> None:
                   f"(entry {t.avg_entry:.2f}, edge {t.winrate_edge:+.1%})  "
                   f"all-time ${t.pnl_all:>11,.0f} (roi {t.roi_all:.1%})  sports {t.sports_share:.0%}  "
                   f"[{t.style or '?'}: {t.trades_per_day:g}/day, sleeps {t.quiet_hours}h]")
+            # Per-sport PnL on the sampled recent resolved markets, best first.
+            # This is a recent-form sample (capped at max_markets_checked), NOT
+            # career totals — it won't sum to all-time PnL.
+            if t.by_sport:
+                parts = []
+                for sp, d in sorted(t.by_sport.items(), key=lambda kv: kv[1]["pnl"], reverse=True):
+                    parts.append(f"{sp} {d['win_rate']:.0%}/{d['markets']}mkt ${d['pnl']:+,.0f}")
+                sport_total = sum(d["pnl"] for d in t.by_sport.values())
+                print(f"        └ by sport (last {t.resolved_markets} resolved mkts, "
+                      f"${sport_total:+,.0f} of them): {'  '.join(parts)}")
         if not wl.traders:
             print("  (none matched the filters — try lowering copytrade.min_monthly_pnl)")
         return
