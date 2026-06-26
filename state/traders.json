@@ -42,7 +42,7 @@
    "trades_sampled": 500,
    "avg_trade_usd": 135.22,
    "added_at": "2026-06-25T03:14:50.586404+00:00",
-   "last_seen_ts": 1782352729
+   "last_seen_ts": 1782460549
   },
   {
    "wallet": "0x6db568e61e5e3de7d87f831431b673f38ce2e279",
@@ -63,7 +63,7 @@
    "trades_sampled": 500,
    "avg_trade_usd": 3073.62,
    "added_at": "2026-06-25T03:13:57.682136+00:00",
-   "last_seen_ts": 1782351812
+   "last_seen_ts": 1782440639
   },
   {
    "wallet": "0x29b7a9a6ce50f394b3f1a1ee4d8874e7576f4108",
@@ -168,7 +168,7 @@
    "trades_sampled": 500,
    "avg_trade_usd": 11782.76,
    "added_at": "2026-06-25T03:13:58.966044+00:00",
-   "last_seen_ts": 1782340603
+   "last_seen_ts": 1782468628
   },
   {
    "wallet": "0xa82a8a824d9102e2309584da10c8622478bda759",
@@ -210,7 +210,7 @@
    "trades_sampled": 500,
    "avg_trade_usd": 6585.06,
    "added_at": "2026-06-25T03:14:40.975359+00:00",
-   "last_seen_ts": 1782381985
+   "last_seen_ts": 1782394454
   },
   {
    "wallet": "0xf8831548531d56ad6a4331493243c447a827cd1f",
@@ -252,7 +252,7 @@
    "trades_sampled": 500,
    "avg_trade_usd": 21608.55,
    "added_at": "2026-06-25T03:14:55.774171+00:00",
-   "last_seen_ts": 1782172280
+   "last_seen_ts": 1782413006
   },
   {
    "wallet": "0xb56db5215443706244b0af76b3daaad3066ad621",
@@ -273,7 +273,7 @@
    "trades_sampled": 113,
    "avg_trade_usd": 3008.89,
    "added_at": "2026-06-25T03:14:39.867512+00:00",
-   "last_seen_ts": 1782337682
+   "last_seen_ts": 1782447316
   },
   {
    "wallet": "0x6157d529ae129fe08f22a27ed42e741d2eaa9fb4",
@@ -294,7 +294,7 @@
    "trades_sampled": 500,
    "avg_trade_usd": 3309.59,
    "added_at": "2026-06-25T03:16:51.091616+00:00",
-   "last_seen_ts": 1782384641
+   "last_seen_ts": 1782459311
   },
   {
    "wallet": "0x780a7539200e74e882dde303952029bda21684f0",
@@ -315,7 +315,7 @@
    "trades_sampled": 129,
    "avg_trade_usd": 23629.57,
    "added_at": "2026-06-25T03:16:23.467045+00:00",
-   "last_seen_ts": 1782076457
+   "last_seen_ts": 1782443183
   }
  ]
 }
