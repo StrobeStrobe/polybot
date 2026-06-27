@@ -1,729 +1,636 @@
 {
- "refreshed_at": "2026-06-26T00:40:44.758966+00:00",
- "last_attempt_at": "2026-06-26T00:28:44.155288+00:00",
+ "refreshed_at": "2026-06-27T16:10:06.990521+00:00",
+ "last_attempt_at": "2026-06-27T15:59:00.318721+00:00",
  "traders": [
-  {
-   "wallet": "0x73afc8160c17830c0c7281a7bf570c871455b880",
-   "pseudonym": "0x4bFb41d5B570DeFd03C39a9A4D8dE6Bd8B8982E",
-   "pnl_1m": 146002.13,
-   "pnl_1w": 21812.58,
-   "pnl_all": 208021.47,
-   "roi_1m": 0.0723,
-   "roi_all": 0.0478,
-   "win_rate": 0.5909,
-   "winrate_edge": 0.3444,
-   "avg_entry": 0.2465,
-   "resolved_markets": 110,
-   "by_sport": {
-    "Soccer": {
-     "markets": 13,
-     "wins": 8,
-     "pnl": 8716.48,
-     "win_rate": 0.6154
-    },
-    "Other": {
-     "markets": 77,
-     "wins": 51,
-     "pnl": -10948.82,
-     "win_rate": 0.6623
-    },
-    "Tennis": {
-     "markets": 20,
-     "wins": 6,
-     "pnl": -1255.83,
-     "win_rate": 0.3
-    }
-   },
-   "sports_share": 0.812,
-   "style": "uncertain",
-   "trades_per_day": 6.2,
-   "quiet_hours": 9,
-   "trades_sampled": 687,
-   "avg_trade_usd": 829.64,
-   "added_at": "2026-06-26T00:30:14.986869+00:00",
-   "last_seen_ts": 1782309329
-  },
-  {
-   "wallet": "0x9e8ecc4cb3c4e48f544cba2fbbb252a6a65e8db8",
-   "pseudonym": "DREAMBIG.",
-   "pnl_1m": 32813.69,
-   "pnl_1w": 8928.52,
-   "pnl_all": 109149.93,
-   "roi_1m": 0.0805,
-   "roi_all": 0.0752,
-   "win_rate": 0.835,
-   "winrate_edge": 0.2757,
-   "avg_entry": 0.5593,
-   "resolved_markets": 200,
-   "by_sport": {
-    "Soccer": {
-     "markets": 172,
-     "wins": 143,
-     "pnl": 10586.9,
-     "win_rate": 0.8314
-    },
-    "Other": {
-     "markets": 28,
-     "wins": 24,
-     "pnl": 4778.73,
-     "win_rate": 0.8571
-    }
-   },
-   "sports_share": 0.798,
-   "style": "uncertain",
-   "trades_per_day": 38.2,
-   "quiet_hours": 6,
-   "trades_sampled": 500,
-   "avg_trade_usd": 138.52,
-   "added_at": "2026-06-26T00:30:42.543998+00:00",
-   "last_seen_ts": 1782433276
-  },
-  {
-   "wallet": "0x29b7a9a6ce50f394b3f1a1ee4d8874e7576f4108",
-   "pseudonym": "alexchintakis",
-   "pnl_1m": 52051.35,
-   "pnl_1w": 5458.08,
-   "pnl_all": 87094.71,
-   "roi_1m": 0.187,
-   "roi_all": 0.1359,
-   "win_rate": 0.6364,
-   "winrate_edge": 0.1956,
-   "avg_entry": 0.4408,
-   "resolved_markets": 44,
-   "by_sport": {
-    "Soccer": {
-     "markets": 11,
-     "wins": 8,
-     "pnl": 9866.73,
-     "win_rate": 0.7273
-    },
-    "NBA": {
-     "markets": 17,
-     "wins": 10,
-     "pnl": 48625.55,
-     "win_rate": 0.5882
-    },
-    "MLB": {
-     "markets": 10,
-     "wins": 7,
-     "pnl": 30447.82,
-     "win_rate": 0.7
-    },
-    "NHL": {
-     "markets": 2,
-     "wins": 1,
-     "pnl": -221.8,
-     "win_rate": 0.5
-    },
-    "Tennis": {
-     "markets": 1,
-     "wins": 0,
-     "pnl": -13376.37,
-     "win_rate": 0.0
-    },
-    "Other": {
-     "markets": 3,
-     "wins": 2,
-     "pnl": 1381.59,
-     "win_rate": 0.6667
-    }
-   },
-   "sports_share": 0.831,
-   "style": "human",
-   "trades_per_day": 0.2,
-   "quiet_hours": 6,
-   "trades_sampled": 89,
-   "avg_trade_usd": 2791.86,
-   "added_at": "2026-06-26T00:30:33.057613+00:00",
-   "last_seen_ts": 1782345329
-  },
-  {
-   "wallet": "0xfc0847fe2ea938d6e2624650eb29ef8d8142a137",
-   "pseudonym": "0xfC0847fe2Ea938D6e2624650eB29eF8d8142A137-1771999665274",
-   "pnl_1m": 78551.62,
-   "pnl_1w": 33944.1,
-   "pnl_all": 217082.65,
-   "roi_1m": 0.0262,
-   "roi_all": 0.0267,
-   "win_rate": 0.5926,
-   "winrate_edge": 0.1864,
-   "avg_entry": 0.4062,
-   "resolved_markets": 54,
-   "by_sport": {
-    "MLB": {
-     "markets": 41,
-     "wins": 26,
-     "pnl": 4938.86,
-     "win_rate": 0.6341
-    },
-    "Soccer": {
-     "markets": 10,
-     "wins": 4,
-     "pnl": 9394.44,
-     "win_rate": 0.4
-    },
-    "NHL": {
-     "markets": 3,
-     "wins": 2,
-     "pnl": 3361.67,
-     "win_rate": 0.6667
-    }
-   },
-   "sports_share": 0.626,
-   "style": "uncertain",
-   "trades_per_day": 73.8,
-   "quiet_hours": 15,
-   "trades_sampled": 2500,
-   "avg_trade_usd": 417.35,
-   "added_at": "2026-06-26T00:30:21.101292+00:00",
-   "last_seen_ts": 1782431120
-  },
   {
    "wallet": "0xd105f1f4995a283f5e83236aa1851fc828867b2c",
    "pseudonym": "dnte",
-   "pnl_1m": 131091.83,
-   "pnl_1w": -131.65,
-   "pnl_all": 163261.14,
+   "pnl_1m": 131103.79,
+   "pnl_1w": -119.7,
+   "pnl_all": 163273.09,
    "roi_1m": 0.6279,
    "roi_all": 0.2404,
-   "win_rate": 0.4545,
-   "winrate_edge": 0.176,
-   "avg_entry": 0.2786,
-   "resolved_markets": 55,
+   "win_rate": 0.4643,
+   "winrate_edge": 0.1843,
+   "avg_entry": 0.28,
+   "resolved_markets": 56,
    "by_sport": {
     "Tennis": {
-     "markets": 1,
-     "wins": 0,
-     "pnl": -703.81,
-     "win_rate": 0.0
+     "markets": 2,
+     "wins": 1,
+     "pnl": 9023.63,
+     "win_rate": 0.5,
+     "avg_entry": 0.2777,
+     "edge": 0.2223
     },
     "Soccer": {
      "markets": 7,
      "wins": 3,
      "pnl": 8556.82,
-     "win_rate": 0.4286
+     "win_rate": 0.4286,
+     "avg_entry": 0.3633,
+     "edge": 0.0653
     },
     "MMA": {
      "markets": 4,
      "wins": 2,
      "pnl": 18270.98,
-     "win_rate": 0.5
+     "win_rate": 0.5,
+     "avg_entry": 0.2252,
+     "edge": 0.2748
     },
     "NBA": {
      "markets": 22,
      "wins": 18,
      "pnl": 88252.04,
-     "win_rate": 0.8182
+     "win_rate": 0.8182,
+     "avg_entry": 0.4452,
+     "edge": 0.373
     },
     "MLB": {
      "markets": 2,
      "wins": 1,
      "pnl": -97.26,
-     "win_rate": 0.5
+     "win_rate": 0.5,
+     "avg_entry": 0.4176,
+     "edge": 0.0824
     },
     "Other": {
      "markets": 17,
      "wins": 1,
      "pnl": 41643.89,
-     "win_rate": 0.0588
+     "win_rate": 0.0588,
+     "avg_entry": 0.1393,
+     "edge": -0.0805
     },
     "Golf": {
      "markets": 2,
      "wins": 0,
      "pnl": -974.43,
-     "win_rate": 0.0
+     "win_rate": 0.0,
+     "avg_entry": 0.0352,
+     "edge": -0.0352
     }
    },
-   "sports_share": 0.722,
+   "sports_share": 0.726,
    "style": "human",
    "trades_per_day": 0.1,
    "quiet_hours": 5,
-   "trades_sampled": 115,
-   "avg_trade_usd": 1990.93,
-   "added_at": "2026-06-26T00:30:16.421035+00:00",
+   "trades_sampled": 117,
+   "avg_trade_usd": 1957.08,
+   "added_at": "2026-06-27T15:59:15.450521+00:00",
    "last_seen_ts": 1782085534
+  },
+  {
+   "wallet": "0x29b7a9a6ce50f394b3f1a1ee4d8874e7576f4108",
+   "pseudonym": "alexchintakis",
+   "pnl_1m": 47473.65,
+   "pnl_1w": 880.37,
+   "pnl_all": 82549.49,
+   "roi_1m": 0.1513,
+   "roi_all": 0.1221,
+   "win_rate": 0.6531,
+   "winrate_edge": 0.1794,
+   "avg_entry": 0.4736,
+   "resolved_markets": 49,
+   "by_sport": {
+    "Soccer": {
+     "markets": 14,
+     "wins": 10,
+     "pnl": 4665.3,
+     "win_rate": 0.7143,
+     "avg_entry": 0.7277,
+     "edge": -0.0134
+    },
+    "NBA": {
+     "markets": 19,
+     "wins": 12,
+     "pnl": 61978.42,
+     "win_rate": 0.6316,
+     "avg_entry": 0.2682,
+     "edge": 0.3634
+    },
+    "MLB": {
+     "markets": 10,
+     "wins": 7,
+     "pnl": 30693.89,
+     "win_rate": 0.7,
+     "avg_entry": 0.5678,
+     "edge": 0.1322
+    },
+    "NHL": {
+     "markets": 2,
+     "wins": 1,
+     "pnl": -221.8,
+     "win_rate": 0.5,
+     "avg_entry": 0.4222,
+     "edge": 0.0778
+    },
+    "Tennis": {
+     "markets": 1,
+     "wins": 0,
+     "pnl": -16353.93,
+     "win_rate": 0.0,
+     "avg_entry": 0.7289,
+     "edge": -0.7289
+    },
+    "Other": {
+     "markets": 3,
+     "wins": 2,
+     "pnl": 1381.59,
+     "win_rate": 0.6667,
+     "avg_entry": 0.4994,
+     "edge": 0.1673
+    }
+   },
+   "sports_share": 0.914,
+   "style": "human",
+   "trades_per_day": 0.5,
+   "quiet_hours": 5,
+   "trades_sampled": 244,
+   "avg_trade_usd": 1272.16,
+   "added_at": "2026-06-27T15:59:24.957207+00:00",
+   "last_seen_ts": 1782525826
+  },
+  {
+   "wallet": "0xf410c083eb92d2ba6417b6c77797a83057deca73",
+   "pseudonym": "ridleyridley",
+   "pnl_1m": 70105.63,
+   "pnl_1w": 8229.03,
+   "pnl_all": 113461.68,
+   "roi_1m": 0.0376,
+   "roi_all": 0.0349,
+   "win_rate": 0.6133,
+   "winrate_edge": 0.1714,
+   "avg_entry": 0.4419,
+   "resolved_markets": 75,
+   "by_sport": {
+    "Soccer": {
+     "markets": 53,
+     "wins": 34,
+     "pnl": 847.7,
+     "win_rate": 0.6415,
+     "avg_entry": 0.4058,
+     "edge": 0.2357
+    },
+    "NBA": {
+     "markets": 20,
+     "wins": 11,
+     "pnl": -4571.71,
+     "win_rate": 0.55,
+     "avg_entry": 0.5775,
+     "edge": -0.0275
+    },
+    "Other": {
+     "markets": 2,
+     "wins": 1,
+     "pnl": 82842.95,
+     "win_rate": 0.5,
+     "avg_entry": 0.3995,
+     "edge": 0.1005
+    }
+   },
+   "sports_share": 0.834,
+   "style": "uncertain",
+   "trades_per_day": 67.8,
+   "quiet_hours": 3,
+   "trades_sampled": 2500,
+   "avg_trade_usd": 308.63,
+   "added_at": "2026-06-27T16:03:04.042841+00:00",
+   "last_seen_ts": 1782569350
   },
   {
    "wallet": "0x6db568e61e5e3de7d87f831431b673f38ce2e279",
    "pseudonym": "0x6db568e6",
-   "pnl_1m": 1422835.97,
-   "pnl_1w": -19894.73,
-   "pnl_all": 2102240.52,
-   "roi_1m": 0.2423,
-   "roi_all": 0.0882,
-   "win_rate": 0.5891,
-   "winrate_edge": 0.1359,
-   "avg_entry": 0.4533,
-   "resolved_markets": 129,
+   "pnl_1m": 1415678.73,
+   "pnl_1w": -27051.97,
+   "pnl_all": 2095913.65,
+   "roi_1m": 0.2406,
+   "roi_all": 0.0879,
+   "win_rate": 0.5758,
+   "winrate_edge": 0.1223,
+   "avg_entry": 0.4535,
+   "resolved_markets": 132,
    "by_sport": {
     "MLB": {
-     "markets": 94,
+     "markets": 97,
      "wins": 55,
-     "pnl": -20843.53,
-     "win_rate": 0.5851
+     "pnl": -25904.18,
+     "win_rate": 0.567,
+     "avg_entry": 0.4803,
+     "edge": 0.0867
     },
     "Soccer": {
      "markets": 4,
      "wins": 3,
      "pnl": 153381.98,
-     "win_rate": 0.75
+     "win_rate": 0.75,
+     "avg_entry": 0.5294,
+     "edge": 0.2206
     },
     "WNBA": {
      "markets": 9,
      "wins": 6,
      "pnl": -1380.58,
-     "win_rate": 0.6667
+     "win_rate": 0.6667,
+     "avg_entry": 0.5658,
+     "edge": 0.1009
     },
     "NBA": {
      "markets": 22,
      "wins": 12,
      "pnl": 1393646.84,
-     "win_rate": 0.5455
+     "win_rate": 0.5455,
+     "avg_entry": 0.4434,
+     "edge": 0.1021
     }
    },
    "sports_share": 0.98,
    "style": "human",
-   "trades_per_day": 28.4,
+   "trades_per_day": 26.8,
    "quiet_hours": 13,
    "trades_sampled": 2500,
-   "avg_trade_usd": 2478.11,
-   "added_at": "2026-06-26T00:29:11.826523+00:00",
-   "last_seen_ts": 1782433000
+   "avg_trade_usd": 2473.48,
+   "added_at": "2026-06-27T15:59:11.073513+00:00",
+   "last_seen_ts": 1782523426
+  },
+  {
+   "wallet": "0x00754e79d9507852a287475e8dad4c6a58b25f10",
+   "pseudonym": "70TOHEAVEN",
+   "pnl_1m": 25141.12,
+   "pnl_1w": -2285.22,
+   "pnl_all": 60118.89,
+   "roi_1m": 0.0931,
+   "roi_all": 0.0448,
+   "win_rate": 0.5564,
+   "winrate_edge": 0.1131,
+   "avg_entry": 0.4433,
+   "resolved_markets": 133,
+   "by_sport": {
+    "Other": {
+     "markets": 39,
+     "wins": 20,
+     "pnl": 11835.93,
+     "win_rate": 0.5128,
+     "avg_entry": 0.4137,
+     "edge": 0.0991
+    },
+    "Tennis": {
+     "markets": 6,
+     "wins": 1,
+     "pnl": -4410.62,
+     "win_rate": 0.1667,
+     "avg_entry": 0.2162,
+     "edge": -0.0495
+    },
+    "MLB": {
+     "markets": 35,
+     "wins": 25,
+     "pnl": 14597.18,
+     "win_rate": 0.7143,
+     "avg_entry": 0.5178,
+     "edge": 0.1965
+    },
+    "NBA": {
+     "markets": 15,
+     "wins": 10,
+     "pnl": 32952.23,
+     "win_rate": 0.6667,
+     "avg_entry": 0.4646,
+     "edge": 0.2021
+    },
+    "Soccer": {
+     "markets": 37,
+     "wins": 17,
+     "pnl": -6061.75,
+     "win_rate": 0.4595,
+     "avg_entry": 0.4651,
+     "edge": -0.0056
+    },
+    "MMA": {
+     "markets": 1,
+     "wins": 1,
+     "pnl": 4049.99,
+     "win_rate": 1.0,
+     "avg_entry": 0.19,
+     "edge": 0.81
+    }
+   },
+   "sports_share": 0.912,
+   "style": "uncertain",
+   "trades_per_day": 14.6,
+   "quiet_hours": 5,
+   "trades_sampled": 2500,
+   "avg_trade_usd": 248.8,
+   "added_at": "2026-06-27T16:09:04.439387+00:00",
+   "last_seen_ts": 1782514729
   },
   {
    "wallet": "0xccf128f31a3af399c40dd9854c83b60101dd25a0",
    "pseudonym": "reakt2026",
-   "pnl_1m": 28150.55,
-   "pnl_1w": -9.51,
-   "pnl_all": 78626.68,
-   "roi_1m": 0.1366,
-   "roi_all": 0.0264,
-   "win_rate": 0.91,
-   "winrate_edge": 0.1163,
-   "avg_entry": 0.7937,
+   "pnl_1m": 27949.8,
+   "pnl_1w": -210.26,
+   "pnl_all": 78315.91,
+   "roi_1m": 0.1273,
+   "roi_all": 0.0262,
+   "win_rate": 0.9,
+   "winrate_edge": 0.1097,
+   "avg_entry": 0.7903,
    "resolved_markets": 200,
    "by_sport": {
-    "Tennis": {
-     "markets": 198,
-     "wins": 181,
-     "pnl": 5074.97,
-     "win_rate": 0.9141
-    },
     "MLB": {
-     "markets": 2,
+     "markets": 5,
      "wins": 1,
-     "pnl": -62.38,
-     "win_rate": 0.5
+     "pnl": -255.88,
+     "win_rate": 0.2,
+     "avg_entry": 0.3914,
+     "edge": -0.1914
+    },
+    "Tennis": {
+     "markets": 195,
+     "wins": 179,
+     "pnl": 5233.76,
+     "win_rate": 0.9179,
+     "avg_entry": 0.7955,
+     "edge": 0.1224
     }
    },
-   "sports_share": 0.948,
+   "sports_share": 0.752,
    "style": "uncertain",
-   "trades_per_day": 76.4,
-   "quiet_hours": 15,
+   "trades_per_day": 66.3,
+   "quiet_hours": 14,
    "trades_sampled": 1000,
-   "avg_trade_usd": 101.09,
-   "added_at": "2026-06-26T00:40:44.481829+00:00",
-   "last_seen_ts": 1782431485
+   "avg_trade_usd": 99.1,
+   "added_at": "2026-06-27T15:59:32.639577+00:00",
+   "last_seen_ts": 1782547982
   },
   {
-   "wallet": "0xb91aeb5accc33a5f9a8615b8ed6b2d352e913987",
-   "pseudonym": "afghj2421",
-   "pnl_1m": 1493134.72,
-   "pnl_1w": 0.0,
-   "pnl_all": 1633834.11,
-   "roi_1m": 0.1859,
-   "roi_all": 0.1053,
-   "win_rate": 0.6121,
-   "winrate_edge": 0.1022,
-   "avg_entry": 0.5099,
-   "resolved_markets": 116,
-   "by_sport": {
-    "MLB": {
-     "markets": 116,
-     "wins": 71,
-     "pnl": 1059008.85,
-     "win_rate": 0.6121
-    }
-   },
-   "sports_share": 1.0,
-   "style": "human",
-   "trades_per_day": 5.6,
-   "quiet_hours": 11,
-   "trades_sampled": 199,
-   "avg_trade_usd": 20506.86,
-   "added_at": "2026-06-26T00:29:02.057305+00:00",
-   "last_seen_ts": 1781195503
-  },
-  {
-   "wallet": "0xf8831548531d56ad6a4331493243c447a827cd1f",
-   "pseudonym": "Inaccuratestake",
-   "pnl_1m": 3947667.34,
-   "pnl_1w": 0.08,
-   "pnl_all": 3987825.07,
-   "roi_1m": 0.2061,
-   "roi_all": 0.1429,
-   "win_rate": 0.8148,
-   "winrate_edge": 0.0725,
-   "avg_entry": 0.7423,
-   "resolved_markets": 27,
+   "wallet": "0x1e105911ebbb6f438fcca272d9e09aaef0b10cd4",
+   "pseudonym": "0x1E105911EBBB6f438FccA272d9E09aAeF0B10cD4-1764711134498",
+   "pnl_1m": 58500.06,
+   "pnl_1w": -696.49,
+   "pnl_all": 94185.94,
+   "roi_1m": 0.2768,
+   "roi_all": 0.0507,
+   "win_rate": 0.4583,
+   "winrate_edge": 0.1071,
+   "avg_entry": 0.3513,
+   "resolved_markets": 48,
    "by_sport": {
     "Tennis": {
-     "markets": 24,
-     "wins": 20,
-     "pnl": 4141450.75,
-     "win_rate": 0.8333
+     "markets": 4,
+     "wins": 1,
+     "pnl": -1493.98,
+     "win_rate": 0.25,
+     "avg_entry": 0.4149,
+     "edge": -0.1649
     },
-    "Soccer": {
-     "markets": 2,
+    "Other": {
+     "markets": 19,
+     "wins": 7,
+     "pnl": 61129.64,
+     "win_rate": 0.3684,
+     "avg_entry": 0.3301,
+     "edge": 0.0383
+    },
+    "NBA": {
+     "markets": 18,
+     "wins": 12,
+     "pnl": 43551.52,
+     "win_rate": 0.6667,
+     "avg_entry": 0.3591,
+     "edge": 0.3076
+    },
+    "MLB": {
+     "markets": 1,
+     "wins": 0,
+     "pnl": -0.02,
+     "win_rate": 0.0,
+     "avg_entry": 0.48,
+     "edge": -0.48
+    },
+    "Golf": {
+     "markets": 3,
      "wins": 2,
-     "pnl": 226467.11,
-     "win_rate": 1.0
+     "pnl": 248.82,
+     "win_rate": 0.6667,
+     "avg_entry": 0.2127,
+     "edge": 0.454
+    },
+    "Motorsport": {
+     "markets": 3,
+     "wins": 0,
+     "pnl": -66.47,
+     "win_rate": 0.0,
+     "avg_entry": 0.0873,
+     "edge": -0.0873
+    }
+   },
+   "sports_share": 0.8,
+   "style": "uncertain",
+   "trades_per_day": 24.3,
+   "quiet_hours": 6,
+   "trades_sampled": 2500,
+   "avg_trade_usd": 171.78,
+   "added_at": "2026-06-27T16:04:02.730383+00:00",
+   "last_seen_ts": 1782440677
+  },
+  {
+   "wallet": "0x47bc38f8f3349715e56c6f56b5c0b35fd9b59504",
+   "pseudonym": "clutchhit",
+   "pnl_1m": 28556.34,
+   "pnl_1w": 0.0,
+   "pnl_all": 74156.11,
+   "roi_1m": 0.1642,
+   "roi_all": 0.1309,
+   "win_rate": 0.5547,
+   "winrate_edge": 0.0583,
+   "avg_entry": 0.4963,
+   "resolved_markets": 128,
+   "by_sport": {
+    "NBA": {
+     "markets": 59,
+     "wins": 34,
+     "pnl": 57694.56,
+     "win_rate": 0.5763,
+     "avg_entry": 0.5111,
+     "edge": 0.0652
     },
     "Other": {
      "markets": 1,
-     "wins": 0,
-     "pnl": -598019.63,
-     "win_rate": 0.0
+     "wins": 1,
+     "pnl": 5209.39,
+     "win_rate": 1.0,
+     "avg_entry": 0.279,
+     "edge": 0.721
+    },
+    "MLB": {
+     "markets": 68,
+     "wins": 36,
+     "pnl": 11157.5,
+     "win_rate": 0.5294,
+     "avg_entry": 0.4733,
+     "edge": 0.0561
     }
    },
-   "sports_share": 0.922,
+   "sports_share": 0.916,
    "style": "uncertain",
-   "trades_per_day": 35.2,
-   "quiet_hours": 11,
-   "trades_sampled": 508,
-   "avg_trade_usd": 38784.84,
-   "added_at": "2026-06-26T00:29:01.078561+00:00",
-   "last_seen_ts": 1780833604
-  },
-  {
-   "wallet": "0xa82a8a824d9102e2309584da10c8622478bda759",
-   "pseudonym": "0xA82a8a824d9102e2309584dA10C8622478BdA759-1756423120583",
-   "pnl_1m": 23450.87,
-   "pnl_1w": -12057.04,
-   "pnl_all": 64990.0,
-   "roi_1m": 0.0472,
-   "roi_all": 0.0352,
-   "win_rate": 0.565,
-   "winrate_edge": 0.0676,
-   "avg_entry": 0.4974,
-   "resolved_markets": 200,
-   "by_sport": {
-    "Tennis": {
-     "markets": 200,
-     "wins": 113,
-     "pnl": 42487.74,
-     "win_rate": 0.565
-    }
-   },
-   "sports_share": 0.992,
-   "style": "human",
-   "trades_per_day": 1.1,
-   "quiet_hours": 7,
-   "trades_sampled": 386,
-   "avg_trade_usd": 1262.44,
-   "added_at": "2026-06-26T00:30:57.651371+00:00",
-   "last_seen_ts": 1782377210
+   "trades_per_day": 9.9,
+   "quiet_hours": 19,
+   "trades_sampled": 1673,
+   "avg_trade_usd": 167.96,
+   "added_at": "2026-06-27T16:07:53.261672+00:00",
+   "last_seen_ts": 1781147856
   },
   {
    "wallet": "0x8a3ab8120807bd64a3de48695110e390fa2ceb9a",
    "pseudonym": "0x8a3aB8120807bD64a3De48695110e390fa2ceB9a-1771005965025",
-   "pnl_1m": 53556.42,
-   "pnl_1w": 10145.14,
-   "pnl_all": 700738.71,
-   "roi_1m": 0.0966,
-   "roi_all": 0.0962,
-   "win_rate": 0.56,
-   "winrate_edge": 0.047,
-   "avg_entry": 0.513,
+   "pnl_1m": 53406.42,
+   "pnl_1w": 9995.14,
+   "pnl_all": 700588.71,
+   "roi_1m": 0.0946,
+   "roi_all": 0.096,
+   "win_rate": 0.575,
+   "winrate_edge": 0.058,
+   "avg_entry": 0.517,
    "resolved_markets": 200,
    "by_sport": {
     "Tennis": {
-     "markets": 109,
-     "wins": 55,
-     "pnl": -7383.93,
-     "win_rate": 0.5046
+     "markets": 112,
+     "wins": 59,
+     "pnl": 9149.04,
+     "win_rate": 0.5268,
+     "avg_entry": 0.5443,
+     "edge": -0.0175
     },
     "Soccer": {
      "markets": 6,
      "wins": 4,
-     "pnl": 2322.57,
-     "win_rate": 0.6667
+     "pnl": 1085.4,
+     "win_rate": 0.6667,
+     "avg_entry": 0.5133,
+     "edge": 0.1534
     },
     "Other": {
+     "markets": 7,
+     "wins": 4,
+     "pnl": 44971.49,
+     "win_rate": 0.5714,
+     "avg_entry": 0.4465,
+     "edge": 0.1249
+    },
+    "MLB": {
      "markets": 2,
-     "wins": 1,
-     "pnl": 32600.0,
-     "win_rate": 0.5
+     "wins": 2,
+     "pnl": 18166.9,
+     "win_rate": 1.0,
+     "avg_entry": 0.4057,
+     "edge": 0.5943
     },
-    "MLB": {
-     "markets": 1,
-     "wins": 1,
-     "pnl": 1519.1,
-     "win_rate": 1.0
+    "NBA": {
+     "markets": 46,
+     "wins": 30,
+     "pnl": 379481.36,
+     "win_rate": 0.6522,
+     "avg_entry": 0.5112,
+     "edge": 0.141
     },
     "MMA": {
-     "markets": 28,
+     "markets": 27,
      "wins": 16,
-     "pnl": 152513.45,
-     "win_rate": 0.5714
-    },
-    "NBA": {
-     "markets": 54,
-     "wins": 35,
-     "pnl": 433051.59,
-     "win_rate": 0.6481
+     "pnl": 159715.21,
+     "win_rate": 0.5926,
+     "avg_entry": 0.5226,
+     "edge": 0.07
     }
    },
-   "sports_share": 0.974,
+   "sports_share": 0.722,
    "style": "uncertain",
-   "trades_per_day": 4.3,
-   "quiet_hours": 4,
-   "trades_sampled": 500,
-   "avg_trade_usd": 6299.3,
-   "added_at": "2026-06-26T00:36:15.327276+00:00",
-   "last_seen_ts": 1782394454
-  },
-  {
-   "wallet": "0xa71093cafc0c099b4ccab24c3cb8018d817923c4",
-   "pseudonym": "Talvez10",
-   "pnl_1m": 383083.39,
-   "pnl_1w": 372037.78,
-   "pnl_all": 1017306.17,
-   "roi_1m": 0.0603,
-   "roi_all": 0.0174,
-   "win_rate": 0.55,
-   "winrate_edge": 0.0464,
-   "avg_entry": 0.5036,
-   "resolved_markets": 200,
-   "by_sport": {
-    "MLB": {
-     "markets": 162,
-     "wins": 94,
-     "pnl": -113195.66,
-     "win_rate": 0.5802
-    },
-    "MMA": {
-     "markets": 18,
-     "wins": 5,
-     "pnl": -15591.2,
-     "win_rate": 0.2778
-    },
-    "NBA": {
-     "markets": 11,
-     "wins": 6,
-     "pnl": -39004.48,
-     "win_rate": 0.5455
-    },
-    "Tennis": {
-     "markets": 1,
-     "wins": 1,
-     "pnl": 49898.98,
-     "win_rate": 1.0
-    },
-    "NHL": {
-     "markets": 4,
-     "wins": 2,
-     "pnl": -41157.0,
-     "win_rate": 0.5
-    },
-    "Other": {
-     "markets": 3,
-     "wins": 2,
-     "pnl": -6322.25,
-     "win_rate": 0.6667
-    },
-    "Soccer": {
-     "markets": 1,
-     "wins": 0,
-     "pnl": -25171.86,
-     "win_rate": 0.0
-    }
-   },
-   "sports_share": 0.968,
-   "style": "human",
-   "trades_per_day": 6.6,
-   "quiet_hours": 9,
-   "trades_sampled": 500,
-   "avg_trade_usd": 11836.22,
-   "added_at": "2026-06-26T00:29:23.210766+00:00",
-   "last_seen_ts": 1782417496
-  },
-  {
-   "wallet": "0x6157d529ae129fe08f22a27ed42e741d2eaa9fb4",
-   "pseudonym": "DaBossHogg",
-   "pnl_1m": 97739.64,
-   "pnl_1w": 31416.75,
-   "pnl_all": 197129.21,
-   "roi_1m": 0.0626,
-   "roi_all": 0.0639,
-   "win_rate": 0.565,
-   "winrate_edge": 0.0393,
-   "avg_entry": 0.5257,
-   "resolved_markets": 200,
-   "by_sport": {
-    "Soccer": {
-     "markets": 72,
-     "wins": 38,
-     "pnl": 46410.45,
-     "win_rate": 0.5278
-    },
-    "Tennis": {
-     "markets": 41,
-     "wins": 25,
-     "pnl": 7458.75,
-     "win_rate": 0.6098
-    },
-    "WNBA": {
-     "markets": 4,
-     "wins": 1,
-     "pnl": -1776.56,
-     "win_rate": 0.25
-    },
-    "MLB": {
-     "markets": 40,
-     "wins": 21,
-     "pnl": 56986.87,
-     "win_rate": 0.525
-    },
-    "MMA": {
-     "markets": 6,
-     "wins": 2,
-     "pnl": -2929.87,
-     "win_rate": 0.3333
-    },
-    "NBA": {
-     "markets": 25,
-     "wins": 17,
-     "pnl": 28468.33,
-     "win_rate": 0.68
-    },
-    "NHL": {
-     "markets": 8,
-     "wins": 6,
-     "pnl": 22751.41,
-     "win_rate": 0.75
-    },
-    "Other": {
-     "markets": 4,
-     "wins": 3,
-     "pnl": 1436.31,
-     "win_rate": 0.75
-    }
-   },
-   "sports_share": 0.716,
-   "style": "human",
-   "trades_per_day": 4.7,
-   "quiet_hours": 5,
-   "trades_sampled": 500,
-   "avg_trade_usd": 3318.62,
-   "added_at": "2026-06-26T00:30:17.524506+00:00",
-   "last_seen_ts": 1782423862
-  },
-  {
-   "wallet": "0x780a7539200e74e882dde303952029bda21684f0",
-   "pseudonym": "0x780A7539200E74E882ddE303952029bDA21684F0-1779685038655",
-   "pnl_1m": 154376.32,
-   "pnl_1w": -67811.0,
-   "pnl_all": 300961.72,
-   "roi_1m": 0.0266,
-   "roi_all": 0.0428,
-   "win_rate": 0.6744,
-   "winrate_edge": 0.0086,
-   "avg_entry": 0.6658,
-   "resolved_markets": 43,
-   "by_sport": {
-    "Soccer": {
-     "markets": 13,
-     "wins": 10,
-     "pnl": 77687.37,
-     "win_rate": 0.7692
-    },
-    "Tennis": {
-     "markets": 25,
-     "wins": 16,
-     "pnl": -23893.24,
-     "win_rate": 0.64
-    },
-    "Other": {
-     "markets": 5,
-     "wins": 3,
-     "pnl": 23768.35,
-     "win_rate": 0.6
-    }
-   },
-   "sports_share": 0.631,
-   "style": "uncertain",
-   "trades_per_day": 3.7,
-   "quiet_hours": 4,
-   "trades_sampled": 130,
-   "avg_trade_usd": 23449.09,
-   "added_at": "2026-06-26T00:29:24.369798+00:00",
-   "last_seen_ts": 1782409609
+   "trades_per_day": 11.5,
+   "quiet_hours": 7,
+   "trades_sampled": 2000,
+   "avg_trade_usd": 1757.08,
+   "added_at": "2026-06-27T15:59:21.666442+00:00",
+   "last_seen_ts": 1782505507
   },
   {
    "wallet": "0xb56db5215443706244b0af76b3daaad3066ad621",
    "pseudonym": "DegenKingBetter",
-   "pnl_1m": 53664.25,
-   "pnl_1w": 49122.79,
-   "pnl_all": 101665.72,
-   "roi_1m": 0.1229,
-   "roi_all": 0.145,
-   "win_rate": 0.5541,
-   "winrate_edge": 0.0067,
-   "avg_entry": 0.5474,
-   "resolved_markets": 74,
+   "pnl_1m": 62552.76,
+   "pnl_1w": 58011.29,
+   "pnl_all": 110554.22,
+   "roi_1m": 0.0975,
+   "roi_all": 0.122,
+   "win_rate": 0.5714,
+   "winrate_edge": 0.0279,
+   "avg_entry": 0.5436,
+   "resolved_markets": 84,
    "by_sport": {
     "MLB": {
-     "markets": 47,
-     "wins": 26,
-     "pnl": 58321.43,
-     "win_rate": 0.5532
+     "markets": 53,
+     "wins": 31,
+     "pnl": 65994.51,
+     "win_rate": 0.5849,
+     "avg_entry": 0.5701,
+     "edge": 0.0148
     },
     "Soccer": {
-     "markets": 13,
-     "wins": 9,
-     "pnl": 13553.47,
-     "win_rate": 0.6923
+     "markets": 15,
+     "wins": 10,
+     "pnl": 19011.95,
+     "win_rate": 0.6667,
+     "avg_entry": 0.5413,
+     "edge": 0.1254
     },
     "MMA": {
      "markets": 3,
      "wins": 1,
      "pnl": -5258.58,
-     "win_rate": 0.3333
+     "win_rate": 0.3333,
+     "avg_entry": 0.4817,
+     "edge": -0.1484
     },
     "NBA": {
      "markets": 5,
      "wins": 3,
-     "pnl": 6495.94,
-     "win_rate": 0.6
+     "pnl": 8548.9,
+     "win_rate": 0.6,
+     "avg_entry": 0.498,
+     "edge": 0.102
+    },
+    "NHL": {
+     "markets": 3,
+     "wins": 1,
+     "pnl": 23479.84,
+     "win_rate": 0.3333,
+     "avg_entry": 0.5542,
+     "edge": -0.2209
     },
     "Other": {
      "markets": 1,
      "wins": 1,
      "pnl": 78.57,
-     "win_rate": 1.0
-    },
-    "NHL": {
-     "markets": 2,
-     "wins": 1,
-     "pnl": -1205.75,
-     "win_rate": 0.5
+     "win_rate": 1.0,
+     "avg_entry": 0.56,
+     "edge": 0.44
     },
     "Tennis": {
-     "markets": 3,
-     "wins": 0,
-     "pnl": -6945.1,
-     "win_rate": 0.0
+     "markets": 4,
+     "wins": 1,
+     "pnl": -1305.11,
+     "win_rate": 0.25,
+     "avg_entry": 0.3115,
+     "edge": -0.0615
     }
    },
-   "sports_share": 0.805,
-   "style": "human",
-   "trades_per_day": 3.7,
-   "quiet_hours": 8,
-   "trades_sampled": 113,
-   "avg_trade_usd": 3008.89,
-   "added_at": "2026-06-26T00:30:30.250110+00:00",
-   "last_seen_ts": 1782337682
+   "sports_share": 0.788,
+   "style": "uncertain",
+   "trades_per_day": 10.0,
+   "quiet_hours": 9,
+   "trades_sampled": 532,
+   "avg_trade_usd": 969.27,
+   "added_at": "2026-06-27T15:59:18.229374+00:00",
+   "last_seen_ts": 1782572870
   }
  ]
 }

@@ -876,7 +876,7 @@ def _vet_season_leaders(cfg: Config, cands: List[dict], top_n: int) -> List[dict
     + bot screen) and return the first top_n that pass, with names attached."""
     cc = cfg.copytrade
     ranked = []
-    for c in cands[:30]:
+    for c in cands[:250]:  # look well past bot-heavy top ranks (esp. MLB)
         pnl_all = _wallet_stat("profit", "all", c["wallet"])
         vol_all = _wallet_stat("volume", "all", c["wallet"])
         roi_all = pnl_all / vol_all if vol_all > 0 else 0.0
