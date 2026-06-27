@@ -46,6 +46,21 @@ def main() -> None:
     p_watch.add_argument("--interval", type=float, default=3, help="poll interval in minutes (default 3)")
     p_watch.add_argument("--test", action="store_true", help="send one sample alert to all channels and exit")
     sub.add_parser("once", help="run a single poll then exit (for GitHub Actions / cron)")
+    p_sl = sub.add_parser("sport-leaders", help="rank top traders per sport (report only, adds nothing)")
+    p_sl.add_argument("sports", nargs="+", help="sport buckets, e.g. MLB Tennis Soccer NFL NCAAF")
+    p_sl.add_argument("--min-bets", type=int, default=30, help="min resolved bets in the sport (default 30)")
+    p_sl.add_argument("--top", type=int, default=3, help="how many per sport (default 3)")
+    p_sl.add_argument("--use-cache", action="store_true", help="re-rank from the last evaluation instead of re-scanning")
+    p_fl = sub.add_parser("season-leaders", help="top traders for an out-of-season sport's 2025 season (NFL/CFB)")
+    p_fl.add_argument("sports", nargs="+", help="NFL, CFB, and/or UFC")
+    p_fl.add_argument("--min-bets", type=int, default=20, help="min games bet in the season (default 20)")
+    p_fl.add_argument("--top", type=int, default=3, help="how many per sport (default 3)")
+    p_fl.add_argument("--since", default=None, help="YYYY-MM-DD; bound an ongoing series (UFC) to recent cards")
+    p_fl.add_argument("--rank-by", choices=["pnl", "edge", "winrate"], default="pnl",
+                      help="rank metric: pnl (dollars) | edge (skill per bet) | winrate")
+    p_fl.add_argument("--use-cache", action="store_true", help="re-rank from the last evaluation, no re-scan")
+    p_fl.add_argument("--min-alltime", type=float, default=None, help="override all-time PnL floor (lower it to surface small-bankroll sharps)")
+    p_fl.add_argument("--min-avg-bet", type=float, default=0.0, help="min average bet size — cuts noise micro-bettors")
     p_track = sub.add_parser("track", help="manage manually-tracked wallets (raw activity mirror)")
     track_sub = p_track.add_subparsers(dest="track_cmd", required=True)
     pt_add = track_sub.add_parser("add", help="track a wallet (address or profile URL)")
@@ -89,6 +104,60 @@ def main() -> None:
     if args.cmd == "once":
         from polybot.alerts import run_once
         run_once(cfg)
+        return
+
+    if args.cmd == "sport-leaders":
+        from polybot.copytrade import sport_leaders
+        results, n = sport_leaders(cfg, args.sports, args.min_bets, args.top, args.use_cache)
+        print(f"\n{'#' * 64}\nSPORT LEADERS — top {args.top} by edge (≥{args.min_bets} bets, positive edge)")
+        print(f"Evaluated {n} qualifying sports traders from the leaderboards.\n{'#' * 64}")
+        for sport in args.sports:
+            lst = results.get(sport, [])
+            print(f"\n=== {sport} — top {len(lst)} ===")
+            if not lst:
+                print(f"  (no trader cleared {args.min_bets}+ bets with positive edge)")
+                continue
+            for i, e in enumerate(lst, 1):
+                r = e["sport_rec"]
+                print(f"  {i}. {e['name']}")
+                print(f"     {e['wallet']}")
+                print(f"     https://polymarket.com/profile/{e['wallet']}")
+                print(f"     {sport}: {r['win_rate']:.0%} win over {r['markets']} bets | "
+                      f"avg entry {r['avg_entry']:.2f} | edge {r['edge']:+.0%} | PnL ${r['pnl']:+,.0f}")
+                print(f"     (overall all-time ${e['pnl_all']:,.0f}, style: {e['style']})")
+        return
+
+    if args.cmd == "season-leaders":
+        from polybot.copytrade import season_sport_leaders, SEASON_SERIES
+        if args.min_alltime is not None:
+            cfg.copytrade.min_alltime_pnl = args.min_alltime
+        for raw in args.sports:
+            sport = raw.upper()
+            if sport not in SEASON_SERIES:
+                print(f"  {sport}: no season series configured (have: {', '.join(SEASON_SERIES)})")
+                continue
+            # UFC is one ongoing series — bound it to recent cards (default 12mo).
+            since = args.since
+            if sport == "UFC" and not since:
+                from datetime import datetime, timedelta, timezone
+                since = (datetime.now(timezone.utc) - timedelta(days=365)).strftime("%Y-%m-%d")
+            ranked, n_mkts, n_wallets = season_sport_leaders(
+                cfg, sport, args.min_bets, args.top, since, args.rank_by,
+                args.use_cache, args.min_avg_bet)
+            window = f"since {since}" if since else "2025 season"
+            print(f"\n=== {sport} {window} — top {len(ranked)} by {args.rank_by} "
+                  f"(from {n_mkts} game markets, {n_wallets} wallets) ===")
+            if not ranked:
+                print(f"  (no wallet cleared {args.min_bets}+ games with positive edge & PnL)")
+                continue
+            for i, e in enumerate(ranked, 1):
+                print(f"  {i}. {e['name']}")
+                print(f"     {e['wallet']}")
+                print(f"     https://polymarket.com/profile/{e['wallet']}")
+                print(f"     {sport}: {e['win_rate']:.0%} win over {e['markets']} games | "
+                      f"entry {e['avg_entry']:.2f} | edge {e['edge']:+.0%} | PnL ${e['pnl']:+,.0f}")
+                print(f"     avg bet ${e.get('avg_bet',0):,.0f} (${e.get('wagered',0):,.0f} wagered) | "
+                      f"all-time ${e['pnl_all']:,.0f}, roi {e['roi_all']:.1%}, style: {e['style']}")
         return
 
     if args.cmd == "track":
