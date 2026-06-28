@@ -58,14 +58,6 @@
    "sports_refreshed_at": "2026-06-26T15:48:53.241971+00:00"
   },
   {
-   "wallet": "0x9f2fe025f84839ca81dd8e0338892605702d2ca8",
-   "label": "Heavenly-Numismatist",
-   "added_at": "2026-06-27T20:42:47.649935+00:00",
-   "last_seen_ts": 1782592967,
-   "by_sport": {},
-   "sports_refreshed_at": ""
-  },
-  {
    "wallet": "0x8a3ab8120807bd64a3de48695110e390fa2ceb9a",
    "label": "Portly-Derivation",
    "added_at": "2026-06-27T20:42:47.931938+00:00",
