@@ -201,11 +201,16 @@ def alert_tracked(cfg: Config, a: dict) -> None:
     title = f"👁 {a.get('label')}: {side} ${a.get('usd', 0):,.0f}"
     msg = f"{a.get('title')} — {a.get('outcome')} @ {a.get('price')}"
     tag = _sport_tag(a)
+    wallet = a.get("wallet", "")
+    profile = f"https://polymarket.com/profile/{wallet}" if wallet else ""
+    links = " · ".join(filter(None, [
+        f"[View market]({url})" if url else "",
+        f"[Trader profile]({profile})" if profile else "",
+    ]))
     embed = {
         "title": f"{emoji} {title}",
         "color": GREEN if side == "BUY" else RED if side == "SELL" else BLUE,
-        "description": f"**{a.get('title')}**\n{tag}"
-                       + (f"\n[View on Polymarket]({url})" if url else ""),
+        "description": f"**{a.get('title')}**\n{tag}" + (f"\n{links}" if links else ""),
         "fields": [
             {"name": "Side", "value": side or "—", "inline": True},
             {"name": "Outcome", "value": str(a.get("outcome", "—")), "inline": True},
@@ -213,12 +218,13 @@ def alert_tracked(cfg: Config, a: dict) -> None:
             {"name": "Size", "value": f"${a.get('usd', 0):,.0f}", "inline": True},
             {"name": f"{a.get('label', '—')} at {a.get('sport', 'Other')}",
              "value": tag, "inline": False},
+            {"name": "Wallet", "value": wallet or "—", "inline": False},
         ],
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
     post_discord(cfg, embed)
-    print(f"\n{'=' * 70}\n{emoji} {title}\n{msg}\n{tag}\n{url}\n{'=' * 70}")
-    _log_alert(cfg, f"TRACK| {a.get('label')} | {side} {msg} | {tag} | {url}")
+    print(f"\n{'=' * 70}\n{emoji} {title}\n{msg}\n{tag}\n{profile}\n{url}\n{'=' * 70}")
+    _log_alert(cfg, f"TRACK| {a.get('label')} | {wallet} | {side} {msg} | {tag} | {url}")
 
 
 def _run_cycle(cfg: Config, watchlist, tracked) -> tuple:
