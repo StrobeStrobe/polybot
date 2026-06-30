@@ -46,6 +46,8 @@ def main() -> None:
     p_watch.add_argument("--interval", type=float, default=3, help="poll interval in minutes (default 3)")
     p_watch.add_argument("--test", action="store_true", help="send one sample alert to all channels and exit")
     sub.add_parser("once", help="run a single poll then exit (for GitHub Actions / cron)")
+    p_wk = sub.add_parser("weekly", help="post a per-tracked-wallet PnL scorecard (total + by sport) to Discord")
+    p_wk.add_argument("--days", type=float, default=7, help="lookback window in days (default 7)")
     p_sl = sub.add_parser("sport-leaders", help="rank top traders per sport (report only, adds nothing)")
     p_sl.add_argument("sports", nargs="+", help="sport buckets, e.g. MLB Tennis Soccer NFL NCAAF")
     p_sl.add_argument("--min-bets", type=int, default=30, help="min resolved bets in the sport (default 30)")
@@ -104,6 +106,13 @@ def main() -> None:
     if args.cmd == "once":
         from polybot.alerts import run_once
         run_once(cfg)
+        return
+
+    if args.cmd == "weekly":
+        from polybot.copytrade import weekly_wallet_pnl
+        from polybot.alerts import post_weekly_report
+        reports, window = weekly_wallet_pnl(cfg, args.days)
+        post_weekly_report(cfg, reports, window)
         return
 
     if args.cmd == "sport-leaders":

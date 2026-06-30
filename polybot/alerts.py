@@ -258,7 +258,36 @@ def _run_cycle(cfg: Config, watchlist, tracked) -> tuple:
         )
     except OSError:
         pass
+    _maybe_weekly_report(cfg)
     return n_buy, n_sell, len(tracked_alerts)
+
+
+def _maybe_weekly_report(cfg: Config) -> None:
+    """Fire the weekly PnL report once per week — Sunday at/after 8 AM Eastern.
+    Runs inside the watcher (which polls every few min), so no separate cron or
+    GitHub Action is needed. DST-correct via zoneinfo."""
+    try:
+        from zoneinfo import ZoneInfo
+        now = datetime.now(ZoneInfo("America/New_York"))
+    except Exception:  # noqa: BLE001 — no tz data: approximate with UTC
+        now = datetime.now(timezone.utc)
+    if now.weekday() != 6 or now.hour < 8:  # 6 = Sunday
+        return
+    week_key = now.strftime("%G-W%V")
+    marker = Path(cfg.alerts_log_file).parent / "last_weekly.txt"
+    try:
+        if marker.exists() and marker.read_text().strip() == week_key:
+            return  # already sent this week
+    except OSError:
+        pass
+    log.info("posting weekly PnL report (%s)", week_key)
+    try:
+        from .copytrade import weekly_wallet_pnl
+        reports, window = weekly_wallet_pnl(cfg, 7)
+        post_weekly_report(cfg, reports, window)
+        marker.write_text(week_key)
+    except Exception as e:  # noqa: BLE001 — a report failure shouldn't kill the watcher
+        log.error("weekly report failed: %s", e)
 
 
 def run_once(cfg: Config) -> None:
@@ -271,6 +300,35 @@ def run_once(cfg: Config) -> None:
         _run_cycle(cfg, watchlist, tracked)
     except Exception as e:  # noqa: BLE001 — surface but don't fail the whole job
         log.error("run-once cycle failed: %s", e, exc_info=True)
+
+
+def post_weekly_report(cfg: Config, reports: list, window: str) -> None:
+    """Post a per-wallet weekly PnL scorecard (total + by sport) to Discord."""
+    combined = sum(r["net_official"] for r in reports)
+    fields = []
+    for r in reports:
+        sports = sorted(r["by_sport"].items(), key=lambda kv: kv[1]["pnl"], reverse=True)
+        lines = [f"{s}: ${x['pnl']:+,.0f} ({x['win_rate']:.0%}/{x['markets']})" for s, x in sports]
+        pend = f"  ·  {r['pending']} open" if r["pending"] else ""
+        body = f"**net {window}: ${r['net_official']:+,.0f}**{pend}\n" + (
+            "\n".join(lines) if lines else "_no resolved bets this week_")
+        fields.append({"name": r["label"], "value": body[:1024], "inline": False})
+    embed = {
+        "title": f"📊 Tracked-wallet PnL — last {window}",
+        "description": (f"Combined net: **${combined:+,.0f}** across {len(reports)} wallets\n"
+                        f"_'net' = Polymarket's realized {window} figure; sport rows = bets "
+                        f"placed this week that resolved (a different slice — won't sum to net)._"),
+        "color": GREEN if combined >= 0 else RED,
+        "fields": fields[:25],
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+    post_discord(cfg, embed)
+    print(f"\n=== Weekly PnL ({window}) — combined ${combined:+,.0f} ===")
+    for r in reports:
+        print(f"\n{r['label']} ({r['wallet']}): net {window} ${r['net_official']:+,.0f}"
+              f"  ({r['pending']} open)")
+        for s, x in sorted(r["by_sport"].items(), key=lambda kv: kv[1]["pnl"], reverse=True):
+            print(f"   {s:8} ${x['pnl']:>+10,.0f}  ({x['win_rate']:.0%} / {x['markets']} bets)")
 
 
 def watch_loop(cfg: Config, interval_minutes: float) -> None:

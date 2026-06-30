@@ -749,6 +749,43 @@ def _season_moneyline_markets(series_id: int, since: Optional[str] = None) -> Li
     return out
 
 
+def weekly_wallet_pnl(cfg: Config, days: float = 7) -> List[dict]:
+    """For each tracked wallet: net PnL over the last `days` (Polymarket's
+    official figure) plus a per-sport breakdown of bets placed this week that
+    have resolved. Read-only."""
+    from .tracked import TrackedList
+    tracked = TrackedList(cfg.tracked_wallets_file)
+    cache = ResolutionCache(cfg.resolution_cache_file)
+    cutoff = int(time.time()) - int(days * 86400)
+    window = "7d" if abs(days - 7) < 0.5 else ("30d" if abs(days - 30) < 2 else "all")
+    reports: List[dict] = []
+    for w in tracked.wallets:
+        trades: List[dict] = []
+        off = 0
+        while off < 6000:
+            page = _recent_trades(w.wallet, 500, off)
+            if not page:
+                break
+            trades.extend(page)
+            off += len(page)
+            if int(page[-1].get("timestamp") or 0) < cutoff:
+                break
+        recent = [t for t in trades if int(t.get("timestamp") or 0) >= cutoff]
+        rec = compute_track_record(recent, cache, 100000)
+        bet_cids = {t.get("conditionId") for t in recent if t.get("conditionId")}
+        reports.append({
+            "label": w.label or w.wallet[:10], "wallet": w.wallet,
+            "net_official": round(_wallet_stat("profit", window, w.wallet), 2),
+            "resolved_pnl": round(sum(x["pnl"] for x in rec["by_sport"].values()), 2),
+            "by_sport": rec["by_sport"],
+            "resolved_markets": rec["resolved_markets"],
+            "pending": max(0, len(bet_cids) - rec["resolved_markets"]),
+        })
+    cache.save()
+    reports.sort(key=lambda r: r["net_official"], reverse=True)
+    return reports, window
+
+
 def _market_trades(cid: str, max_pages: int = 8) -> List[dict]:
     """All trades on a market, paginated."""
     trades: List[dict] = []
