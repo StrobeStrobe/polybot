@@ -709,11 +709,28 @@ def _is_game_moneyline(q: str) -> bool:
     return True
 
 
-def _season_moneyline_markets(series_id: int, since: Optional[str] = None) -> List[tuple]:
-    """All closed game moneyline markets in a series, as
+def _is_full_game_alt(q: str) -> bool:
+    """Full-game total (O/U) or spread. Excludes sub-period (innings) markets
+    and yes/no props, which all contain "inning" in MLB."""
+    ql = q.lower()
+    if "inning" in ql:
+        return False
+    if " vs" in ql and "o/u" in ql:          # "Team vs. Team: O/U 8.5"
+        return True
+    if ql.strip().startswith("spread:"):     # "Spread: Team (-1.5)"
+        return True
+    return False
+
+
+def _season_moneyline_markets(series_id: int, since: Optional[str] = None,
+                              include_alt: bool = False,
+                              min_volume: float = 0.0) -> List[tuple]:
+    """All closed game markets in a series, as
     [(conditionId, finals_prices, event_slug)]. `since` (YYYY-MM-DD) bounds an
     ongoing series (e.g. UFC) to recent events; None enumerates the whole
-    series (bounded season series like NFL/CFB)."""
+    series (bounded season series like NFL/CFB). With include_alt=True, also
+    picks up full-game totals (O/U) and spreads — but then min_volume should be
+    set to skip the many dead alt-lines each game carries."""
     out: List[tuple] = []
     off = 0
     params = {"series_id": series_id, "closed": "true", "limit": 100}
@@ -734,8 +751,16 @@ def _season_moneyline_markets(series_id: int, since: Optional[str] = None) -> Li
                 stop = True  # desc order — everything after this is older too
                 break
             for m in ev.get("markets", []):
-                if not m.get("closed") or not _is_game_moneyline(m.get("question") or ""):
+                q = m.get("question") or ""
+                ok = _is_game_moneyline(q) or (include_alt and _is_full_game_alt(q))
+                if not m.get("closed") or not ok:
                     continue
+                if min_volume:
+                    try:
+                        if float(m.get("volume") or 0) < min_volume:
+                            continue
+                    except (TypeError, ValueError):
+                        continue
                 cid = m.get("conditionId")
                 try:
                     finals = [float(x) for x in json.loads(m.get("outcomePrices") or "[]")]
@@ -749,6 +774,65 @@ def _season_moneyline_markets(series_id: int, since: Optional[str] = None) -> Li
     return out
 
 
+def _trades_since(wallet: str, since_ts: int, max_trades: int = 4000) -> List[dict]:
+    """A wallet's trades newer than since_ts, newest-first. Pages until the
+    cutoff (or the cap) — a single 100-trade page silently drops fills for
+    hyperactive position-builders whenever the watcher was down a few hours."""
+    out: List[dict] = []
+    off = 0
+    while off < max_trades:
+        page = _recent_trades(wallet, 500, off)
+        if not page:
+            break
+        out.extend(page)
+        off += len(page)
+        if int(page[-1].get("timestamp") or 0) <= since_ts:
+            break
+    return [t for t in out if int(t.get("timestamp") or 0) > since_ts]
+
+
+def _current_mid(token_id: str) -> Optional[float]:
+    """Current CLOB midpoint for a token, or None. Used to show price drift
+    between a tracked trader's entry and 'now' in alerts."""
+    if not token_id:
+        return None
+    try:
+        r = _session.get("https://clob.polymarket.com/midpoint",
+                         params={"token_id": token_id}, timeout=10)
+        if r.ok:
+            return float(r.json().get("mid"))
+    except (requests.RequestException, ValueError, TypeError):
+        pass
+    return None
+
+
+def positions_trades_gap(wallet: str, min_usd: float = 1000,
+                         lookback_days: float = 21) -> List[dict]:
+    """Data-completeness tripwire: open positions >= min_usd whose market never
+    appears in the wallet's recent trade feed. The takerOnly bug hid maker
+    fills exactly this way (visible in /positions, absent from /trades) and
+    went unnoticed for months. A hit means either the trades API is dropping
+    fills again, or the position predates the lookback (e.g. a futures bet) —
+    either way, worth an eyeball rather than silence."""
+    try:
+        r = _session.get(f"{DATA_API}/positions",
+                         params={"user": wallet, "limit": 500}, timeout=30)
+        poss = r.json() if r.ok else []
+    except (requests.RequestException, ValueError):
+        return []
+    since = int(time.time() - lookback_days * 86400)
+    seen = {t.get("conditionId") for t in _trades_since(wallet, since, max_trades=4000)}
+    gaps = []
+    for p in poss:
+        usd = float(p.get("size") or 0) * float(p.get("avgPrice") or 0)
+        if usd < min_usd or p.get("conditionId") in seen or p.get("redeemable"):
+            continue
+        gaps.append({"conditionId": p.get("conditionId"),
+                     "title": p.get("title") or p.get("slug") or "?",
+                     "usd": round(usd, 2)})
+    return gaps
+
+
 def weekly_wallet_pnl(cfg: Config, days: float = 7) -> List[dict]:
     """For each tracked wallet: net PnL over the last `days` (Polymarket's
     official figure) plus a per-sport breakdown of bets placed this week that
@@ -760,22 +844,13 @@ def weekly_wallet_pnl(cfg: Config, days: float = 7) -> List[dict]:
     window = "7d" if abs(days - 7) < 0.5 else ("30d" if abs(days - 30) < 2 else "all")
     reports: List[dict] = []
     for w in tracked.wallets:
-        trades: List[dict] = []
-        off = 0
-        while off < 6000:
-            page = _recent_trades(w.wallet, 500, off)
-            if not page:
-                break
-            trades.extend(page)
-            off += len(page)
-            if int(page[-1].get("timestamp") or 0) < cutoff:
-                break
-        recent = [t for t in trades if int(t.get("timestamp") or 0) >= cutoff]
+        recent = _trades_since(w.wallet, cutoff - 1, max_trades=6000)
         rec = compute_track_record(recent, cache, 100000)
         bet_cids = {t.get("conditionId") for t in recent if t.get("conditionId")}
         reports.append({
             "label": w.label or w.wallet[:10], "wallet": w.wallet,
             "net_official": round(_wallet_stat("profit", window, w.wallet), 2),
+            "net_30d": round(_wallet_stat("profit", "30d", w.wallet), 2),
             "resolved_pnl": round(sum(x["pnl"] for x in rec["by_sport"].values()), 2),
             "by_sport": rec["by_sport"],
             "resolved_markets": rec["resolved_markets"],
@@ -786,8 +861,11 @@ def weekly_wallet_pnl(cfg: Config, days: float = 7) -> List[dict]:
     return reports, window
 
 
-def _market_trades(cid: str, max_pages: int = 8) -> List[dict]:
-    """All trades on a market, paginated."""
+def _market_trades(cid: str, max_pages: int = 60) -> List[dict]:
+    """All trades on a market, paginated. Cap is high because busy game markets
+    can carry well over 4k fills — truncating drops heavy bettors' positions and
+    made position-builders (e.g. Talvez10) vanish from the reverse-lookup. Light
+    markets still exit early once a short page is returned."""
     trades: List[dict] = []
     off = 0
     for _ in range(max_pages):
@@ -809,6 +887,33 @@ def _market_trades(cid: str, max_pages: int = 8) -> List[dict]:
     return trades
 
 
+# Heavy-bettor rescue: the market-side reconstruction loses fills on busy
+# markets it can't fully page, which garbles exactly the biggest bettors
+# (Talvez10: true MLB +$408k, reconstructed negative -> gate-cut). Wallets
+# that FAIL the gates but wagered big get a second chance on their true,
+# wallet-side record during vetting.
+HEAVY_RESCUE_WAGERED = 50_000
+HEAVY_RESCUE_MAX = 40
+
+# Season scan names -> compute_track_record's sport buckets (slug-derived).
+_SEASON_TO_BUCKET = {"UFC": "MMA", "CFB": "NCAAF"}
+
+
+def _walletside_sport_record(cfg: Config, wallet: str, sport_bucket: str,
+                             since: str) -> Optional[dict]:
+    """A wallet's TRUE record for one sport since a date, from its own complete
+    trade history — the accurate accounting the market-side scan can't give."""
+    cut = int(datetime.fromisoformat(since).replace(
+        tzinfo=timezone.utc).timestamp())
+    trades = _trades_since(wallet, cut, max_trades=20000)
+    if not trades:
+        return None
+    cache = ResolutionCache(cfg.resolution_cache_file)
+    rec = compute_track_record(trades, cache, 100000)
+    cache.save()
+    return rec["by_sport"].get(sport_bucket)
+
+
 def _sort_cands(cands: List[dict], rank_by: str, min_avg_bet: float) -> List[dict]:
     """Filter out noise micro-bettors (tiny avg bet = high edge is just variance)
     then sort by the chosen metric."""
@@ -823,23 +928,30 @@ def _sort_cands(cands: List[dict], rank_by: str, min_avg_bet: float) -> List[dic
 def season_sport_leaders(cfg: Config, sport: str, min_bets: int = 20,
                          top_n: int = 3, since: Optional[str] = None,
                          rank_by: str = "pnl", reuse_cache: bool = False,
-                         min_avg_bet: float = 0.0) -> tuple:
+                         min_avg_bet: float = 0.0, include_alt: bool = False,
+                         min_volume: float = 0.0) -> tuple:
     """Reverse-lookup top traders for a sport over a season via its game markets:
     enumerate the markets, pull every trade, reconstruct each wallet's record,
     gate (min bets + positive edge + positive PnL + min avg bet), rank by
     `rank_by` (pnl | edge | winrate), then bot-screen the leaders. min_avg_bet
     cuts noise micro-bettors whose high edge is variance on $1-$40 wagers.
-    `since` bounds an ongoing series like UFC. Cached for instant re-ranking.
+    `since` bounds an ongoing series like UFC. With include_alt=True the scan
+    also covers full-game totals & spreads (set min_volume to skip dead alt-
+    lines) — this surfaces totals/spreads specialists the moneyline-only scan
+    misses. Cached (separately per market scope) for instant re-ranking.
     Returns (ranked, n_markets, n_wallets)."""
     cc = cfg.copytrade
-    eval_path = Path(cfg.resolution_cache_file).parent / f"season_eval_{sport}.json"
+    tag = "_all" if include_alt else ""
+    eval_path = Path(cfg.resolution_cache_file).parent / f"season_eval_{sport}{tag}.json"
     if reuse_cache and eval_path.exists():
         data = json.loads(eval_path.read_text())
         cands = _sort_cands(data["cands"], rank_by, min_avg_bet)
-        ranked = _vet_season_leaders(cfg, cands, top_n)
+        ranked = _vet_season_leaders(cfg, cands, top_n, sport, since, min_bets,
+                                     data.get("heavy", []), rank_by)
         return ranked, data.get("n_markets", 0), data.get("n_wallets", 0)
     series_id = SEASON_SERIES[sport]
-    markets = _season_moneyline_markets(series_id, since=since)
+    markets = _season_moneyline_markets(series_id, since=since,
+                                        include_alt=include_alt, min_volume=min_volume)
     log.info("%s: %d resolved game markets in the season", sport, len(markets))
     finals_by_cid = {cid: finals for cid, finals, _ in markets}
 
@@ -868,6 +980,7 @@ def season_sport_leaders(cfg: Config, sport: str, min_bets: int = 20,
 
     # Per-wallet season record.
     cands = []
+    heavy_pool: List[dict] = []
     for w, mkts in per.items():
         wins = losses = 0
         entry_usd = entry_shares = pnl_total = 0.0
@@ -889,46 +1002,91 @@ def season_sport_leaders(cfg: Config, sport: str, min_bets: int = 20,
         wr = wins / n
         ae = entry_usd / entry_shares if entry_shares else 0.0
         edge = wr - ae
+        row = {"wallet": w, "markets": n, "win_rate": round(wr, 4),
+               "avg_entry": round(ae, 4), "edge": round(edge, 4),
+               "pnl": round(pnl_total, 2),
+               "wagered": round(entry_usd, 2),
+               "avg_bet": round(entry_usd / n, 2)}
         if edge <= 0 or pnl_total <= 0:
+            # Failed the gate but bet heavy — reconstruction may have garbled
+            # them (see HEAVY_RESCUE_WAGERED); vetting re-checks wallet-side.
+            if entry_usd >= HEAVY_RESCUE_WAGERED:
+                heavy_pool.append(row)
             continue
-        cands.append({"wallet": w, "markets": n, "win_rate": round(wr, 4),
-                      "avg_entry": round(ae, 4), "edge": round(edge, 4),
-                      "pnl": round(pnl_total, 2),
-                      "wagered": round(entry_usd, 2),
-                      "avg_bet": round(entry_usd / n, 2)})
+        cands.append(row)
+    heavy_pool.sort(key=lambda x: -x["wagered"])
+    heavy_pool = heavy_pool[:HEAVY_RESCUE_MAX]
     # Cache the full qualifying list so we can re-rank by any metric instantly.
-    eval_path = Path(cfg.resolution_cache_file).parent / f"season_eval_{sport}.json"
+    eval_path = Path(cfg.resolution_cache_file).parent / f"season_eval_{sport}{tag}.json"
     eval_path.write_text(json.dumps({
         "computed_at": datetime.now(timezone.utc).isoformat(),
-        "n_markets": len(markets), "n_wallets": len(per), "cands": cands}))
+        "n_markets": len(markets), "n_wallets": len(per),
+        "cands": cands, "heavy": heavy_pool}))
     cands = _sort_cands(cands, rank_by, min_avg_bet)
-    log.info("%s: %d wallets cleared gates (ranking by %s)", sport, len(cands), rank_by)
+    log.info("%s: %d wallets cleared gates, %d heavy-rescue (ranking by %s)",
+             sport, len(cands), len(heavy_pool), rank_by)
 
-    ranked = _vet_season_leaders(cfg, cands, top_n)
+    ranked = _vet_season_leaders(cfg, cands, top_n, sport, since, min_bets,
+                                 heavy_pool, rank_by)
     return ranked, len(markets), len(per)
 
 
-def _vet_season_leaders(cfg: Config, cands: List[dict], top_n: int) -> List[dict]:
-    """Vet the top candidates with our standard criteria (all-time profitability
-    + bot screen) and return the first top_n that pass, with names attached."""
+def _vet_season_leaders(cfg: Config, cands: List[dict], top_n: int,
+                        sport: Optional[str] = None, since: Optional[str] = None,
+                        min_bets: int = 0, heavy: Optional[List[dict]] = None,
+                        rank_by: str = "pnl") -> List[dict]:
+    """Vet top candidates (all-time profitability + bot screen). When `since`
+    is given, each finalist's sport record is additionally RE-VERIFIED from
+    their own complete trade history and the board is ranked on the verified
+    numbers — the market-side reconstruction garbles heavy position-builders.
+    `heavy` wallets (gate-failed but big wagers) get the same wallet-side
+    second look and join the board if their true record passes."""
     cc = cfg.copytrade
-    ranked = []
-    for c in cands[:250]:  # look well past bot-heavy top ranks (esp. MLB)
+    bucket = _SEASON_TO_BUCKET.get(sport or "", sport)
+    verify = bool(since and bucket)
+
+    def _vet_one(c: dict) -> Optional[dict]:
         pnl_all = _wallet_stat("profit", "all", c["wallet"])
         vol_all = _wallet_stat("volume", "all", c["wallet"])
         roi_all = pnl_all / vol_all if vol_all > 0 else 0.0
         if pnl_all < cc.min_alltime_pnl:
-            continue
+            return None
         sample = _recent_trades(c["wallet"], 500)
         style = classify_trading_style(sample) if sample else {"style": "uncertain"}
         if cc.exclude_bots and style["style"] == "bot":
-            continue
+            return None
         name = (sample[0].get("pseudonym") if sample else "") or c["wallet"][:10]
-        ranked.append({**c, "name": name, "pnl_all": round(pnl_all, 2),
-                       "roi_all": round(roi_all, 4), "style": style["style"]})
-        if len(ranked) >= top_n:
-            break
-    return ranked
+        entry = {**c, "name": name, "pnl_all": round(pnl_all, 2),
+                 "roi_all": round(roi_all, 4), "style": style["style"]}
+        if verify:
+            ws = _walletside_sport_record(cfg, c["wallet"], bucket, since)
+            if (not ws or ws["markets"] < min_bets
+                    or ws["pnl"] <= 0 or ws["edge"] <= 0):
+                return None  # true record too thin or doesn't hold up
+            entry.update(markets=ws["markets"], win_rate=ws["win_rate"],
+                         avg_entry=ws["avg_entry"], edge=ws["edge"],
+                         pnl=round(ws["pnl"], 2), verified=True)
+        return entry
+
+    verified: List[dict] = []
+    want = max(top_n * 2, top_n + 3)  # buffer: verified stats reshuffle ranks
+    for c in cands[:250]:  # look well past bot-heavy top ranks (esp. MLB)
+        e = _vet_one(c)
+        if e:
+            verified.append(e)
+            if len(verified) >= want:
+                break
+    if verify and heavy:
+        seen = {v["wallet"] for v in verified}
+        for c in heavy:
+            if c["wallet"] in seen:
+                continue
+            e = _vet_one(c)
+            if e:
+                e["rescued"] = True
+                verified.append(e)
+    verified = _sort_cands(verified, rank_by, 0.0)
+    return verified[:top_n]
 
 
 # ------------------------------------------------------------ watchlist ----

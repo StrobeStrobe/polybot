@@ -14,8 +14,8 @@ from pathlib import Path
 from typing import List, Optional
 
 from .config import Config
-from .copytrade import (_recent_trades, compute_track_record, ResolutionCache,
-                        sport_from_slug)
+from .copytrade import (_current_mid, _recent_trades, _trades_since,
+                        compute_track_record, ResolutionCache, sport_from_slug)
 
 log = logging.getLogger("polybot.tracked")
 
@@ -39,6 +39,11 @@ class TrackedWallet:
     last_seen_ts: int = 0      # newest trade timestamp already alerted
     by_sport: dict = field(default_factory=dict)   # sport -> {markets, wins, win_rate, pnl}
     sports_refreshed_at: str = ""                   # when by_sport was last computed
+    # Per-position alert state for fill-coalescing: "cid|side|outcome" ->
+    # {alerted_usd, pending_usd, ts (last alert), fill_ts (last fill seen)}.
+    # Position-builders place one bet as dozens of fills; without this every
+    # fill >= tracked_min_usd would fire its own Discord alert.
+    open_alerts: dict = field(default_factory=dict)
 
 
 class TrackedList:
@@ -85,15 +90,22 @@ class TrackedList:
         return True
 
 
-def refresh_tracked_sports(cfg: Config, tracked: TrackedList, force: bool = False) -> None:
+def refresh_tracked_sports(cfg: Config, tracked: TrackedList, force: bool = False,
+                           max_refresh: int = 0) -> None:
     """Compute/refresh each tracked wallet's per-sport record so alerts can be
     tagged profitable/unprofitable for the bet's sport. Self-gating: only
-    recomputes a wallet whose record is missing or older than refresh_days."""
+    recomputes a wallet whose record is missing or older than refresh_days.
+    max_refresh > 0 caps how many wallets are recomputed per call — the watcher
+    passes 1 so a stale list refreshes gradually instead of blocking alert
+    polling for minutes while all ten recompute at once."""
     cc = cfg.copytrade
     cache = ResolutionCache(cfg.resolution_cache_file)
     now = datetime.now(timezone.utc)
     changed = False
+    refreshed = 0
     for w in tracked.wallets:
+        if max_refresh and refreshed >= max_refresh:
+            break
         if not force and w.sports_refreshed_at:
             try:
                 age = (now - datetime.fromisoformat(w.sports_refreshed_at)).total_seconds()
@@ -117,6 +129,7 @@ def refresh_tracked_sports(cfg: Config, tracked: TrackedList, force: bool = Fals
             w.by_sport = rec["by_sport"]
             w.sports_refreshed_at = now.isoformat()
             changed = True
+            refreshed += 1
             log.info("computed per-sport record for %s (%d sports)",
                      w.label or w.wallet[:10], len(w.by_sport))
         except Exception as e:  # noqa: BLE001 — one wallet's failure shouldn't block the rest
@@ -126,41 +139,97 @@ def refresh_tracked_sports(cfg: Config, tracked: TrackedList, force: bool = Fals
         tracked.save()
 
 
+# Fill-coalescing knobs: re-alert an already-alerted position only when it
+# doubles, or after a quiet spell; forget positions with no fills for 2 days.
+REALERT_GROWTH = 2.0
+REALERT_QUIET_S = 6 * 3600
+PRUNE_S = 48 * 3600
+
+
 def scan_tracked(cfg: Config, tracked: TrackedList) -> List[dict]:
-    """Return alert dicts for every new trade (any market, buy or sell) above
-    the minimum size across all tracked wallets. Advances last_seen_ts."""
-    refresh_tracked_sports(cfg, tracked)  # self-gating; recomputes only when stale
+    """Return alert dicts for tracked wallets' new activity, coalescing fills:
+    one alert per position change (market+side+outcome), not per fill.
+    A position-builder splitting a $30k bet into 60 fills gets one alert at
+    $100+, then again only when the position doubles (or resumes after 6h
+    quiet) — instead of 60 pings. Sub-minimum fills accumulate and alert once
+    they collectively cross tracked_min_usd. Advances last_seen_ts."""
+    # Self-gating, and at most one recompute per cycle so a stale list never
+    # blocks alert polling for minutes while all ten wallets recompute at once.
+    refresh_tracked_sports(cfg, tracked, max_refresh=1)
     alerts: List[dict] = []
+    now = int(time.time())
     for w in tracked.wallets:
         try:
-            trades = _recent_trades(w.wallet, 100)
+            # Page until last_seen_ts: one 100-trade page loses fills for
+            # hyperactive wallets whenever the watcher was down a few hours.
+            fresh = _trades_since(w.wallet, w.last_seen_ts, max_trades=2000)
         except Exception as e:  # noqa: BLE001 — one bad wallet shouldn't stop the rest
             log.warning("tracked scan failed for %s: %s", w.label or w.wallet[:10], e)
             continue
-        if not trades:
+        if not fresh:
             continue
-        newest = max(int(t.get("timestamp") or 0) for t in trades)
-        fresh = [t for t in trades if int(t.get("timestamp") or 0) > w.last_seen_ts]
-        for t in sorted(fresh, key=lambda x: int(x.get("timestamp") or 0)):
-            usd = float(t.get("size") or 0) * float(t.get("price") or 0)
-            if usd < cfg.tracked_min_usd:
-                continue
-            sport = sport_from_slug(t.get("eventSlug", ""))
-            alerts.append({
-                "label": w.label or w.wallet[:10],
-                "wallet": w.wallet,
-                "side": t.get("side"),
-                "title": t.get("title"),
-                "outcome": t.get("outcome"),
-                "price": float(t.get("price") or 0),
-                "usd": round(usd, 2),
-                "event_slug": t.get("eventSlug"),
-                "ts": int(t.get("timestamp") or 0),
-                "sport": sport,
-                "sport_record": w.by_sport.get(sport),  # {markets, wins, win_rate, pnl} or None
+        newest = max(int(t.get("timestamp") or 0) for t in fresh)
+
+        # Coalesce this cycle's fills by position (market + side + outcome).
+        groups: dict = {}
+        for t in fresh:
+            cid = t.get("conditionId") or t.get("eventSlug") or "?"
+            key = f"{cid}|{t.get('side')}|{t.get('outcome')}"
+            g = groups.setdefault(key, {
+                "side": t.get("side"), "title": t.get("title"),
+                "outcome": t.get("outcome"), "event_slug": t.get("eventSlug"),
+                "cid": t.get("conditionId"), "asset": t.get("asset"),
+                "outcome_index": t.get("outcomeIndex"),
+                "usd": 0.0, "shares": 0.0, "fills": 0, "ts": 0,
             })
+            sh = float(t.get("size") or 0)
+            g["usd"] += sh * float(t.get("price") or 0)
+            g["shares"] += sh
+            g["fills"] += 1
+            g["ts"] = max(g["ts"], int(t.get("timestamp") or 0))
+
+        for key, g in groups.items():
+            st = w.open_alerts.get(key) or {"alerted_usd": 0.0, "pending_usd": 0.0,
+                                            "ts": 0, "fill_ts": 0}
+            st["pending_usd"] += g["usd"]
+            st["fill_ts"] = now
+            total = st["alerted_usd"] + st["pending_usd"]
+            quiet = now - int(st.get("ts") or 0) > REALERT_QUIET_S
+            fire = (st["pending_usd"] >= cfg.tracked_min_usd
+                    and (st["alerted_usd"] <= 0
+                         or total >= REALERT_GROWTH * st["alerted_usd"]
+                         or quiet))
+            if fire:
+                sport = sport_from_slug(g["event_slug"] or "")
+                alerts.append({
+                    "label": w.label or w.wallet[:10],
+                    "wallet": w.wallet,
+                    "side": g["side"],
+                    "title": g["title"],
+                    "outcome": g["outcome"],
+                    "cid": g["cid"],
+                    "outcome_index": g["outcome_index"],
+                    "price": round(g["usd"] / g["shares"], 3) if g["shares"] else 0.0,
+                    "now_price": _current_mid(g["asset"]),     # drift vs entry
+                    "usd": round(st["pending_usd"], 2),        # new since last alert
+                    "position_usd": round(total, 2),           # cumulative position
+                    "fills": g["fills"],
+                    "event_slug": g["event_slug"],
+                    "ts": g["ts"],
+                    "sport": sport,
+                    "sport_record": w.by_sport.get(sport),
+                    "sport_asof": (w.sports_refreshed_at or "")[:10],
+                })
+                st["alerted_usd"] = total
+                st["pending_usd"] = 0.0
+                st["ts"] = now
+            w.open_alerts[key] = st
+
+        # Forget positions with no fills in 2 days (games resolve well within).
+        w.open_alerts = {k: v for k, v in w.open_alerts.items()
+                         if now - int(v.get("fill_ts") or 0) < PRUNE_S}
         w.last_seen_ts = max(w.last_seen_ts, newest)
     tracked.save()
-    log.info("tracked scan: %d new trades across %d wallets",
+    log.info("tracked scan: %d position alerts across %d wallets",
              len(alerts), len(tracked.wallets))
     return alerts

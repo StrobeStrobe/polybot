@@ -5,6 +5,21 @@ desktop**. This document is the complete context: what it is, how it works, how
 to set it up, and how to verify it. It was built with another Claude on a Mac
 and moved here as a zip. Read it fully before acting.
 
+> **STATUS UPDATE (2026-07-01):** production now runs 24/7 on **Railway**
+> (`Procfile` → `python run.py watch`), so the Windows autostart below is a
+> fallback, not the primary. The auto-vetted copy scout is **disabled**
+> (`copytrade.enabled: false`) — alerts come only from the hand-picked
+> `state/tracked_wallets.json` mirror (fill-coalesced per position). Extras
+> since this doc was written: weekly PnL scorecard (Sun 8 AM ET), copy-
+> performance ledger + 🔥 consensus alerts, daily positions-vs-trades
+> self-check, `run.py selfcheck` / `weekly` commands.
+>
+> **Parked / not in use:** `polybot/scouts/`, `decision.py`, `risk.py`,
+> `portfolio.py`, `execution.py`, `runner.py`, `market_data.py` — the
+> autonomous LLM trading pipeline (`run.py cycle|loop|scan|status`). Kept for
+> the day real money goes in; needs an Anthropic API key; do not delete, do
+> not enable.
+
 ---
 
 ## TL;DR — what to do

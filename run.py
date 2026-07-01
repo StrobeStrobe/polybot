@@ -48,6 +48,7 @@ def main() -> None:
     sub.add_parser("once", help="run a single poll then exit (for GitHub Actions / cron)")
     p_wk = sub.add_parser("weekly", help="post a per-tracked-wallet PnL scorecard (total + by sport) to Discord")
     p_wk.add_argument("--days", type=float, default=7, help="lookback window in days (default 7)")
+    sub.add_parser("selfcheck", help="reconcile tracked wallets' positions vs trade feed (data-gap tripwire)")
     p_sl = sub.add_parser("sport-leaders", help="rank top traders per sport (report only, adds nothing)")
     p_sl.add_argument("sports", nargs="+", help="sport buckets, e.g. MLB Tennis Soccer NFL NCAAF")
     p_sl.add_argument("--min-bets", type=int, default=30, help="min resolved bets in the sport (default 30)")
@@ -63,6 +64,10 @@ def main() -> None:
     p_fl.add_argument("--use-cache", action="store_true", help="re-rank from the last evaluation, no re-scan")
     p_fl.add_argument("--min-alltime", type=float, default=None, help="override all-time PnL floor (lower it to surface small-bankroll sharps)")
     p_fl.add_argument("--min-avg-bet", type=float, default=0.0, help="min average bet size — cuts noise micro-bettors")
+    p_fl.add_argument("--markets", choices=["moneyline", "all"], default="moneyline",
+                      help="'moneyline' (default) or 'all' to also include full-game totals & spreads")
+    p_fl.add_argument("--min-volume", type=float, default=20000.0,
+                      help="with --markets all, skip alt-line markets below this $ volume (default 20000)")
     p_track = sub.add_parser("track", help="manage manually-tracked wallets (raw activity mirror)")
     track_sub = p_track.add_subparsers(dest="track_cmd", required=True)
     pt_add = track_sub.add_parser("add", help="track a wallet (address or profile URL)")
@@ -111,8 +116,26 @@ def main() -> None:
     if args.cmd == "weekly":
         from polybot.copytrade import weekly_wallet_pnl
         from polybot.alerts import post_weekly_report
+        from polybot import ledger
         reports, window = weekly_wallet_pnl(cfg, args.days)
-        post_weekly_report(cfg, reports, window)
+        post_weekly_report(cfg, reports, window, ledger.settle(cfg))
+        return
+
+    if args.cmd == "selfcheck":
+        from polybot.copytrade import positions_trades_gap
+        from polybot.tracked import TrackedList
+        tl = TrackedList(cfg.tracked_wallets_file)
+        clean = True
+        for w in tl.wallets:
+            gaps = positions_trades_gap(w.wallet)
+            for g in gaps:
+                clean = False
+                print(f"  ⚠️ {w.label or w.wallet[:10]}: ${g['usd']:,.0f} on "
+                      f"“{g['title']}” — in /positions but NOT in the trade feed")
+            if not gaps:
+                print(f"  ✓ {w.label or w.wallet[:10]}: positions ↔ trades consistent")
+        if clean:
+            print("\nAll tracked wallets clean — no takerOnly-style data gaps.")
         return
 
     if args.cmd == "sport-leaders":
@@ -150,17 +173,22 @@ def main() -> None:
             if sport == "UFC" and not since:
                 from datetime import datetime, timedelta, timezone
                 since = (datetime.now(timezone.utc) - timedelta(days=365)).strftime("%Y-%m-%d")
+            include_alt = args.markets == "all"
             ranked, n_mkts, n_wallets = season_sport_leaders(
                 cfg, sport, args.min_bets, args.top, since, args.rank_by,
-                args.use_cache, args.min_avg_bet)
+                args.use_cache, args.min_avg_bet, include_alt,
+                args.min_volume if include_alt else 0.0)
             window = f"since {since}" if since else "2025 season"
+            scope = "ML+totals+spreads" if include_alt else "moneyline"
             print(f"\n=== {sport} {window} — top {len(ranked)} by {args.rank_by} "
-                  f"(from {n_mkts} game markets, {n_wallets} wallets) ===")
+                  f"({scope}, from {n_mkts} game markets, {n_wallets} wallets) ===")
             if not ranked:
                 print(f"  (no wallet cleared {args.min_bets}+ games with positive edge & PnL)")
                 continue
             for i, e in enumerate(ranked, 1):
-                print(f"  {i}. {e['name']}")
+                marks = ("" + (" ✓wallet-verified" if e.get("verified") else "")
+                         + (" 🐋rescued" if e.get("rescued") else ""))
+                print(f"  {i}. {e['name']}{marks}")
                 print(f"     {e['wallet']}")
                 print(f"     https://polymarket.com/profile/{e['wallet']}")
                 print(f"     {sport}: {e['win_rate']:.0%} win over {e['markets']} games | "

@@ -181,25 +181,41 @@ def send_test_alert(cfg: Config) -> None:
 
 def _sport_tag(a: dict) -> str:
     """Human-readable profitability tag for the bet's sport, from the trader's
-    cached per-sport record."""
+    cached per-sport record (with the date it was computed, so you know how
+    fresh the ✅/❌ is)."""
     sport = a.get("sport") or "Other"
     rec = a.get("sport_record")
+    asof = f" (as of {a['sport_asof']})" if a.get("sport_asof") else ""
     if rec and rec.get("markets"):
         pnl, wr, n = rec.get("pnl", 0), rec.get("win_rate", 0), rec["markets"]
         thin = " ⚠️thin" if n < 10 else ""
         if pnl > 0:
-            return f"✅ profitable at {sport}: {wr:.0%} W, ${pnl:+,.0f} / {n} bets{thin}"
-        return f"❌ UNprofitable at {sport}: {wr:.0%} W, ${pnl:+,.0f} / {n} bets{thin}"
+            return f"✅ profitable at {sport}: {wr:.0%} W, ${pnl:+,.0f} / {n} bets{thin}{asof}"
+        return f"❌ UNprofitable at {sport}: {wr:.0%} W, ${pnl:+,.0f} / {n} bets{thin}{asof}"
     return f"❔ no track record at {sport}"
 
 
 def alert_tracked(cfg: Config, a: dict) -> None:
-    """Raw-mirror alert for a manually-tracked wallet (any market, buy/sell)."""
+    """Position-change alert for a manually-tracked wallet (fills coalesced:
+    `usd` is the new money since the last alert, `position_usd` the total)."""
     url = _market_url(a.get("event_slug", ""))
     side = a.get("side", "")
     emoji = "🟢" if side == "BUY" else "🔴" if side == "SELL" else "🔵"
-    title = f"👁 {a.get('label')}: {side} ${a.get('usd', 0):,.0f}"
+    fills = int(a.get("fills") or 1)
+    pos = float(a.get("position_usd") or a.get("usd") or 0)
+    usd = float(a.get("usd") or 0)
+    title = f"👁 {a.get('label')}: {side} ${usd:,.0f}"
+    if fills > 1:
+        title += f" ({fills} fills)"
     msg = f"{a.get('title')} — {a.get('outcome')} @ {a.get('price')}"
+    if pos > usd + 0.5:  # a re-alert on growth: show the whole position
+        msg += f" (position now ${pos:,.0f})"
+    # Price drift: is the copy still there, or has the market already moved?
+    now_p, their_p = a.get("now_price"), float(a.get("price") or 0)
+    drift = ""
+    if now_p is not None and their_p > 0:
+        drift = f"{now_p:.2f} ({now_p - their_p:+.2f} vs their entry)"
+        msg += f" | now {drift}"
     tag = _sport_tag(a)
     wallet = a.get("wallet", "")
     profile = f"https://polymarket.com/profile/{wallet}" if wallet else ""
@@ -214,8 +230,11 @@ def alert_tracked(cfg: Config, a: dict) -> None:
         "fields": [
             {"name": "Side", "value": side or "—", "inline": True},
             {"name": "Outcome", "value": str(a.get("outcome", "—")), "inline": True},
-            {"name": "Price", "value": str(a.get("price", "—")), "inline": True},
-            {"name": "Size", "value": f"${a.get('usd', 0):,.0f}", "inline": True},
+            {"name": "Avg price", "value": str(a.get("price", "—")), "inline": True},
+            {"name": "Price now", "value": drift or "—", "inline": True},
+            {"name": "New money", "value": f"${usd:,.0f}"
+             + (f" ({fills} fills)" if fills > 1 else ""), "inline": True},
+            {"name": "Position total", "value": f"${pos:,.0f}", "inline": True},
             {"name": f"{a.get('label', '—')} at {a.get('sport', 'Other')}",
              "value": tag, "inline": False},
             {"name": "Wallet", "value": wallet or "—", "inline": False},
@@ -225,6 +244,83 @@ def alert_tracked(cfg: Config, a: dict) -> None:
     post_discord(cfg, embed)
     print(f"\n{'=' * 70}\n{emoji} {title}\n{msg}\n{tag}\n{profile}\n{url}\n{'=' * 70}")
     _log_alert(cfg, f"TRACK| {a.get('label')} | {wallet} | {side} {msg} | {tag} | {url}")
+
+
+def alert_consensus(cfg: Config, c: dict) -> None:
+    """2+ tracked wallets just landed on the same market & outcome — the
+    strongest copy signal the tracker produces. Fired loud and separate."""
+    url = _market_url(c.get("event_slug", ""))
+    who = ", ".join(c.get("labels", []))
+    title = f"🔥 CONSENSUS: {len(c.get('labels', []))} tracked wallets on {c.get('outcome')}"
+    msg = f"{c.get('title')} — {who} | combined ${c.get('total_usd', 0):,.0f} @ ~{c.get('avg_price')}"
+    embed = {
+        "title": title,
+        "color": 0xF39C12,  # orange — stands out from buy/sell green/red
+        "description": f"**{c.get('title')}**\n{who}"
+                       + (f"\n[View market]({url})" if url else ""),
+        "fields": [
+            {"name": "Outcome", "value": str(c.get("outcome", "—")), "inline": True},
+            {"name": "Combined size", "value": f"${c.get('total_usd', 0):,.0f}", "inline": True},
+            {"name": "Avg entry", "value": str(c.get("avg_price", "—")), "inline": True},
+        ],
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+    post_discord(cfg, embed)
+    if cfg.desktop_notifications:
+        notify(title, msg, sound="Hero")
+    print(f"\n{'=' * 70}\n{title}\n{msg}\n{url}\n{'=' * 70}")
+    _log_alert(cfg, f"CONS | {msg} | {url}")
+
+
+def _maybe_self_check(cfg: Config, tracked) -> None:
+    """Once a day, reconcile each tracked wallet's open positions against its
+    trade feed. The takerOnly bug hid maker fills exactly this way (position
+    visible, trades silent) for months — this turns that failure mode into a
+    Discord warning instead of silent bad data. Warns once per position."""
+    day_key = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    marker = Path(cfg.alerts_log_file).parent / "last_selfcheck.txt"
+    try:
+        if marker.exists() and marker.read_text().strip() == day_key:
+            return
+    except OSError:
+        pass
+    from .copytrade import positions_trades_gap
+    warned_path = Path(cfg.alerts_log_file).parent / "selfcheck_warned.json"
+    try:
+        warned = set(json.loads(warned_path.read_text()))
+    except (OSError, ValueError):
+        warned = set()
+    log.info("running daily positions-vs-trades self-check")
+    new_gaps = []
+    for w in tracked.wallets:
+        try:
+            for gap in positions_trades_gap(w.wallet):
+                key = f"{w.wallet}|{gap['conditionId']}"
+                if key in warned:
+                    continue
+                warned.add(key)
+                new_gaps.append(f"**{w.label or w.wallet[:10]}**: "
+                                f"${gap['usd']:,.0f} on “{gap['title']}” "
+                                f"— in /positions but not in the trade feed")
+        except Exception as e:  # noqa: BLE001 — self-check must never break polling
+            log.warning("self-check failed for %s: %s", w.label or w.wallet[:10], e)
+    if new_gaps:
+        post_discord(cfg, {
+            "title": "⚠️ Data self-check: positions without matching trades",
+            "color": 0xF1C40F,
+            "description": ("These open positions never showed in the trades API "
+                            "(21-day lookback). Either the feed is dropping fills "
+                            "again (takerOnly-style) or the position is older than "
+                            "the lookback — worth an eyeball:\n\n"
+                            + "\n".join(new_gaps))[:3900],
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        })
+        _log_alert(cfg, f"CHECK| {len(new_gaps)} position/trade gaps flagged")
+    try:
+        marker.write_text(day_key)
+        warned_path.write_text(json.dumps(sorted(warned)))
+    except OSError:
+        pass
 
 
 def _run_cycle(cfg: Config, watchlist, tracked) -> tuple:
@@ -246,6 +342,15 @@ def _run_cycle(cfg: Config, watchlist, tracked) -> tuple:
     tracked_alerts = scan_tracked(cfg, tracked)
     for a in tracked_alerts:
         alert_tracked(cfg, a)
+    # Ledger + consensus: record every alert for would-be-PnL scoring, and
+    # fire a 🔥 when 2+ tracked wallets converge on the same market & outcome.
+    try:
+        from . import ledger
+        for c in ledger.record_alerts(cfg, tracked_alerts):
+            alert_consensus(cfg, c)
+    except Exception as e:  # noqa: BLE001 — bookkeeping must never break polling
+        log.error("ledger/consensus failed: %s", e)
+    _maybe_self_check(cfg, tracked)
     stamp = datetime.now().strftime("%H:%M:%S")
     print(f"[{stamp}] checked — {n_buy} buy, {n_sell} exit, {len(tracked_alerts)} tracked")
     try:
@@ -271,7 +376,9 @@ def _maybe_weekly_report(cfg: Config) -> None:
         now = datetime.now(ZoneInfo("America/New_York"))
     except Exception:  # noqa: BLE001 — no tz data: approximate with UTC
         now = datetime.now(timezone.utc)
-    if now.weekday() != 6 or now.hour < 8:  # 6 = Sunday
+    # Fire window: Sunday 8-11 AM ET only. The done-marker lives on ephemeral
+    # disk (Railway), so a redeploy later in the day would otherwise re-post.
+    if now.weekday() != 6 or not (8 <= now.hour < 12):  # 6 = Sunday
         return
     week_key = now.strftime("%G-W%V")
     marker = Path(cfg.alerts_log_file).parent / "last_weekly.txt"
@@ -283,8 +390,9 @@ def _maybe_weekly_report(cfg: Config) -> None:
     log.info("posting weekly PnL report (%s)", week_key)
     try:
         from .copytrade import weekly_wallet_pnl
+        from . import ledger
         reports, window = weekly_wallet_pnl(cfg, 7)
-        post_weekly_report(cfg, reports, window)
+        post_weekly_report(cfg, reports, window, ledger.settle(cfg))
         marker.write_text(week_key)
     except Exception as e:  # noqa: BLE001 — a report failure shouldn't kill the watcher
         log.error("weekly report failed: %s", e)
@@ -302,22 +410,35 @@ def run_once(cfg: Config) -> None:
         log.error("run-once cycle failed: %s", e, exc_info=True)
 
 
-def post_weekly_report(cfg: Config, reports: list, window: str) -> None:
-    """Post a per-wallet weekly PnL scorecard (total + by sport) to Discord."""
+def post_weekly_report(cfg: Config, reports: list, window: str,
+                       ledger_summary: dict = None) -> None:
+    """Post a per-wallet weekly PnL scorecard (total + by sport) to Discord,
+    with a would-be copy-PnL line from the alert ledger and a ⚠️ cold-streak
+    flag on wallets deeply negative over 30 days."""
     combined = sum(r["net_official"] for r in reports)
     fields = []
     for r in reports:
         sports = sorted(r["by_sport"].items(), key=lambda kv: kv[1]["pnl"], reverse=True)
         lines = [f"{s}: ${x['pnl']:+,.0f} ({x['win_rate']:.0%}/{x['markets']})" for s, x in sports]
         pend = f"  ·  {r['pending']} open" if r["pending"] else ""
-        body = f"**net {window}: ${r['net_official']:+,.0f}**{pend}\n" + (
-            "\n".join(lines) if lines else "_no resolved bets this week_")
+        cold = ""
+        if r.get("net_30d", 0) < -2000:
+            cold = f"\n⚠️ **cold streak: ${r['net_30d']:+,.0f} over 30d** — copy with care"
+        body = (f"**net {window}: ${r['net_official']:+,.0f}**{pend}{cold}\n"
+                + ("\n".join(lines) if lines else "_no resolved bets this week_"))
         fields.append({"name": r["label"], "value": body[:1024], "inline": False})
+    desc = (f"Combined net: **${combined:+,.0f}** across {len(reports)} wallets\n"
+            f"_'net' = Polymarket's realized {window} figure; sport rows = bets "
+            f"placed this week that resolved (a different slice — won't sum to net)._")
+    ls = ledger_summary
+    if ls and (ls.get("settled") or ls.get("open")):
+        desc += (f"\n\n**Copy scorecard** (${ls['stake']:.0f}/alert): "
+                 f"{ls['wins']}/{ls['settled']} won, "
+                 f"would-be **${ls['copy_pnl']:+,.0f}** this week "
+                 f"({ls['open']} alerts still open)")
     embed = {
         "title": f"📊 Tracked-wallet PnL — last {window}",
-        "description": (f"Combined net: **${combined:+,.0f}** across {len(reports)} wallets\n"
-                        f"_'net' = Polymarket's realized {window} figure; sport rows = bets "
-                        f"placed this week that resolved (a different slice — won't sum to net)._"),
+        "description": desc,
         "color": GREEN if combined >= 0 else RED,
         "fields": fields[:25],
         "timestamp": datetime.now(timezone.utc).isoformat(),
