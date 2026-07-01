@@ -120,6 +120,14 @@
    "last_seen_ts": 1782592970,
    "by_sport": {},
    "sports_refreshed_at": ""
+  },
+  {
+   "wallet": "0xa71093cafc0c099b4ccab24c3cb8018d817923c4",
+   "label": "Talvez10",
+   "added_at": "2026-07-01T15:22:35.703665+00:00",
+   "last_seen_ts": 1782919355,
+   "by_sport": {},
+   "sports_refreshed_at": ""
   }
  ]
 }
