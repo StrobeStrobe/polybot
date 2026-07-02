@@ -887,13 +887,14 @@ def _market_trades(cid: str, max_pages: int = 60) -> List[dict]:
     return trades
 
 
-# Heavy-bettor rescue: the market-side reconstruction loses fills on busy
-# markets it can't fully page, which garbles exactly the biggest bettors
-# (Talvez10: true MLB +$408k, reconstructed negative -> gate-cut). Wallets
-# that FAIL the gates but wagered big get a second chance on their true,
-# wallet-side record during vetting.
-HEAVY_RESCUE_WAGERED = 50_000
-HEAVY_RESCUE_MAX = 40
+# Heavy-bettor rescue: markets too busy to fully page are EXCLUDED from
+# reconstruction (see season_sport_leaders) so partial data can't garble
+# anyone's record — but that also thins the records of exactly the traders
+# who live in those mega markets (Talvez10: true MLB +$408k, invisible).
+# Wallets that fail the gates but wagered meaningfully get a second chance
+# on their true, wallet-side record during vetting.
+HEAVY_RESCUE_WAGERED = 10_000
+HEAVY_RESCUE_MAX = 60
 
 # Season scan names -> compute_track_record's sport buckets (slug-derived).
 _SEASON_TO_BUCKET = {"UFC": "MMA", "CFB": "NCAAF"}
@@ -957,8 +958,16 @@ def season_sport_leaders(cfg: Config, sport: str, min_bets: int = 20,
 
     # Aggregate every wallet's per-market position across the whole season.
     per: Dict[str, Dict[str, dict]] = {}
+    truncated: set = set()
     for i, (cid, _finals, _slug) in enumerate(markets):
-        for t in _market_trades(cid):
+        mkt_trades = _market_trades(cid)
+        if len(mkt_trades) >= 30_000:  # hit the page cap: data incomplete.
+            # Partial fills mis-score every wallet in the market (seen buys
+            # without the rest -> wrong PnL sign). Better no data than wrong
+            # data: drop the market; heavy-rescue re-checks the big fish.
+            truncated.add(cid)
+            continue
+        for t in mkt_trades:
             w = (t.get("proxyWallet") or "").lower()
             idx = t.get("outcomeIndex")
             if not w or idx is None:
@@ -997,7 +1006,7 @@ def season_sport_leaders(cfg: Config, sport: str, min_bets: int = 20,
             entry_shares += rec["buy_shares"]
             pnl_total += pnl
         n = wins + losses
-        if n < min_bets:
+        if n <= 0:
             continue
         wr = wins / n
         ae = entry_usd / entry_shares if entry_shares else 0.0
@@ -1007,15 +1016,20 @@ def season_sport_leaders(cfg: Config, sport: str, min_bets: int = 20,
                "pnl": round(pnl_total, 2),
                "wagered": round(entry_usd, 2),
                "avg_bet": round(entry_usd / n, 2)}
-        if edge <= 0 or pnl_total <= 0:
-            # Failed the gate but bet heavy — reconstruction may have garbled
-            # them (see HEAVY_RESCUE_WAGERED); vetting re-checks wallet-side.
+        if n < min_bets or edge <= 0 or pnl_total <= 0:
+            # Thin or failed market-side record but meaningful money — often
+            # a mega-market specialist whose markets we dropped as unpageable.
+            # Vetting re-checks these wallet-side (true record, real gates).
             if entry_usd >= HEAVY_RESCUE_WAGERED:
                 heavy_pool.append(row)
             continue
         cands.append(row)
     heavy_pool.sort(key=lambda x: -x["wagered"])
     heavy_pool = heavy_pool[:HEAVY_RESCUE_MAX]
+    if truncated:
+        log.info("%s: %d/%d markets dropped as unpageable (>30k fills) — "
+                 "records computed from clean markets only", sport,
+                 len(truncated), len(markets))
     # Cache the full qualifying list so we can re-rank by any metric instantly.
     eval_path = Path(cfg.resolution_cache_file).parent / f"season_eval_{sport}{tag}.json"
     eval_path.write_text(json.dumps({
