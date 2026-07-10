@@ -160,13 +160,14 @@ def main() -> None:
         return
 
     if args.cmd == "season-leaders":
-        from polybot.copytrade import season_sport_leaders, SEASON_SERIES
+        from polybot.copytrade import season_sport_leaders, SEASON_SERIES, SEASON_TAGS
         if args.min_alltime is not None:
             cfg.copytrade.min_alltime_pnl = args.min_alltime
         for raw in args.sports:
             sport = raw.upper()
-            if sport not in SEASON_SERIES:
-                print(f"  {sport}: no season series configured (have: {', '.join(SEASON_SERIES)})")
+            if sport not in SEASON_SERIES and sport not in SEASON_TAGS:
+                print(f"  {sport}: no season series/tag configured "
+                      f"(have: {', '.join([*SEASON_SERIES, *SEASON_TAGS])})")
                 continue
             # UFC is one ongoing series — bound it to recent cards (default 12mo).
             since = args.since

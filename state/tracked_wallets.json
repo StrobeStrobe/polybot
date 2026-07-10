@@ -55,7 +55,8 @@
      "win_rate": 0.75
     }
    },
-   "sports_refreshed_at": "2026-06-26T15:48:53.241971+00:00"
+   "sports_refreshed_at": "2026-06-26T15:48:53.241971+00:00",
+   "open_alerts": {}
   },
   {
    "wallet": "0x8a3ab8120807bd64a3de48695110e390fa2ceb9a",
@@ -63,7 +64,8 @@
    "added_at": "2026-06-27T20:42:47.931938+00:00",
    "last_seen_ts": 1782592967,
    "by_sport": {},
-   "sports_refreshed_at": ""
+   "sports_refreshed_at": "",
+   "open_alerts": {}
   },
   {
    "wallet": "0x6db568e61e5e3de7d87f831431b673f38ce2e279",
@@ -71,7 +73,8 @@
    "added_at": "2026-06-27T20:42:48.513714+00:00",
    "last_seen_ts": 1782592968,
    "by_sport": {},
-   "sports_refreshed_at": ""
+   "sports_refreshed_at": "",
+   "open_alerts": {}
   },
   {
    "wallet": "0x09af203b5af180c61d54eea118a4548a1f209728",
@@ -79,7 +82,8 @@
    "added_at": "2026-06-27T20:42:48.780956+00:00",
    "last_seen_ts": 1782592968,
    "by_sport": {},
-   "sports_refreshed_at": ""
+   "sports_refreshed_at": "",
+   "open_alerts": {}
   },
   {
    "wallet": "0xb56db5215443706244b0af76b3daaad3066ad621",
@@ -87,7 +91,8 @@
    "added_at": "2026-06-27T20:42:49.068351+00:00",
    "last_seen_ts": 1782592969,
    "by_sport": {},
-   "sports_refreshed_at": ""
+   "sports_refreshed_at": "",
+   "open_alerts": {}
   },
   {
    "wallet": "0x47bc38f8f3349715e56c6f56b5c0b35fd9b59504",
@@ -95,7 +100,8 @@
    "added_at": "2026-06-27T20:42:49.341545+00:00",
    "last_seen_ts": 1782592969,
    "by_sport": {},
-   "sports_refreshed_at": ""
+   "sports_refreshed_at": "",
+   "open_alerts": {}
   },
   {
    "wallet": "0xafbacaeeda63f31202759eff7f8126e49adfe61b",
@@ -103,7 +109,8 @@
    "added_at": "2026-06-27T20:42:49.594901+00:00",
    "last_seen_ts": 1782592969,
    "by_sport": {},
-   "sports_refreshed_at": ""
+   "sports_refreshed_at": "",
+   "open_alerts": {}
   },
   {
    "wallet": "0x01baeccca6daf3d1ed2b562007f1f9e7ef9cb77a",
@@ -111,7 +118,8 @@
    "added_at": "2026-06-27T20:42:49.890137+00:00",
    "last_seen_ts": 1782592969,
    "by_sport": {},
-   "sports_refreshed_at": ""
+   "sports_refreshed_at": "",
+   "open_alerts": {}
   },
   {
    "wallet": "0x92672c80d36dcd08172aa1e51dface0f20b70f9a",
@@ -119,7 +127,8 @@
    "added_at": "2026-06-27T20:42:50.175974+00:00",
    "last_seen_ts": 1782592970,
    "by_sport": {},
-   "sports_refreshed_at": ""
+   "sports_refreshed_at": "",
+   "open_alerts": {}
   },
   {
    "wallet": "0xa71093cafc0c099b4ccab24c3cb8018d817923c4",
@@ -127,7 +136,17 @@
    "added_at": "2026-07-01T15:22:35.703665+00:00",
    "last_seen_ts": 1782919355,
    "by_sport": {},
-   "sports_refreshed_at": ""
+   "sports_refreshed_at": "",
+   "open_alerts": {}
+  },
+  {
+   "wallet": "0x095fbca2e0eaf0c9841005135427e1e0117190b2",
+   "label": "Unkempt-Storey",
+   "added_at": "2026-07-10T02:40:03.294449+00:00",
+   "last_seen_ts": 1783651203,
+   "by_sport": {},
+   "sports_refreshed_at": "",
+   "open_alerts": {}
   }
  ]
 }

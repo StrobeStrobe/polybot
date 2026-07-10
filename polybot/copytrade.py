@@ -27,6 +27,9 @@ LB_API = "https://lb-api.polymarket.com"
 # Per-season "series" ids for out-of-season sports (current leaderboards can't
 # surface them). Found via a known game event's `series` field.
 SEASON_SERIES = {"NFL": 10187, "CFB": 10210, "UFC": 38, "MLB": 3}
+# Sports with no per-season series — enumerated via their sport TAG instead
+# (tag 864 = Tennis: covers ATP/WTA/Wimbledon/ITF match markets).
+SEASON_TAGS = {"TENNIS": 864}
 
 _session = requests.Session()
 _session.headers["User-Agent"] = "polybot/0.1"
@@ -72,7 +75,7 @@ _SPORT_BY_PREFIX = {
     "ligue1": "Soccer", "ligue": "Soccer", "mls": "Soccer", "fifwc": "Soccer",
     "fifa": "Soccer", "wcq": "Soccer", "concacaf": "Soccer", "copa": "Soccer",
     "ufc": "MMA", "boxing": "Boxing", "f1": "Motorsport", "nascar": "Motorsport",
-    "pga": "Golf",
+    "pga": "Golf", "itf": "Tennis",
 }
 
 
@@ -290,7 +293,14 @@ def classify_trading_style(trades: List[dict]) -> dict:
     gaps = [b - a for a, b in zip(logical, logical[1:])]
     fast_share = sum(1 for g in gaps if g < 60) / len(gaps) if gaps else 0.0
 
-    if per_day > 100 or (quiet_hours < 3 and n >= 200):
+    if per_day > 100:
+        # Sustained 100+/day looks bot-like, but with a long daily dark window
+        # it's a fill-heavy limit-order human building positions (Talvez10:
+        # 209 fills/day yet 12h off/day, +$893k all-time). Don't auto-exclude
+        # those — but don't call them human either: game-hours-only bots also
+        # show quiet windows, so they stay "uncertain" for the eyeball test.
+        style = "bot" if quiet_hours < 6 else "uncertain"
+    elif quiet_hours < 3 and n >= 200:
         style = "bot"
     elif per_day > 30 or quiet_hours < 5 or fast_share > 0.5:
         style = "uncertain"
@@ -722,18 +732,24 @@ def _is_full_game_alt(q: str) -> bool:
     return False
 
 
-def _season_moneyline_markets(series_id: int, since: Optional[str] = None,
+def _season_moneyline_markets(series_id: Optional[int], since: Optional[str] = None,
                               include_alt: bool = False,
-                              min_volume: float = 0.0) -> List[tuple]:
-    """All closed game markets in a series, as
-    [(conditionId, finals_prices, event_slug)]. `since` (YYYY-MM-DD) bounds an
-    ongoing series (e.g. UFC) to recent events; None enumerates the whole
-    series (bounded season series like NFL/CFB). With include_alt=True, also
-    picks up full-game totals (O/U) and spreads — but then min_volume should be
-    set to skip the many dead alt-lines each game carries."""
+                              min_volume: float = 0.0,
+                              tag_id: Optional[int] = None) -> List[tuple]:
+    """All closed game markets in a series (or, for sports without a season
+    series like Tennis, a sport tag), as [(conditionId, finals_prices,
+    event_slug)]. `since` (YYYY-MM-DD) bounds an ongoing series (e.g. UFC) to
+    recent events; None enumerates the whole series (bounded season series
+    like NFL/CFB). With include_alt=True, also picks up full-game totals (O/U)
+    and spreads — but then min_volume should be set to skip the many dead
+    alt-lines each game carries."""
     out: List[tuple] = []
     off = 0
-    params = {"series_id": series_id, "closed": "true", "limit": 100}
+    params = {"closed": "true", "limit": 100}
+    if tag_id:
+        params["tag_id"] = tag_id
+    else:
+        params["series_id"] = series_id
     if since:
         params.update({"order": "endDate", "ascending": "false"})
     while True:
@@ -897,7 +913,7 @@ HEAVY_RESCUE_WAGERED = 10_000
 HEAVY_RESCUE_MAX = 60
 
 # Season scan names -> compute_track_record's sport buckets (slug-derived).
-_SEASON_TO_BUCKET = {"UFC": "MMA", "CFB": "NCAAF"}
+_SEASON_TO_BUCKET = {"UFC": "MMA", "CFB": "NCAAF", "TENNIS": "Tennis"}
 
 
 def _walletside_sport_record(cfg: Config, wallet: str, sport_bucket: str,
@@ -950,9 +966,13 @@ def season_sport_leaders(cfg: Config, sport: str, min_bets: int = 20,
         ranked = _vet_season_leaders(cfg, cands, top_n, sport, since, min_bets,
                                      data.get("heavy", []), rank_by)
         return ranked, data.get("n_markets", 0), data.get("n_wallets", 0)
-    series_id = SEASON_SERIES[sport]
+    series_id = SEASON_SERIES.get(sport)
+    tag_id = SEASON_TAGS.get(sport)
+    if not series_id and not tag_id:
+        raise KeyError(f"{sport}: no season series or tag configured")
     markets = _season_moneyline_markets(series_id, since=since,
-                                        include_alt=include_alt, min_volume=min_volume)
+                                        include_alt=include_alt,
+                                        min_volume=min_volume, tag_id=tag_id)
     log.info("%s: %d resolved game markets in the season", sport, len(markets))
     finals_by_cid = {cid: finals for cid, finals, _ in markets}
 
