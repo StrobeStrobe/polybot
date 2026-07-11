@@ -103,7 +103,9 @@ def refresh_tracked_sports(cfg: Config, tracked: TrackedList, force: bool = Fals
     now = datetime.now(timezone.utc)
     changed = False
     refreshed = 0
-    for w in tracked.wallets:
+    # Wallets with NO record yet (fresh adds) jump the queue — a brand-new
+    # wallet alerting "❔ no track record" is worse than a 3-day-stale tag.
+    for w in sorted(tracked.wallets, key=lambda x: bool(x.by_sport)):
         if max_refresh and refreshed >= max_refresh:
             break
         if not force and w.sports_refreshed_at:
