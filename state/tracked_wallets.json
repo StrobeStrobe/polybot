@@ -70,16 +70,6 @@
    "min_usd": 0.0
   },
   {
-   "wallet": "0x6db568e61e5e3de7d87f831431b673f38ce2e279",
-   "label": "0x6db568e6",
-   "added_at": "2026-06-27T20:42:48.513714+00:00",
-   "last_seen_ts": 1782592968,
-   "by_sport": {},
-   "sports_refreshed_at": "",
-   "open_alerts": {},
-   "min_usd": 0.0
-  },
-  {
    "wallet": "0xb56db5215443706244b0af76b3daaad3066ad621",
    "label": "DegenKingBetter",
    "added_at": "2026-06-27T20:42:49.068351+00:00",
