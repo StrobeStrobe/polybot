@@ -56,7 +56,8 @@
     }
    },
    "sports_refreshed_at": "2026-06-26T15:48:53.241971+00:00",
-   "open_alerts": {}
+   "open_alerts": {},
+   "min_usd": 0.0
   },
   {
    "wallet": "0x8a3ab8120807bd64a3de48695110e390fa2ceb9a",
@@ -65,7 +66,8 @@
    "last_seen_ts": 1782592967,
    "by_sport": {},
    "sports_refreshed_at": "",
-   "open_alerts": {}
+   "open_alerts": {},
+   "min_usd": 0.0
   },
   {
    "wallet": "0x6db568e61e5e3de7d87f831431b673f38ce2e279",
@@ -74,7 +76,8 @@
    "last_seen_ts": 1782592968,
    "by_sport": {},
    "sports_refreshed_at": "",
-   "open_alerts": {}
+   "open_alerts": {},
+   "min_usd": 0.0
   },
   {
    "wallet": "0xb56db5215443706244b0af76b3daaad3066ad621",
@@ -83,7 +86,8 @@
    "last_seen_ts": 1782592969,
    "by_sport": {},
    "sports_refreshed_at": "",
-   "open_alerts": {}
+   "open_alerts": {},
+   "min_usd": 0.0
   },
   {
    "wallet": "0x47bc38f8f3349715e56c6f56b5c0b35fd9b59504",
@@ -92,7 +96,8 @@
    "last_seen_ts": 1782592969,
    "by_sport": {},
    "sports_refreshed_at": "",
-   "open_alerts": {}
+   "open_alerts": {},
+   "min_usd": 0.0
   },
   {
    "wallet": "0xafbacaeeda63f31202759eff7f8126e49adfe61b",
@@ -101,7 +106,8 @@
    "last_seen_ts": 1782592969,
    "by_sport": {},
    "sports_refreshed_at": "",
-   "open_alerts": {}
+   "open_alerts": {},
+   "min_usd": 0.0
   },
   {
    "wallet": "0x01baeccca6daf3d1ed2b562007f1f9e7ef9cb77a",
@@ -110,7 +116,8 @@
    "last_seen_ts": 1782592969,
    "by_sport": {},
    "sports_refreshed_at": "",
-   "open_alerts": {}
+   "open_alerts": {},
+   "min_usd": 0.0
   },
   {
    "wallet": "0x92672c80d36dcd08172aa1e51dface0f20b70f9a",
@@ -119,7 +126,8 @@
    "last_seen_ts": 1782592970,
    "by_sport": {},
    "sports_refreshed_at": "",
-   "open_alerts": {}
+   "open_alerts": {},
+   "min_usd": 0.0
   },
   {
    "wallet": "0xa71093cafc0c099b4ccab24c3cb8018d817923c4",
@@ -128,7 +136,8 @@
    "last_seen_ts": 1782919355,
    "by_sport": {},
    "sports_refreshed_at": "",
-   "open_alerts": {}
+   "open_alerts": {},
+   "min_usd": 1000.0
   },
   {
    "wallet": "0x095fbca2e0eaf0c9841005135427e1e0117190b2",
@@ -137,7 +146,8 @@
    "last_seen_ts": 1783651203,
    "by_sport": {},
    "sports_refreshed_at": "",
-   "open_alerts": {}
+   "open_alerts": {},
+   "min_usd": 0.0
   }
  ]
 }

@@ -70,9 +70,11 @@ def main() -> None:
                       help="with --markets all, skip alt-line markets below this $ volume (default 20000)")
     p_track = sub.add_parser("track", help="manage manually-tracked wallets (raw activity mirror)")
     track_sub = p_track.add_subparsers(dest="track_cmd", required=True)
-    pt_add = track_sub.add_parser("add", help="track a wallet (address or profile URL)")
+    pt_add = track_sub.add_parser("add", help="track a wallet (address or profile URL); re-add to update label/min-usd")
     pt_add.add_argument("wallet")
     pt_add.add_argument("--label", default="", help="friendly name shown in alerts")
+    pt_add.add_argument("--min-usd", type=float, default=0.0,
+                        help="per-wallet alert floor (default: global tracked_min_usd)")
     pt_rm = track_sub.add_parser("remove", help="stop tracking a wallet")
     pt_rm.add_argument("wallet")
     track_sub.add_parser("list", help="list tracked wallets")
@@ -205,15 +207,17 @@ def main() -> None:
             if not tl.wallets:
                 print("No tracked wallets. Add one: run.py track add <wallet> --label name")
             for w in tl.wallets:
-                print(f"  {w.label or '(no label)':20} {w.wallet}")
+                floor = f"  (min ${w.min_usd:,.0f})" if w.min_usd else ""
+                print(f"  {w.label or '(no label)':20} {w.wallet}{floor}")
             return
         wallet = normalize_wallet(args.wallet)
         if not wallet:
             print(f"Not a valid wallet address or profile URL: {args.wallet}")
             return
         if args.track_cmd == "add":
-            tl.add(wallet, args.label)
-            print(f"Now tracking {args.label or wallet}  ({wallet})")
+            w = tl.add(wallet, args.label, args.min_usd)
+            floor = f" (alerts only above ${w.min_usd:,.0f})" if w.min_usd else ""
+            print(f"Now tracking {args.label or wallet}  ({wallet}){floor}")
             print("Alerts begin on their NEXT trade. Restart the watcher to pick it up live.")
         elif args.track_cmd == "remove":
             print(f"Removed {wallet}" if tl.remove(wallet) else f"Not tracked: {wallet}")

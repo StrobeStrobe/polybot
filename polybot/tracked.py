@@ -44,6 +44,10 @@ class TrackedWallet:
     # Position-builders place one bet as dozens of fills; without this every
     # fill >= tracked_min_usd would fire its own Discord alert.
     open_alerts: dict = field(default_factory=dict)
+    # Per-wallet alert floor; 0 = use the global tracked_min_usd. Lets a
+    # high-frequency wallet (Talvez10) alert only on real bets ($1k+) while
+    # small-sharp wallets keep the $100 floor.
+    min_usd: float = 0.0
 
 
 class TrackedList:
@@ -65,16 +69,18 @@ class TrackedList:
     def find(self, wallet: str) -> Optional[TrackedWallet]:
         return next((w for w in self.wallets if w.wallet == wallet), None)
 
-    def add(self, wallet: str, label: str = "") -> TrackedWallet:
+    def add(self, wallet: str, label: str = "", min_usd: float = 0.0) -> TrackedWallet:
         existing = self.find(wallet)
         if existing:
             if label:
                 existing.label = label
+            if min_usd:
+                existing.min_usd = min_usd
             self.save()
             return existing
         # Seed last_seen_ts to now so we only alert on trades from here on,
         # not the wallet's entire backlog.
-        w = TrackedWallet(wallet=wallet, label=label,
+        w = TrackedWallet(wallet=wallet, label=label, min_usd=min_usd,
                           added_at=datetime.now(timezone.utc).isoformat(),
                           last_seen_ts=int(time.time()))
         self.wallets.append(w)
@@ -190,6 +196,7 @@ def scan_tracked(cfg: Config, tracked: TrackedList) -> List[dict]:
             g["fills"] += 1
             g["ts"] = max(g["ts"], int(t.get("timestamp") or 0))
 
+        min_usd = max(cfg.tracked_min_usd, w.min_usd or 0.0)
         for key, g in groups.items():
             st = w.open_alerts.get(key) or {"alerted_usd": 0.0, "pending_usd": 0.0,
                                             "ts": 0, "fill_ts": 0}
@@ -197,7 +204,7 @@ def scan_tracked(cfg: Config, tracked: TrackedList) -> List[dict]:
             st["fill_ts"] = now
             total = st["alerted_usd"] + st["pending_usd"]
             quiet = now - int(st.get("ts") or 0) > REALERT_QUIET_S
-            fire = (st["pending_usd"] >= cfg.tracked_min_usd
+            fire = (st["pending_usd"] >= min_usd
                     and (st["alerted_usd"] <= 0
                          or total >= REALERT_GROWTH * st["alerted_usd"]
                          or quiet))
