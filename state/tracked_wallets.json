@@ -138,6 +138,16 @@
    "sports_refreshed_at": "",
    "open_alerts": {},
    "min_usd": 0.0
+  },
+  {
+   "wallet": "0x6401f2b177063ae608457ec82773758e8ee9f240",
+   "label": "Open-Locust",
+   "added_at": "2026-07-15T01:52:01.287770+00:00",
+   "last_seen_ts": 1784080321,
+   "by_sport": {},
+   "sports_refreshed_at": "",
+   "open_alerts": {},
+   "min_usd": 500.0
   }
  ]
 }
