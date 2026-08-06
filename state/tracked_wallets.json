@@ -140,14 +140,64 @@
    "min_usd": 0.0
   },
   {
-   "wallet": "0x6401f2b177063ae608457ec82773758e8ee9f240",
-   "label": "Open-Locust",
-   "added_at": "2026-07-15T01:52:01.287770+00:00",
-   "last_seen_ts": 1784080321,
+   "wallet": "0xd38b71f3e8ed1af71983e5c309eac3dfa9b35029",
+   "label": "Careful-Gazebo",
+   "added_at": "2026-08-06T02:49:57.503751+00:00",
+   "last_seen_ts": 1785984597,
    "by_sport": {},
    "sports_refreshed_at": "",
    "open_alerts": {},
-   "min_usd": 500.0
+   "min_usd": 0.0
+  },
+  {
+   "wallet": "0x14964aefa2cd7caff7878b3820a690a03c5aa429",
+   "label": "Venerated-Ink",
+   "added_at": "2026-08-06T02:49:58.010455+00:00",
+   "last_seen_ts": 1785984598,
+   "by_sport": {},
+   "sports_refreshed_at": "",
+   "open_alerts": {},
+   "min_usd": 0.0
+  },
+  {
+   "wallet": "0x1ff26f9f8a048d4f6fb2e4283f32f6ca64d2dbbd",
+   "label": "Irritating-Vulture",
+   "added_at": "2026-08-06T02:49:58.499816+00:00",
+   "last_seen_ts": 1785984598,
+   "by_sport": {},
+   "sports_refreshed_at": "",
+   "open_alerts": {},
+   "min_usd": 0.0
+  },
+  {
+   "wallet": "0x43351dd7e8def5f29e5bd5954c8381c848a2fc2f",
+   "label": "Scornful-Ascot",
+   "added_at": "2026-08-06T02:49:58.984990+00:00",
+   "last_seen_ts": 1785984598,
+   "by_sport": {},
+   "sports_refreshed_at": "",
+   "open_alerts": {},
+   "min_usd": 0.0
+  },
+  {
+   "wallet": "0x68df8708aadb901618f11abf2471805a66a24815",
+   "label": "Bland-Crawdad",
+   "added_at": "2026-08-06T02:49:59.468632+00:00",
+   "last_seen_ts": 1785984599,
+   "by_sport": {},
+   "sports_refreshed_at": "",
+   "open_alerts": {},
+   "min_usd": 0.0
+  },
+  {
+   "wallet": "0x6a72f61820b26b1fe4d956e17b6dc2a1ea3033ee",
+   "label": "Aggravating-Grin",
+   "added_at": "2026-08-06T02:49:59.953316+00:00",
+   "last_seen_ts": 1785984599,
+   "by_sport": {},
+   "sports_refreshed_at": "",
+   "open_alerts": {},
+   "min_usd": 0.0
   }
  ]
 }
