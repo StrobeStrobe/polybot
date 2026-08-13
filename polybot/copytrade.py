@@ -807,6 +807,112 @@ def _trades_since(wallet: str, since_ts: int, max_trades: int = 4000) -> List[di
     return [t for t in out if int(t.get("timestamp") or 0) > since_ts]
 
 
+# Position-size tiers for the win-rate-by-size breakdown. A trader's edge is
+# rarely uniform across sizes: conviction bets often outperform their dabbles,
+# and some whales are only sharp when they size down. Bucketing by the TOTAL
+# wagered on a market (not per fill) matches how we alert on positions.
+SIZE_BUCKETS = [
+    (0, 1_000), (1_000, 2_500), (2_500, 5_000), (5_000, 10_000),
+    (10_000, 25_000), (25_000, 50_000), (50_000, 100_000),
+    (100_000, float("inf")),
+]
+
+
+def _bucket_label(lo: float, hi: float) -> str:
+    def fmt(v):
+        if v >= 1_000_000:
+            return f"${v/1_000_000:.0f}M"
+        return f"${v/1000:.0f}k" if v >= 1000 else f"${v:.0f}"
+    return f"{fmt(lo)}+" if hi == float("inf") else f"{fmt(lo)}-{fmt(hi)}"
+
+
+def bucket_for(usd: float) -> str:
+    """Which size tier a position falls in — used to tag alerts with the
+    trader's record at that stake."""
+    for lo, hi in SIZE_BUCKETS:
+        if lo <= usd < hi:
+            return _bucket_label(lo, hi)
+    return _bucket_label(*SIZE_BUCKETS[-1])
+
+
+def size_breakdown(trades: List[dict], cache: ResolutionCache,
+                   sport: Optional[str] = None) -> List[dict]:
+    """Win rate / edge / PnL per position-size tier, reconstructed per market.
+
+    Same accounting as compute_track_record (buys minus sells plus final
+    value, skipping positions whose entry predates the sample), but grouped
+    by how much was staked rather than by sport. `sport` filters to one
+    bucket (e.g. only their MLB bets)."""
+    per: Dict[str, dict] = {}
+    for t in trades:
+        cid = t.get("conditionId")
+        idx = t.get("outcomeIndex")
+        if not cid or idx is None:
+            continue
+        sp = sport_from_slug(t.get("eventSlug", ""))
+        if sport and sp != sport:
+            continue
+        rec = per.setdefault(cid, {"buy_usd": 0.0, "buy_shares": 0.0,
+                                   "sell_usd": 0.0, "net": {}, "sport": sp})
+        sh = float(t.get("size") or 0)
+        pr = float(t.get("price") or 0)
+        if t.get("side") == "BUY":
+            rec["buy_usd"] += sh * pr
+            rec["buy_shares"] += sh
+            rec["net"][idx] = rec["net"].get(idx, 0.0) + sh
+        elif t.get("side") == "SELL":
+            rec["sell_usd"] += sh * pr
+            rec["net"][idx] = rec["net"].get(idx, 0.0) - sh
+
+    rows = [{"lo": lo, "hi": hi, "label": _bucket_label(lo, hi), "markets": 0,
+             "wins": 0, "pnl": 0.0, "wagered": 0.0, "entry_usd": 0.0,
+             "entry_shares": 0.0} for lo, hi in SIZE_BUCKETS]
+    for cid, rec in per.items():
+        if rec["buy_shares"] <= 0 or any(v < -1e-6 for v in rec["net"].values()):
+            continue
+        finals = cache.get(cid)
+        if finals is None:
+            continue
+        fv = sum(sh * (finals[i] if i < len(finals) else 0.0)
+                 for i, sh in rec["net"].items())
+        pnl = rec["sell_usd"] + fv - rec["buy_usd"]
+        staked = rec["buy_usd"]
+        for r in rows:
+            if r["lo"] <= staked < r["hi"]:
+                r["markets"] += 1
+                r["wins"] += 1 if pnl > 0 else 0
+                r["pnl"] += pnl
+                r["wagered"] += staked
+                r["entry_usd"] += rec["buy_usd"]
+                r["entry_shares"] += rec["buy_shares"]
+                break
+    for r in rows:
+        n = r["markets"]
+        r["win_rate"] = round(r["wins"] / n, 4) if n else 0.0
+        r["avg_entry"] = round(r["entry_usd"] / r["entry_shares"], 4) if r["entry_shares"] else 0.0
+        r["edge"] = round(r["win_rate"] - r["avg_entry"], 4) if n else 0.0
+        r["roi"] = round(r["pnl"] / r["wagered"], 4) if r["wagered"] else 0.0
+        r["pnl"] = round(r["pnl"], 2)
+        del r["entry_usd"], r["entry_shares"]
+    return rows
+
+
+def wallet_size_profile(cfg: Config, wallet: str, sport: Optional[str] = None,
+                        since: Optional[str] = None) -> List[dict]:
+    """Pull a wallet's history and return its win rate by position size."""
+    cut = 0
+    if since:
+        cut = int(datetime.fromisoformat(since).replace(
+            tzinfo=timezone.utc).timestamp())
+    trades = _trades_since(wallet, cut, max_trades=20000)
+    if not trades:
+        return []
+    cache = ResolutionCache(cfg.resolution_cache_file)
+    rows = size_breakdown(trades, cache, sport)
+    cache.save()
+    return rows
+
+
 def _current_mid(token_id: str) -> Optional[float]:
     """Current CLOB midpoint for a token, or None. Used to show price drift
     between a tracked trader's entry and 'now' in alerts."""
@@ -865,6 +971,7 @@ def weekly_wallet_pnl(cfg: Config, days: float = 7) -> List[dict]:
         bet_cids = {t.get("conditionId") for t in recent if t.get("conditionId")}
         reports.append({
             "label": w.label or w.wallet[:10], "wallet": w.wallet,
+            "venue": getattr(w, "venue", "polymarket") or "polymarket",
             "net_official": round(_wallet_stat("profit", window, w.wallet), 2),
             "net_30d": round(_wallet_stat("profit", "30d", w.wallet), 2),
             "resolved_pnl": round(sum(x["pnl"] for x in rec["by_sport"].values()), 2),

@@ -72,8 +72,14 @@ def _log_alert(cfg: Config, line: str) -> None:
         f.write(f"[{stamp}] {line}\n")
 
 
-def _market_url(event_slug: str) -> str:
-    return f"https://polymarket.com/event/{event_slug}" if event_slug else ""
+def _market_url(event_slug: str, venue: str = "polymarket") -> str:
+    """Market link on the venue the bet was actually placed on — the two
+    exchanges have separate books, so a US bet must never link to a
+    global-Polymarket price."""
+    if not event_slug:
+        return ""
+    host = "polymarket.us" if venue == "polymarket-us" else "polymarket.com"
+    return f"https://{host}/event/{event_slug}"
 
 
 GREEN = 0x2ECC71
@@ -195,16 +201,36 @@ def _sport_tag(a: dict) -> str:
     return f"❔ no track record at {sport}"
 
 
+def _size_tag(a: dict) -> str:
+    """Profitability tag for the SIZE of this bet. A trader's edge often isn't
+    uniform across stakes — this says whether bets this big have made them
+    money, and over how many."""
+    bucket = a.get("size_bucket") or "?"
+    rec = a.get("size_record")
+    if rec and rec.get("markets"):
+        pnl, wr, n = rec.get("pnl", 0), rec.get("win_rate", 0), rec["markets"]
+        roi = rec.get("roi")
+        roi_s = f", {roi:+.0%} roi" if roi else ""
+        thin = " ⚠️thin" if n < 10 else ""
+        verdict = "✅ profitable" if pnl > 0 else "❌ UNprofitable"
+        return (f"{verdict} at {bucket} bets: {wr:.0%} W, ${pnl:+,.0f} "
+                f"/ {n} bets{roi_s}{thin}")
+    return f"❔ no track record at {bucket} bets"
+
+
 def alert_tracked(cfg: Config, a: dict) -> None:
     """Position-change alert for a manually-tracked wallet (fills coalesced:
     `usd` is the new money since the last alert, `position_usd` the total)."""
-    url = _market_url(a.get("event_slug", ""))
+    url = _market_url(a.get("event_slug", ""), a.get("venue") or "polymarket")
     side = a.get("side", "")
     emoji = "🟢" if side == "BUY" else "🔴" if side == "SELL" else "🔵"
     fills = int(a.get("fills") or 1)
     pos = float(a.get("position_usd") or a.get("usd") or 0)
     usd = float(a.get("usd") or 0)
-    title = f"👁 {a.get('label')}: {side} ${usd:,.0f}"
+    from .tracked import VENUES, DEFAULT_VENUE
+    vkey = a.get("venue") or DEFAULT_VENUE
+    v = VENUES.get(vkey, VENUES[DEFAULT_VENUE])
+    title = f"{v['emoji']} {a.get('label')}: {side} ${usd:,.0f}"
     if fills > 1:
         title += f" ({fills} fills)"
     msg = f"{a.get('title')} — {a.get('outcome')} @ {a.get('price')}"
@@ -217,8 +243,9 @@ def alert_tracked(cfg: Config, a: dict) -> None:
         drift = f"{now_p:.2f} ({now_p - their_p:+.2f} vs their entry)"
         msg += f" | now {drift}"
     tag = _sport_tag(a)
+    stag = _size_tag(a)
     wallet = a.get("wallet", "")
-    profile = f"https://polymarket.com/profile/{wallet}" if wallet else ""
+    profile = v["profile"].format(w=wallet) if wallet else ""
     links = " · ".join(filter(None, [
         f"[View market]({url})" if url else "",
         f"[Trader profile]({profile})" if profile else "",
@@ -226,8 +253,10 @@ def alert_tracked(cfg: Config, a: dict) -> None:
     embed = {
         "title": f"{emoji} {title}",
         "color": GREEN if side == "BUY" else RED if side == "SELL" else BLUE,
-        "description": f"**{a.get('title')}**\n{tag}" + (f"\n{links}" if links else ""),
+        "description": (f"`{v['label']}`  **{a.get('title')}**\n{tag}\n{stag}"
+                        + (f"\n{links}" if links else "")),
         "fields": [
+            {"name": "Venue", "value": f"{v['emoji']} {v['label']}", "inline": True},
             {"name": "Side", "value": side or "—", "inline": True},
             {"name": "Outcome", "value": str(a.get("outcome", "—")), "inline": True},
             {"name": "Avg price", "value": str(a.get("price", "—")), "inline": True},
@@ -237,13 +266,17 @@ def alert_tracked(cfg: Config, a: dict) -> None:
             {"name": "Position total", "value": f"${pos:,.0f}", "inline": True},
             {"name": f"{a.get('label', '—')} at {a.get('sport', 'Other')}",
              "value": tag, "inline": False},
+            {"name": f"{a.get('label', '—')} at {a.get('size_bucket', '?')} bets",
+             "value": stag, "inline": False},
             {"name": "Wallet", "value": wallet or "—", "inline": False},
         ],
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
     post_discord(cfg, embed)
-    print(f"\n{'=' * 70}\n{emoji} {title}\n{msg}\n{tag}\n{profile}\n{url}\n{'=' * 70}")
-    _log_alert(cfg, f"TRACK| {a.get('label')} | {wallet} | {side} {msg} | {tag} | {url}")
+    print(f"\n{'=' * 70}\n{emoji} [{v['label']}] {title}\n{msg}\n{tag}\n{stag}\n"
+          f"{profile}\n{url}\n{'=' * 70}")
+    _log_alert(cfg, f"TRACK| {v['label']} | {a.get('label')} | {wallet} | "
+                    f"{side} {msg} | {tag} | {stag} | {url}")
 
 
 def alert_consensus(cfg: Config, c: dict) -> None:
@@ -415,18 +448,31 @@ def post_weekly_report(cfg: Config, reports: list, window: str,
     """Post a per-wallet weekly PnL scorecard (total + by sport) to Discord,
     with a would-be copy-PnL line from the alert ledger and a ⚠️ cold-streak
     flag on wallets deeply negative over 30 days."""
+    from .tracked import VENUES, DEFAULT_VENUE
     combined = sum(r["net_official"] for r in reports)
     fields = []
-    for r in reports:
-        sports = sorted(r["by_sport"].items(), key=lambda kv: kv[1]["pnl"], reverse=True)
-        lines = [f"{s}: ${x['pnl']:+,.0f} ({x['win_rate']:.0%}/{x['markets']})" for s, x in sports]
-        pend = f"  ·  {r['pending']} open" if r["pending"] else ""
-        cold = ""
-        if r.get("net_30d", 0) < -2000:
-            cold = f"\n⚠️ **cold streak: ${r['net_30d']:+,.0f} over 30d** — copy with care"
-        body = (f"**net {window}: ${r['net_official']:+,.0f}**{pend}{cold}\n"
-                + ("\n".join(lines) if lines else "_no resolved bets this week_"))
-        fields.append({"name": r["label"], "value": body[:1024], "inline": False})
+    # Group by venue so global and Polymarket US never blur together.
+    for vkey, v in VENUES.items():
+        group = [r for r in reports if (r.get("venue") or DEFAULT_VENUE) == vkey]
+        if not group:
+            continue
+        if len(VENUES) > 1 and any(r.get("venue") != DEFAULT_VENUE for r in reports):
+            vnet = sum(r["net_official"] for r in group)
+            fields.append({"name": f"{v['emoji']} {v['label']}",
+                           "value": f"__{len(group)} wallets · net ${vnet:+,.0f}__",
+                           "inline": False})
+        for r in group:
+            sports = sorted(r["by_sport"].items(), key=lambda kv: kv[1]["pnl"], reverse=True)
+            lines = [f"{s}: ${x['pnl']:+,.0f} ({x['win_rate']:.0%}/{x['markets']})"
+                     for s, x in sports]
+            pend = f"  ·  {r['pending']} open" if r["pending"] else ""
+            cold = ""
+            if r.get("net_30d", 0) < -2000:
+                cold = f"\n⚠️ **cold streak: ${r['net_30d']:+,.0f} over 30d** — copy with care"
+            body = (f"**net {window}: ${r['net_official']:+,.0f}**{pend}{cold}\n"
+                    + ("\n".join(lines) if lines else "_no resolved bets this week_"))
+            fields.append({"name": f"{v['emoji']} {r['label']}",
+                           "value": body[:1024], "inline": False})
     desc = (f"Combined net: **${combined:+,.0f}** across {len(reports)} wallets\n"
             f"_'net' = Polymarket's realized {window} figure; sport rows = bets "
             f"placed this week that resolved (a different slice — won't sum to net)._")

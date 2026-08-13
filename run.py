@@ -49,6 +49,11 @@ def main() -> None:
     p_wk = sub.add_parser("weekly", help="post a per-tracked-wallet PnL scorecard (total + by sport) to Discord")
     p_wk.add_argument("--days", type=float, default=7, help="lookback window in days (default 7)")
     sub.add_parser("selfcheck", help="reconcile tracked wallets' positions vs trade feed (data-gap tripwire)")
+    p_sz = sub.add_parser("sizing", help="win rate / edge / PnL by position size for a wallet (or all tracked)")
+    p_sz.add_argument("wallet", nargs="?", default=None,
+                      help="wallet or profile URL; omit to run every tracked wallet")
+    p_sz.add_argument("--sport", default=None, help="limit to one sport, e.g. MLB")
+    p_sz.add_argument("--since", default=None, help="YYYY-MM-DD; default = full available history")
     p_sl = sub.add_parser("sport-leaders", help="rank top traders per sport (report only, adds nothing)")
     p_sl.add_argument("sports", nargs="+", help="sport buckets, e.g. MLB Tennis Soccer NFL NCAAF")
     p_sl.add_argument("--min-bets", type=int, default=30, help="min resolved bets in the sport (default 30)")
@@ -73,6 +78,9 @@ def main() -> None:
     pt_add = track_sub.add_parser("add", help="track a wallet (address or profile URL); re-add to update label/min-usd")
     pt_add.add_argument("wallet")
     pt_add.add_argument("--label", default="", help="friendly name shown in alerts")
+    pt_add.add_argument("--venue", choices=["polymarket", "polymarket-us"],
+                        default="polymarket",
+                        help="which exchange this account trades on (default: polymarket)")
     pt_add.add_argument("--min-usd", type=float, default=0.0,
                         help="per-wallet alert floor (default: global tracked_min_usd)")
     pt_rm = track_sub.add_parser("remove", help="stop tracking a wallet")
@@ -121,6 +129,42 @@ def main() -> None:
         from polybot import ledger
         reports, window = weekly_wallet_pnl(cfg, args.days)
         post_weekly_report(cfg, reports, window, ledger.settle(cfg))
+        return
+
+    if args.cmd == "sizing":
+        from polybot.copytrade import wallet_size_profile
+        from polybot.tracked import TrackedList, normalize_wallet
+        if args.wallet:
+            w = normalize_wallet(args.wallet)
+            if not w:
+                print(f"Not a valid wallet or profile URL: {args.wallet}")
+                return
+            targets = [(w, w[:10])]
+        else:
+            targets = [(t.wallet, t.label or t.wallet[:10])
+                       for t in TrackedList(cfg.tracked_wallets_file).wallets]
+        scope = f" [{args.sport}]" if args.sport else ""
+        span = f" since {args.since}" if args.since else ""
+        for wallet, label in targets:
+            rows = wallet_size_profile(cfg, wallet, args.sport, args.since)
+            rows = [r for r in rows if r["markets"]]
+            print(f"\n=== {label}{scope}{span} — win rate by position size ===")
+            print(f"    {wallet}")
+            if not rows:
+                print("    (no resolved positions in range)")
+                continue
+            print(f"    {'size':>14} {'record':>11} {'win%':>6} {'entry':>6} "
+                  f"{'edge':>7} {'PnL':>13} {'wagered':>13} {'roi':>7}")
+            for r in rows:
+                print(f"    {r['label']:>14} {r['wins']:>4}/{r['markets']:<6} "
+                      f"{r['win_rate']:>6.0%} {r['avg_entry']:>6.2f} "
+                      f"{r['edge']:>+7.0%} ${r['pnl']:>+12,.0f} "
+                      f"${r['wagered']:>12,.0f} {r['roi']:>+7.1%}")
+            tot_n = sum(r["markets"] for r in rows)
+            tot_w = sum(r["wins"] for r in rows)
+            tot_p = sum(r["pnl"] for r in rows)
+            print(f"    {'TOTAL':>14} {tot_w:>4}/{tot_n:<6} {tot_w/tot_n:>6.0%} "
+                  f"{'':>6} {'':>7} ${tot_p:>+12,.0f}")
         return
 
     if args.cmd == "selfcheck":
@@ -201,23 +245,36 @@ def main() -> None:
         return
 
     if args.cmd == "track":
-        from polybot.tracked import TrackedList, normalize_wallet
+        from polybot.tracked import (TrackedList, normalize_wallet, VENUES,
+                                     DEFAULT_VENUE)
         tl = TrackedList(cfg.tracked_wallets_file)
         if args.track_cmd == "list":
             if not tl.wallets:
                 print("No tracked wallets. Add one: run.py track add <wallet> --label name")
-            for w in tl.wallets:
-                floor = f"  (min ${w.min_usd:,.0f})" if w.min_usd else ""
-                print(f"  {w.label or '(no label)':20} {w.wallet}{floor}")
+            for vkey, v in VENUES.items():
+                group = [w for w in tl.wallets
+                         if (w.venue or DEFAULT_VENUE) == vkey]
+                if not group:
+                    continue
+                print(f"\n{v['emoji']} {v['label']} ({len(group)})")
+                for w in group:
+                    floor = f"  (min ${w.min_usd:,.0f})" if w.min_usd else ""
+                    print(f"  {w.label or '(no label)':20} {w.wallet}{floor}")
             return
         wallet = normalize_wallet(args.wallet)
         if not wallet:
             print(f"Not a valid wallet address or profile URL: {args.wallet}")
             return
         if args.track_cmd == "add":
-            w = tl.add(wallet, args.label, args.min_usd)
+            w = tl.add(wallet, args.label, args.min_usd, args.venue)
             floor = f" (alerts only above ${w.min_usd:,.0f})" if w.min_usd else ""
-            print(f"Now tracking {args.label or wallet}  ({wallet}){floor}")
+            vlabel = VENUES.get(w.venue, VENUES[DEFAULT_VENUE])["label"]
+            print(f"Now tracking {args.label or wallet}  ({wallet}) "
+                  f"on {vlabel}{floor}")
+            if w.venue != DEFAULT_VENUE:
+                print("NOTE: Polymarket US monitoring isn't wired up yet — this "
+                      "wallet is recorded but won't alert until the API probe "
+                      "confirms trader data is readable.")
             print("Alerts begin on their NEXT trade. Restart the watcher to pick it up live.")
         elif args.track_cmd == "remove":
             print(f"Removed {wallet}" if tl.remove(wallet) else f"Not tracked: {wallet}")

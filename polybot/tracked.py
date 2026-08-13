@@ -14,8 +14,9 @@ from pathlib import Path
 from typing import List, Optional
 
 from .config import Config
-from .copytrade import (_current_mid, _recent_trades, _trades_since,
-                        compute_track_record, ResolutionCache, sport_from_slug)
+from .copytrade import (_current_mid, _recent_trades, _trades_since, bucket_for,
+                        compute_track_record, ResolutionCache, size_breakdown,
+                        sport_from_slug)
 
 log = logging.getLogger("polybot.tracked")
 
@@ -31,13 +32,32 @@ def normalize_wallet(raw: str) -> Optional[str]:
     return s.lower() if _ADDR_RE.match(s) else None
 
 
+# Venues we can monitor. Global Polymarket is public on-chain data; Polymarket
+# US is a separate CFTC-regulated venue with its own order books and prices, so
+# alerts must never be confused between them.
+VENUES = {
+    "polymarket": {"label": "Polymarket", "emoji": "🌐",
+                   "profile": "https://polymarket.com/profile/{w}"},
+    # No public profile pages found on Polymarket US (polymarket.us/profile/<x>
+    # 404s; the docs index has no profile/username/leaderboard endpoints), so
+    # there is no link to give — alerts show the account id alone.
+    "polymarket-us": {"label": "Polymarket US", "emoji": "🇺🇸", "profile": ""},
+}
+DEFAULT_VENUE = "polymarket"
+
+
 @dataclass
 class TrackedWallet:
     wallet: str
     label: str = ""
+    venue: str = DEFAULT_VENUE   # which exchange this account trades on
     added_at: str = ""
     last_seen_ts: int = 0      # newest trade timestamp already alerted
     by_sport: dict = field(default_factory=dict)   # sport -> {markets, wins, win_rate, pnl}
+    # Size tier -> same shape. A trader's edge is rarely uniform across stake
+    # sizes (Talvez10 loses under $10k, makes $1M above it), so alerts tag the
+    # bet with their record at that size.
+    by_size: dict = field(default_factory=dict)
     sports_refreshed_at: str = ""                   # when by_sport was last computed
     # Per-position alert state for fill-coalescing: "cid|side|outcome" ->
     # {alerted_usd, pending_usd, ts (last alert), fill_ts (last fill seen)}.
@@ -69,18 +89,22 @@ class TrackedList:
     def find(self, wallet: str) -> Optional[TrackedWallet]:
         return next((w for w in self.wallets if w.wallet == wallet), None)
 
-    def add(self, wallet: str, label: str = "", min_usd: float = 0.0) -> TrackedWallet:
+    def add(self, wallet: str, label: str = "", min_usd: float = 0.0,
+            venue: str = DEFAULT_VENUE) -> TrackedWallet:
         existing = self.find(wallet)
         if existing:
             if label:
                 existing.label = label
             if min_usd:
                 existing.min_usd = min_usd
+            if venue:
+                existing.venue = venue
             self.save()
             return existing
         # Seed last_seen_ts to now so we only alert on trades from here on,
         # not the wallet's entire backlog.
         w = TrackedWallet(wallet=wallet, label=label, min_usd=min_usd,
+                          venue=venue,
                           added_at=datetime.now(timezone.utc).isoformat(),
                           last_seen_ts=int(time.time()))
         self.wallets.append(w)
@@ -135,6 +159,9 @@ def refresh_tracked_sports(cfg: Config, tracked: TrackedList, force: bool = Fals
                 offset += len(more)
                 rec = compute_track_record(trades, cache, cc.max_markets_checked, unresolved)
             w.by_sport = rec["by_sport"]
+            # Same trade sample, bucketed by stake instead of by sport.
+            w.by_size = {r["label"]: r for r in size_breakdown(trades, cache)
+                         if r["markets"]}
             w.sports_refreshed_at = now.isoformat()
             changed = True
             refreshed += 1
@@ -167,6 +194,11 @@ def scan_tracked(cfg: Config, tracked: TrackedList) -> List[dict]:
     alerts: List[dict] = []
     now = int(time.time())
     for w in tracked.wallets:
+        if (w.venue or DEFAULT_VENUE) != DEFAULT_VENUE:
+            # Non-global venues have their own feed (Polymarket US data is
+            # API-key gated and not wired up yet) — skip, don't misread them
+            # against global endpoints.
+            continue
         try:
             # Page until last_seen_ts: one 100-trade page loses fills for
             # hyperactive wallets whenever the watcher was down a few hours.
@@ -228,6 +260,11 @@ def scan_tracked(cfg: Config, tracked: TrackedList) -> List[dict]:
                     "sport": sport,
                     "sport_record": w.by_sport.get(sport),
                     "sport_asof": (w.sports_refreshed_at or "")[:10],
+                    # Their record at this stake size (bucketed on the total
+                    # position, matching how the size analysis groups bets).
+                    "size_bucket": bucket_for(total),
+                    "size_record": (w.by_size or {}).get(bucket_for(total)),
+                    "venue": w.venue or DEFAULT_VENUE,
                 })
                 st["alerted_usd"] = total
                 st["pending_usd"] = 0.0
