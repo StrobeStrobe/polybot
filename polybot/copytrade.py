@@ -27,6 +27,15 @@ LB_API = "https://lb-api.polymarket.com"
 # Per-season "series" ids for out-of-season sports (current leaderboards can't
 # surface them). Found via a known game event's `series` field.
 SEASON_SERIES = {"NFL": 10187, "CFB": 10210, "UFC": 38, "MLB": 3}
+# Football runs a fresh Gamma "series" per season, so 2026 gets its own id and
+# its own eval cache — a 2026 scan must never overwrite the 2025 record we vet
+# wallets against. UFC/MLB use one long-lived series bounded by --since.
+# Fill 2026 in once markets exist: run.py find-series NFL
+SEASON_SERIES_BY_YEAR = {
+    "NFL": {"2025": 10187},
+    "CFB": {"2025": 10210},
+}
+DEFAULT_SEASON = {"NFL": "2025", "CFB": "2025"}
 # Sports with no per-season series — enumerated via their sport TAG instead
 # (tag 864 = Tennis: covers ATP/WTA/Wimbledon/ITF match markets).
 SEASON_TAGS = {"TENNIS": 864}
@@ -1038,6 +1047,45 @@ def _walletside_sport_record(cfg: Config, wallet: str, sport_bucket: str,
     return rec["by_sport"].get(sport_bucket)
 
 
+def find_series(keyword: str, limit: int = 400) -> List[dict]:
+    """Find Gamma series ids for a sport by scanning recent match events.
+
+    Football gets a new series each season, so when the 2026 season opens the
+    id must be looked up and added to SEASON_SERIES_BY_YEAR before scanning —
+    otherwise a 2026 scan silently re-reads 2025."""
+    found: Dict[tuple, dict] = {}
+    for closed in ("false", "true"):
+        off = 0
+        while off < limit * 4:
+            try:
+                r = _session.get(f"{GAMMA_API}/events",
+                                 params={"closed": closed, "limit": 500,
+                                         "offset": off, "order": "startDate",
+                                         "ascending": "false"}, timeout=40)
+                evs = r.json() if r.ok else []
+            except (requests.RequestException, ValueError):
+                break
+            if not evs:
+                break
+            for ev in evs:
+                blob = f"{ev.get('title','')} {ev.get('slug','')}".lower()
+                if keyword.lower() not in blob:
+                    continue
+                for s in (ev.get("series") or []):
+                    key = (s.get("id"), s.get("title") or s.get("slug") or "")
+                    d = found.setdefault(key, {"id": s.get("id"),
+                                               "title": key[1], "events": 0,
+                                               "latest": ""})
+                    d["events"] += 1
+                    start = (ev.get("startDate") or "")[:10]
+                    if start > d["latest"]:
+                        d["latest"] = start
+            off += len(evs)
+            if len(evs) < 500:
+                break
+    return sorted(found.values(), key=lambda d: d["latest"], reverse=True)
+
+
 def _sort_cands(cands: List[dict], rank_by: str, min_avg_bet: float) -> List[dict]:
     """Filter out noise micro-bettors (tiny avg bet = high edge is just variance)
     then sort by the chosen metric."""
@@ -1053,7 +1101,8 @@ def season_sport_leaders(cfg: Config, sport: str, min_bets: int = 20,
                          top_n: int = 3, since: Optional[str] = None,
                          rank_by: str = "pnl", reuse_cache: bool = False,
                          min_avg_bet: float = 0.0, include_alt: bool = False,
-                         min_volume: float = 0.0) -> tuple:
+                         min_volume: float = 0.0,
+                         season: Optional[str] = None) -> tuple:
     """Reverse-lookup top traders for a sport over a season via its game markets:
     enumerate the markets, pull every trade, reconstruct each wallet's record,
     gate (min bets + positive edge + positive PnL + min avg bet), rank by
@@ -1066,14 +1115,19 @@ def season_sport_leaders(cfg: Config, sport: str, min_bets: int = 20,
     Returns (ranked, n_markets, n_wallets)."""
     cc = cfg.copytrade
     tag = "_all" if include_alt else ""
-    eval_path = Path(cfg.resolution_cache_file).parent / f"season_eval_{sport}{tag}.json"
+    # Per-season cache for football so each season's record stands alone.
+    season = season or DEFAULT_SEASON.get(sport)
+    stag = f"_{season}" if season else ""
+    eval_path = (Path(cfg.resolution_cache_file).parent
+                 / f"season_eval_{sport}{stag}{tag}.json")
     if reuse_cache and eval_path.exists():
         data = json.loads(eval_path.read_text())
         cands = _sort_cands(data["cands"], rank_by, min_avg_bet)
         ranked = _vet_season_leaders(cfg, cands, top_n, sport, since, min_bets,
                                      data.get("heavy", []), rank_by)
         return ranked, data.get("n_markets", 0), data.get("n_wallets", 0)
-    series_id = SEASON_SERIES.get(sport)
+    series_id = (SEASON_SERIES_BY_YEAR.get(sport, {}).get(season)
+                 or SEASON_SERIES.get(sport))
     tag_id = SEASON_TAGS.get(sport)
     if not series_id and not tag_id:
         raise KeyError(f"{sport}: no season series or tag configured")
@@ -1158,8 +1212,8 @@ def season_sport_leaders(cfg: Config, sport: str, min_bets: int = 20,
                  "records computed from clean markets only", sport,
                  len(truncated), len(markets))
     # Cache the full qualifying list so we can re-rank by any metric instantly.
-    eval_path = Path(cfg.resolution_cache_file).parent / f"season_eval_{sport}{tag}.json"
     eval_path.write_text(json.dumps({
+        "season": season,
         "computed_at": datetime.now(timezone.utc).isoformat(),
         "n_markets": len(markets), "n_wallets": len(per),
         "cands": cands, "heavy": heavy_pool}))

@@ -49,6 +49,8 @@ def main() -> None:
     p_wk = sub.add_parser("weekly", help="post a per-tracked-wallet PnL scorecard (total + by sport) to Discord")
     p_wk.add_argument("--days", type=float, default=7, help="lookback window in days (default 7)")
     sub.add_parser("selfcheck", help="reconcile tracked wallets' positions vs trade feed (data-gap tripwire)")
+    p_fs = sub.add_parser("find-series", help="look up Gamma series ids for a sport (needed each new football season)")
+    p_fs.add_argument("keyword", help="e.g. NFL, CFB, 'college football'")
     p_sz = sub.add_parser("sizing", help="win rate / edge / PnL by position size for a wallet (or all tracked)")
     p_sz.add_argument("wallet", nargs="?", default=None,
                       help="wallet or profile URL; omit to run every tracked wallet")
@@ -71,6 +73,9 @@ def main() -> None:
     p_fl.add_argument("--min-avg-bet", type=float, default=0.0, help="min average bet size — cuts noise micro-bettors")
     p_fl.add_argument("--markets", choices=["moneyline", "all"], default="moneyline",
                       help="'moneyline' (default) or 'all' to also include full-game totals & spreads")
+    p_fl.add_argument("--season", default=None,
+                      help="season label for football, e.g. 2025 or 2026 — keeps each "
+                           "season's cache separate (default: 2025)")
     p_fl.add_argument("--min-volume", type=float, default=20000.0,
                       help="with --markets all, skip alt-line markets below this $ volume (default 20000)")
     p_track = sub.add_parser("track", help="manage manually-tracked wallets (raw activity mirror)")
@@ -167,6 +172,19 @@ def main() -> None:
                   f"{'':>6} {'':>7} ${tot_p:>+12,.0f}")
         return
 
+    if args.cmd == "find-series":
+        from polybot.copytrade import find_series, SEASON_SERIES_BY_YEAR
+        rows = find_series(args.keyword)
+        print(f"\nseries matching '{args.keyword}' (newest first):")
+        if not rows:
+            print("  (none — the season's markets may not be listed yet)")
+        for r in rows[:15]:
+            print(f"  id={str(r['id']):>8}  latest event {r['latest'] or '?':10} "
+                  f"{r['events']:>4} events   {r['title'][:40]}")
+        print("\nAdd the new id to SEASON_SERIES_BY_YEAR in polybot/copytrade.py, e.g.")
+        print('  "NFL": {"2025": 10187, "2026": <id>}')
+        return
+
     if args.cmd == "selfcheck":
         from polybot.copytrade import positions_trades_gap
         from polybot.tracked import TrackedList
@@ -224,8 +242,14 @@ def main() -> None:
             ranked, n_mkts, n_wallets = season_sport_leaders(
                 cfg, sport, args.min_bets, args.top, since, args.rank_by,
                 args.use_cache, args.min_avg_bet, include_alt,
-                args.min_volume if include_alt else 0.0)
-            window = f"since {since}" if since else "2025 season"
+                args.min_volume if include_alt else 0.0, args.season)
+            from polybot.copytrade import DEFAULT_SEASON, SEASON_SERIES_BY_YEAR
+            seas = args.season or DEFAULT_SEASON.get(sport)
+            if seas and seas not in SEASON_SERIES_BY_YEAR.get(sport, {}):
+                print(f"  ⚠️  {sport} season {seas} has no series id configured — "
+                      f"scanned the default series instead. Run: "
+                      f"run.py find-series {sport}")
+            window = f"since {since}" if since else (f"{seas} season" if seas else "season")
             scope = "ML+totals+spreads" if include_alt else "moneyline"
             print(f"\n=== {sport} {window} — top {len(ranked)} by {args.rank_by} "
                   f"({scope}, from {n_mkts} game markets, {n_wallets} wallets) ===")
