@@ -55,3 +55,41 @@ GitHub repo → **Actions** tab → **polybot-watch** → **⋯ → Disable work
 - **Railway/Render** (~$5/mo): continuous process, reliable 3-min polling, web
   UI. ← you are here.
 - **VPS** (~$4/mo): also reliable, cheapest, but needs SSH/Linux (deploy/VPS.md).
+
+---
+
+## Persistent state (IMPORTANT — do this once)
+
+Railway containers have an **ephemeral filesystem**. Every deploy starts a
+fresh container, so anything the watcher computed at runtime is thrown away
+and reset to whatever is committed in git. That wipes:
+
+- each tracked wallet's **sport and size records** (alerts revert to ❔)
+- `last_seen_ts` (risking a re-alert of the backlog, or missed trades)
+- the **resolution cache** (~450KB — has to be refetched market by market)
+- the **copy-performance ledger**, which can never accumulate enough
+  history to tell you whether copying is actually profitable
+
+### Fix: mount a volume
+
+1. Railway project → your service → **Variables** → add:
+   ```
+   POLYBOT_STATE_DIR=/data
+   ```
+2. Service → **Settings → Volumes → Add Volume**, mount path `/data`.
+3. Redeploy.
+
+On the first boot with an empty volume, the committed `state/` files are
+copied in automatically. From then on the volume is authoritative for
+runtime state.
+
+### How the tracked wallet list stays in sync
+
+The roster (who you track, labels, per-wallet `min_usd`) always comes from
+**git** — edit it locally, push, and the change takes effect. The computed
+fields (`by_sport`, `by_size`, `last_seen_ts`, `open_alerts`) are preserved
+from the volume for any wallet that's still on the list. Add a wallet and it
+appears with no records yet; remove one and its state is dropped.
+
+Startup logs the merge, e.g.:
+`tracked wallets: 15 from git, kept computed state for 14, dropped 1 no longer tracked`

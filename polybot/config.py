@@ -6,14 +6,24 @@ overrides for secrets.
 """
 
 import json
+import logging
 import os
+import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
 from dotenv import load_dotenv
 
+log = logging.getLogger("polybot.config")
+
 ROOT = Path(__file__).resolve().parent.parent
+REPO_STATE = ROOT / "state"
+# Persistent state directory. Defaults to the repo's ./state (fine locally);
+# on Railway set POLYBOT_STATE_DIR to a mounted volume (e.g. /data) so runtime
+# state survives redeploys. seed_state_dir() below copies the committed files
+# in the first time the volume is empty.
+STATE_DIR = Path(os.environ.get("POLYBOT_STATE_DIR", "").strip() or REPO_STATE)
 load_dotenv(ROOT / ".env")
 
 GAMMA_API = "https://gamma-api.polymarket.com"
@@ -100,12 +110,16 @@ class Config:
     risk: RiskLimits = field(default_factory=RiskLimits)
     scout: ScoutConfig = field(default_factory=ScoutConfig)
     copytrade: CopytradeConfig = field(default_factory=CopytradeConfig)
-    state_file: str = str(ROOT / "state" / "portfolio.json")
-    watchlist_file: str = str(ROOT / "state" / "traders.json")
-    resolution_cache_file: str = str(ROOT / "state" / "resolutions.json")
-    tracked_wallets_file: str = str(ROOT / "state" / "tracked_wallets.json")
-    alerts_log_file: str = str(ROOT / "state" / "alerts.log")
-    log_dir: str = str(ROOT / "state" / "logs")
+    # State lives under STATE_DIR. On an ephemeral host (Railway) every deploy
+    # resets the container's disk, wiping computed sport/size records, the
+    # resolution cache and the copy-performance ledger. Point POLYBOT_STATE_DIR
+    # at a mounted volume to keep them across deploys.
+    state_file: str = str(STATE_DIR / "portfolio.json")
+    watchlist_file: str = str(STATE_DIR / "traders.json")
+    resolution_cache_file: str = str(STATE_DIR / "resolutions.json")
+    tracked_wallets_file: str = str(STATE_DIR / "tracked_wallets.json")
+    alerts_log_file: str = str(STATE_DIR / "alerts.log")
+    log_dir: str = str(STATE_DIR / "logs")
 
     # Alerting (webhook URL is secret-ish — loaded from env, never config.json)
     discord_webhook_url: Optional[str] = None
@@ -159,4 +173,54 @@ def load_config() -> Config:
 
     Path(cfg.state_file).parent.mkdir(parents=True, exist_ok=True)
     Path(cfg.log_dir).mkdir(parents=True, exist_ok=True)
+    if STATE_DIR != REPO_STATE:
+        seed_state_dir()
     return cfg
+
+
+def seed_state_dir() -> None:
+    """Reconcile a persistent volume with the files committed in the repo.
+
+    Two different kinds of state live side by side:
+      * curated in git — WHO is tracked (wallets, labels, per-wallet floors).
+        Git is the source of truth; editing the list and pushing must take
+        effect even though the volume has an older copy.
+      * computed at runtime — sport/size records, last_seen_ts, open-position
+        alert state, the resolution cache, the ledger. These must survive
+        redeploys, which is the whole point of the volume.
+
+    So: copy any missing file across verbatim, and for the tracked list take
+    the roster from git while preserving each wallet's computed fields.
+    """
+    for name in ("resolutions.json", "traders.json", "portfolio.json",
+                 "ledger.json", "tracked_wallets.json"):
+        src, dst = REPO_STATE / name, STATE_DIR / name
+        if src.exists() and not dst.exists():
+            shutil.copy2(src, dst)
+            log.info("seeded %s into %s", name, STATE_DIR)
+
+    src, dst = REPO_STATE / "tracked_wallets.json", STATE_DIR / "tracked_wallets.json"
+    if not (src.exists() and dst.exists()):
+        return
+    try:
+        repo = json.loads(src.read_text()).get("wallets", [])
+        vol = {w["wallet"]: w for w in json.loads(dst.read_text()).get("wallets", [])}
+    except (ValueError, KeyError) as e:
+        log.warning("could not merge tracked wallets (%s) — leaving volume copy", e)
+        return
+    KEEP = ("by_sport", "by_size", "sports_refreshed_at", "last_seen_ts",
+            "open_alerts")
+    merged, kept = [], 0
+    for w in repo:                      # roster comes from git
+        prev = vol.get(w["wallet"])
+        if prev:
+            for k in KEEP:              # computed fields come from the volume
+                if prev.get(k):
+                    w[k] = prev[k]
+            kept += 1
+        merged.append(w)
+    dst.write_text(json.dumps({"wallets": merged}, indent=1))
+    dropped = len(vol) - kept
+    log.info("tracked wallets: %d from git, kept computed state for %d%s",
+             len(merged), kept,
+             f", dropped {dropped} no longer tracked" if dropped > 0 else "")
