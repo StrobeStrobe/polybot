@@ -2128,6 +2128,106 @@
    "sports_refreshed_at": "2026-08-14T01:17:34.081969+00:00",
    "open_alerts": {},
    "min_usd": 0.0
+  },
+  {
+   "wallet": "0xe30e74595517de48f1fb19f4553dd3d9f1e96b87",
+   "label": "Tennis Expert",
+   "venue": "polymarket",
+   "added_at": "2026-08-22T21:22:11.364896+00:00",
+   "last_seen_ts": 1787433731,
+   "by_sport": {
+    "Tennis": {
+     "markets": 25,
+     "wins": 19,
+     "pnl": 1325386.96,
+     "win_rate": 0.76,
+     "avg_entry": 0.5522,
+     "edge": 0.2078
+    }
+   },
+   "by_size": {
+    "$0-$1k": {
+     "lo": 0,
+     "hi": 1000,
+     "label": "$0-$1k",
+     "markets": 1,
+     "wins": 0,
+     "pnl": -813.79,
+     "wagered": 813.794035792979,
+     "win_rate": 0.0,
+     "avg_entry": 0.0606,
+     "edge": -0.0606,
+     "roi": -1.0
+    },
+    "$5k-$10k": {
+     "lo": 5000,
+     "hi": 10000,
+     "label": "$5k-$10k",
+     "markets": 3,
+     "wins": 1,
+     "pnl": 18108.41,
+     "wagered": 20572.392847015344,
+     "win_rate": 0.3333,
+     "avg_entry": 0.1198,
+     "edge": 0.2135,
+     "roi": 0.8802
+    },
+    "$10k-$25k": {
+     "lo": 10000,
+     "hi": 25000,
+     "label": "$10k-$25k",
+     "markets": 4,
+     "wins": 3,
+     "pnl": 56404.87,
+     "wagered": 56957.10099159833,
+     "win_rate": 0.75,
+     "avg_entry": 0.2484,
+     "edge": 0.5016,
+     "roi": 0.9903
+    },
+    "$25k-$50k": {
+     "lo": 25000,
+     "hi": 50000,
+     "label": "$25k-$50k",
+     "markets": 6,
+     "wins": 4,
+     "pnl": -23051.71,
+     "wagered": 229476.21911424323,
+     "win_rate": 0.6667,
+     "avg_entry": 0.5293,
+     "edge": 0.1374,
+     "roi": -0.1005
+    },
+    "$50k-$100k": {
+     "lo": 50000,
+     "hi": 100000,
+     "label": "$50k-$100k",
+     "markets": 5,
+     "wins": 5,
+     "pnl": 205656.19,
+     "wagered": 375903.59996354865,
+     "win_rate": 1.0,
+     "avg_entry": 0.6448,
+     "edge": 0.3552,
+     "roi": 0.5471
+    },
+    "$100k+": {
+     "lo": 100000,
+     "hi": Infinity,
+     "label": "$100k+",
+     "markets": 6,
+     "wins": 6,
+     "pnl": 1069082.99,
+     "wagered": 1726489.2172117997,
+     "win_rate": 1.0,
+     "avg_entry": 0.5886,
+     "edge": 0.4114,
+     "roi": 0.6192
+    }
+   },
+   "sports_refreshed_at": "2026-08-22T21:22:27.373812+00:00",
+   "open_alerts": {},
+   "min_usd": 50000.0
   }
  ]
 }

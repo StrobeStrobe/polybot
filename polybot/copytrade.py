@@ -32,7 +32,7 @@ SEASON_SERIES = {"NFL": 10187, "CFB": 10210, "UFC": 38, "MLB": 3}
 # wallets against. UFC/MLB use one long-lived series bounded by --since.
 # Fill 2026 in once markets exist: run.py find-series NFL
 SEASON_SERIES_BY_YEAR = {
-    "NFL": {"2025": 10187},
+    "NFL": {"2025": 10187, "2026": 12185},   # 12185 = 2026 season incl. preseason
     "CFB": {"2025": 10210},
 }
 DEFAULT_SEASON = {"NFL": "2025", "CFB": "2025"}
