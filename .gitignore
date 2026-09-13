@@ -12,3 +12,4 @@ __pycache__/
 state/logs/
 state/last_check.txt
 state/alerts.log
+state/trades/

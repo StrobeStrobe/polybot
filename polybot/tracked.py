@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional
 
+from . import archive
 from .config import Config
 from .copytrade import (_current_mid, _recent_trades, _trades_since, bucket_for,
                         compute_track_record, ResolutionCache, size_breakdown,
@@ -154,14 +155,18 @@ def refresh_tracked_sports(cfg: Config, tracked: TrackedList, force: bool = Fals
             # bound cost across ~1,000 candidates; for a handful of tracked
             # wallets refreshed one per cycle they just discard most of the
             # record (Talvez10's tag was covering ~1 month of a full season).
-            trades = _recent_trades(w.wallet, cc.trades_sample)
-            offset = len(trades)
+            live = _recent_trades(w.wallet, cc.trades_sample)
+            offset = len(live)
             while offset < cc.tracked_max_trades:
                 more = _recent_trades(w.wallet, cc.trades_sample, offset)
                 if not more:
                     break                      # exhausted what the API serves
-                trades.extend(more)
+                live.extend(more)
                 offset += len(more)
+            # Bank this pull, then score archive ∪ live so the record keeps
+            # growing past the API's ~10.5k-fill ceiling.
+            archive.append(cfg, w.wallet, live)
+            trades = archive.merged(cfg, w.wallet, live)
             rec = compute_track_record(trades, cache, cc.tracked_max_markets)
             w.by_sport = rec["by_sport"]
             # Same trade sample, bucketed by stake instead of by sport.
@@ -222,6 +227,7 @@ def scan_tracked(cfg: Config, tracked: TrackedList) -> List[dict]:
             continue
         if not fresh:
             continue
+        archive.append(cfg, w.wallet, fresh)   # bank it before we advance
         newest = max(int(t.get("timestamp") or 0) for t in fresh)
 
         # Coalesce this cycle's fills by position (market + side + outcome).

@@ -48,6 +48,7 @@ def main() -> None:
     sub.add_parser("once", help="run a single poll then exit (for GitHub Actions / cron)")
     p_wk = sub.add_parser("weekly", help="post a per-tracked-wallet PnL scorecard (total + by sport) to Discord")
     p_wk.add_argument("--days", type=float, default=7, help="lookback window in days (default 7)")
+    sub.add_parser("archive", help="show the trade archive (how much history we've banked per wallet)")
     sub.add_parser("selfcheck", help="reconcile tracked wallets' positions vs trade feed (data-gap tripwire)")
     p_fs = sub.add_parser("find-series", help="look up Gamma series ids for a sport (needed each new football season)")
     p_fs.add_argument("keyword", help="e.g. NFL, CFB, 'college football'")
@@ -183,6 +184,23 @@ def main() -> None:
                   f"{r['events']:>4} events   {r['title'][:40]}")
         print("\nAdd the new id to SEASON_SERIES_BY_YEAR in polybot/copytrade.py, e.g.")
         print('  "NFL": {"2025": 10187, "2026": <id>}')
+        return
+
+    if args.cmd == "archive":
+        from polybot import archive
+        from polybot.tracked import TrackedList
+        tl = TrackedList(cfg.tracked_wallets_file)
+        tot = sz = 0
+        print(f"  {'wallet':22} {'fills':>8} {'archive covers':>26} {'size':>9}")
+        for w in tl.wallets:
+            st = archive.stats(cfg, w.wallet)
+            tot += st["fills"]; sz += st.get("bytes", 0)
+            span = f"{st['from']} → {st['to']}" if st["fills"] else "—"
+            print(f"  {(w.label or w.wallet[:10]):22} {st['fills']:>8,} {span:>26} "
+                  f"{st.get('bytes',0)/1024/1024:>8.1f}M")
+        print(f"\n  {tot:,} fills archived, {sz/1024/1024:.1f} MB total")
+        print("  Grows every poll — this is the history that outlives the API's "
+              "~10,500-fill ceiling.")
         return
 
     if args.cmd == "selfcheck":
