@@ -90,6 +90,11 @@ class CopytradeConfig:
     trades_sample: int = 500                 # trade history page size per candidate
     max_trades_depth: int = 2500             # deepest history paged for HF traders
     max_markets_checked: int = 200           # resolved markets scored per candidate (also feeds per-sport)
+    # Tracked wallets are few and refreshed one per cycle, so score their FULL
+    # reachable history rather than the capped discovery sample. The trades API
+    # stops serving past ~3.5k fills anyway, so these are effectively "all of it".
+    tracked_max_trades: int = 20000          # page until the API runs out
+    tracked_max_markets: int = 100000        # no cap on resolved markets scored
     min_sports_share: float = 0.6            # min fraction of trades that are sports
     min_trades_sampled: int = 20             # need enough history to judge
     refresh_days: float = 3.0                # rebuild watchlist this often

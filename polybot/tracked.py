@@ -59,6 +59,9 @@ class TrackedWallet:
     # bet with their record at that size.
     by_size: dict = field(default_factory=dict)
     sports_refreshed_at: str = ""                   # when by_sport was last computed
+    record_from: str = ""       # oldest trade in the scored sample
+    record_to: str = ""         # newest trade in the scored sample
+    record_trades: int = 0      # how many fills the record is built from
     # Per-position alert state for fill-coalescing: "cid|side|outcome" ->
     # {alerted_usd, pending_usd, ts (last alert), fill_ts (last fill seen)}.
     # Position-builders place one bet as dozens of fills; without this every
@@ -146,22 +149,33 @@ def refresh_tracked_sports(cfg: Config, tracked: TrackedList, force: bool = Fals
             except ValueError:
                 pass
         try:
+            # Use the wallet's ENTIRE reachable history, not a capped sample.
+            # The discovery pipeline's 200-market / 2,500-trade caps exist to
+            # bound cost across ~1,000 candidates; for a handful of tracked
+            # wallets refreshed one per cycle they just discard most of the
+            # record (Talvez10's tag was covering ~1 month of a full season).
             trades = _recent_trades(w.wallet, cc.trades_sample)
-            unresolved: set = set()
-            rec = compute_track_record(trades, cache, cc.max_markets_checked, unresolved)
             offset = len(trades)
-            while (rec["resolved_markets"] < cc.max_markets_checked
-                   and offset < cc.max_trades_depth):
+            while offset < cc.tracked_max_trades:
                 more = _recent_trades(w.wallet, cc.trades_sample, offset)
                 if not more:
-                    break
+                    break                      # exhausted what the API serves
                 trades.extend(more)
                 offset += len(more)
-                rec = compute_track_record(trades, cache, cc.max_markets_checked, unresolved)
+            rec = compute_track_record(trades, cache, cc.tracked_max_markets)
             w.by_sport = rec["by_sport"]
             # Same trade sample, bucketed by stake instead of by sport.
             w.by_size = {r["label"]: r for r in size_breakdown(trades, cache)
                          if r["markets"]}
+            # Span of the sample, so alerts can show what the record covers
+            # (and flag it when the data is stale) instead of only when it
+            # was computed.
+            ts = [int(t.get("timestamp") or 0) for t in trades if t.get("timestamp")]
+            w.record_from = (datetime.fromtimestamp(min(ts), timezone.utc).strftime("%Y-%m-%d")
+                             if ts else "")
+            w.record_to = (datetime.fromtimestamp(max(ts), timezone.utc).strftime("%Y-%m-%d")
+                           if ts else "")
+            w.record_trades = len(trades)
             w.sports_refreshed_at = now.isoformat()
             changed = True
             refreshed += 1
@@ -259,7 +273,8 @@ def scan_tracked(cfg: Config, tracked: TrackedList) -> List[dict]:
                     "ts": g["ts"],
                     "sport": sport,
                     "sport_record": w.by_sport.get(sport),
-                    "sport_asof": (w.sports_refreshed_at or "")[:10],
+                    "record_from": w.record_from, "record_to": w.record_to,
+                    "record_trades": w.record_trades,
                     # Their record at this stake size (bucketed on the total
                     # position, matching how the size analysis groups bets).
                     "size_bucket": bucket_for(total),

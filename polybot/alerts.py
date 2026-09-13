@@ -191,7 +191,7 @@ def _sport_tag(a: dict) -> str:
     fresh the ✅/❌ is)."""
     sport = a.get("sport") or "Other"
     rec = a.get("sport_record")
-    asof = f" (as of {a['sport_asof']})" if a.get("sport_asof") else ""
+    asof = _window(a)
     if rec and rec.get("markets"):
         pnl, wr, n = rec.get("pnl", 0), rec.get("win_rate", 0), rec["markets"]
         thin = " ⚠️thin" if n < 10 else ""
@@ -199,6 +199,25 @@ def _sport_tag(a: dict) -> str:
             return f"✅ profitable at {sport}: {wr:.0%} W, ${pnl:+,.0f} / {n} bets{thin}{asof}"
         return f"❌ UNprofitable at {sport}: {wr:.0%} W, ${pnl:+,.0f} / {n} bets{thin}{asof}"
     return f"❔ no track record at {sport}"
+
+
+def _window(a: dict) -> str:
+    """What period the record covers, plus a staleness flag. The old tag showed
+    when it was COMPUTED, which said nothing about whether the data was current
+    — a dormant wallet's record could be 9 months old under a fresh date."""
+    f, t = a.get("record_from"), a.get("record_to")
+    if not (f and t):
+        return ""
+    stale = ""
+    try:
+        from datetime import datetime, timezone
+        age = (datetime.now(timezone.utc)
+               - datetime.strptime(t, "%Y-%m-%d").replace(tzinfo=timezone.utc)).days
+        if age > 60:
+            stale = f" ⏳{age}d stale"
+    except ValueError:
+        pass
+    return f" ({f} → {t}{stale})"
 
 
 def _size_tag(a: dict) -> str:
@@ -214,7 +233,7 @@ def _size_tag(a: dict) -> str:
         thin = " ⚠️thin" if n < 10 else ""
         verdict = "✅ profitable" if pnl > 0 else "❌ UNprofitable"
         return (f"{verdict} at {bucket} bets: {wr:.0%} W, ${pnl:+,.0f} "
-                f"/ {n} bets{roi_s}{thin}")
+                f"/ {n} bets{roi_s}{thin}{_window(a)}")
     return f"❔ no track record at {bucket} bets"
 
 
