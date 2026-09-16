@@ -2516,7 +2516,7 @@
    "record_to": "",
    "record_trades": 0,
    "open_alerts": {},
-   "min_usd": 0.0,
+   "min_usd": 1000.0,
    "sports": [
     "NFL",
     "NCAAF"
