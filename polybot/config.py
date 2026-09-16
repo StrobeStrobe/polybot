@@ -214,7 +214,7 @@ def seed_state_dir() -> None:
         log.warning("could not merge tracked wallets (%s) — leaving volume copy", e)
         return
     KEEP = ("by_sport", "by_size", "sports_refreshed_at", "last_seen_ts",
-            "open_alerts")
+            "open_alerts", "record_from", "record_to", "record_trades")
     merged, kept = [], 0
     for w in repo:                      # roster comes from git
         prev = vol.get(w["wallet"])

@@ -178,7 +178,8 @@
    "record_to": "2026-09-05",
    "record_trades": 1692,
    "open_alerts": {},
-   "min_usd": 0.0
+   "min_usd": 0.0,
+   "sports": []
   },
   {
    "wallet": "0x8a3ab8120807bd64a3de48695110e390fa2ceb9a",
@@ -355,187 +356,8 @@
    "record_to": "2026-09-08",
    "record_trades": 3475,
    "open_alerts": {},
-   "min_usd": 0.0
-  },
-  {
-   "wallet": "0xb56db5215443706244b0af76b3daaad3066ad621",
-   "label": "DegenKingBetter",
-   "venue": "polymarket",
-   "added_at": "2026-06-27T20:42:49.068351+00:00",
-   "last_seen_ts": 1782592969,
-   "by_sport": {
-    "Tennis": {
-     "markets": 10,
-     "wins": 5,
-     "pnl": -3322.9,
-     "win_rate": 0.5,
-     "avg_entry": 0.4918,
-     "edge": 0.0082
-    },
-    "MLB": {
-     "markets": 75,
-     "wins": 44,
-     "pnl": 67821.51,
-     "win_rate": 0.5867,
-     "avg_entry": 0.561,
-     "edge": 0.0257
-    },
-    "NFL": {
-     "markets": 3,
-     "wins": 1,
-     "pnl": -731.62,
-     "win_rate": 0.3333,
-     "avg_entry": 0.4987,
-     "edge": -0.1654
-    },
-    "MMA": {
-     "markets": 6,
-     "wins": 3,
-     "pnl": -1486.6,
-     "win_rate": 0.5,
-     "avg_entry": 0.6298,
-     "edge": -0.1298
-    },
-    "WNBA": {
-     "markets": 1,
-     "wins": 1,
-     "pnl": 754.39,
-     "win_rate": 1.0,
-     "avg_entry": 0.57,
-     "edge": 0.43
-    },
-    "Soccer": {
-     "markets": 39,
-     "wins": 26,
-     "pnl": 40313.71,
-     "win_rate": 0.6667,
-     "avg_entry": 0.5543,
-     "edge": 0.1124
-    },
-    "NBA": {
-     "markets": 5,
-     "wins": 3,
-     "pnl": 8548.9,
-     "win_rate": 0.6,
-     "avg_entry": 0.498,
-     "edge": 0.102
-    },
-    "NHL": {
-     "markets": 3,
-     "wins": 1,
-     "pnl": 23479.84,
-     "win_rate": 0.3333,
-     "avg_entry": 0.5542,
-     "edge": -0.2209
-    },
-    "Other": {
-     "markets": 1,
-     "wins": 1,
-     "pnl": 78.57,
-     "win_rate": 1.0,
-     "avg_entry": 0.56,
-     "edge": 0.44
-    }
-   },
-   "by_size": {
-    "$0-$1k": {
-     "lo": 0,
-     "hi": 1000,
-     "label": "$0-$1k",
-     "markets": 20,
-     "wins": 9,
-     "pnl": -3663.45,
-     "wagered": 15392.783580814237,
-     "win_rate": 0.45,
-     "avg_entry": 0.3633,
-     "edge": 0.0867,
-     "roi": -0.238
-    },
-    "$1k-$2k": {
-     "lo": 1000,
-     "hi": 2500,
-     "label": "$1k-$2k",
-     "markets": 49,
-     "wins": 27,
-     "pnl": 6436.61,
-     "wagered": 91989.62278558173,
-     "win_rate": 0.551,
-     "avg_entry": 0.5034,
-     "edge": 0.0476,
-     "roi": 0.07
-    },
-    "$2k-$5k": {
-     "lo": 2500,
-     "hi": 5000,
-     "label": "$2k-$5k",
-     "markets": 34,
-     "wins": 26,
-     "pnl": 54843.5,
-     "wagered": 128930.52531304237,
-     "win_rate": 0.7647,
-     "avg_entry": 0.5345,
-     "edge": 0.2302,
-     "roi": 0.4254
-    },
-    "$5k-$10k": {
-     "lo": 5000,
-     "hi": 10000,
-     "label": "$5k-$10k",
-     "markets": 27,
-     "wins": 13,
-     "pnl": -20269.54,
-     "wagered": 192600.50386844703,
-     "win_rate": 0.4815,
-     "avg_entry": 0.529,
-     "edge": -0.0475,
-     "roi": -0.1052
-    },
-    "$10k-$25k": {
-     "lo": 10000,
-     "hi": 25000,
-     "label": "$10k-$25k",
-     "markets": 9,
-     "wins": 6,
-     "pnl": 19013.26,
-     "wagered": 126220.52708488685,
-     "win_rate": 0.6667,
-     "avg_entry": 0.6073,
-     "edge": 0.0594,
-     "roi": 0.1506
-    },
-    "$25k-$50k": {
-     "lo": 25000,
-     "hi": 50000,
-     "label": "$25k-$50k",
-     "markets": 3,
-     "wins": 3,
-     "pnl": 43206.81,
-     "wagered": 104917.35236112936,
-     "win_rate": 1.0,
-     "avg_entry": 0.6384,
-     "edge": 0.3616,
-     "roi": 0.4118
-    },
-    "$50k-$100k": {
-     "lo": 50000,
-     "hi": 100000,
-     "label": "$50k-$100k",
-     "markets": 1,
-     "wins": 1,
-     "pnl": 35888.61,
-     "wagered": 61070.52999260388,
-     "win_rate": 1.0,
-     "avg_entry": 0.6299,
-     "edge": 0.3701,
-     "roi": 0.5877
-    }
-   },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
-   "record_from": "2026-05-26",
-   "record_to": "2026-09-12",
-   "record_trades": 757,
-   "open_alerts": {},
-   "min_usd": 0.0
+   "min_usd": 0.0,
+   "sports": []
   },
   {
    "wallet": "0x47bc38f8f3349715e56c6f56b5c0b35fd9b59504",
@@ -654,7 +476,8 @@
    "record_to": "2026-06-11",
    "record_trades": 1673,
    "open_alerts": {},
-   "min_usd": 0.0
+   "min_usd": 0.0,
+   "sports": []
   },
   {
    "wallet": "0xafbacaeeda63f31202759eff7f8126e49adfe61b",
@@ -831,7 +654,8 @@
    "record_to": "2026-06-20",
    "record_trades": 10500,
    "open_alerts": {},
-   "min_usd": 0.0
+   "min_usd": 0.0,
+   "sports": []
   },
   {
    "wallet": "0x01baeccca6daf3d1ed2b562007f1f9e7ef9cb77a",
@@ -1008,7 +832,8 @@
    "record_to": "2026-03-14",
    "record_trades": 4343,
    "open_alerts": {},
-   "min_usd": 0.0
+   "min_usd": 0.0,
+   "sports": []
   },
   {
    "wallet": "0x92672c80d36dcd08172aa1e51dface0f20b70f9a",
@@ -1201,7 +1026,8 @@
    "record_to": "2026-09-10",
    "record_trades": 10500,
    "open_alerts": {},
-   "min_usd": 0.0
+   "min_usd": 0.0,
+   "sports": []
   },
   {
    "wallet": "0xa71093cafc0c099b4ccab24c3cb8018d817923c4",
@@ -1338,7 +1164,8 @@
    "record_to": "2026-09-12",
    "record_trades": 10500,
    "open_alerts": {},
-   "min_usd": 1000.0
+   "min_usd": 1000.0,
+   "sports": []
   },
   {
    "wallet": "0x095fbca2e0eaf0c9841005135427e1e0117190b2",
@@ -1402,7 +1229,8 @@
    "record_to": "2026-07-10",
    "record_trades": 6330,
    "open_alerts": {},
-   "min_usd": 0.0
+   "min_usd": 0.0,
+   "sports": []
   },
   {
    "wallet": "0xd38b71f3e8ed1af71983e5c309eac3dfa9b35029",
@@ -1571,7 +1399,8 @@
    "record_to": "2026-04-04",
    "record_trades": 2167,
    "open_alerts": {},
-   "min_usd": 0.0
+   "min_usd": 0.0,
+   "sports": []
   },
   {
    "wallet": "0x14964aefa2cd7caff7878b3820a690a03c5aa429",
@@ -1756,7 +1585,8 @@
    "record_to": "2026-05-20",
    "record_trades": 10500,
    "open_alerts": {},
-   "min_usd": 0.0
+   "min_usd": 0.0,
+   "sports": []
   },
   {
    "wallet": "0x1ff26f9f8a048d4f6fb2e4283f32f6ca64d2dbbd",
@@ -1928,7 +1758,8 @@
    "record_to": "2026-05-16",
    "record_trades": 5705,
    "open_alerts": {},
-   "min_usd": 0.0
+   "min_usd": 0.0,
+   "sports": []
   },
   {
    "wallet": "0x43351dd7e8def5f29e5bd5954c8381c848a2fc2f",
@@ -2113,7 +1944,8 @@
    "record_to": "2025-12-23",
    "record_trades": 7380,
    "open_alerts": {},
-   "min_usd": 0.0
+   "min_usd": 0.0,
+   "sports": []
   },
   {
    "wallet": "0x68df8708aadb901618f11abf2471805a66a24815",
@@ -2301,7 +2133,8 @@
    "record_to": "2026-09-13",
    "record_trades": 4984,
    "open_alerts": {},
-   "min_usd": 0.0
+   "min_usd": 0.0,
+   "sports": []
   },
   {
    "wallet": "0x6a72f61820b26b1fe4d956e17b6dc2a1ea3033ee",
@@ -2462,7 +2295,8 @@
    "record_to": "2026-06-29",
    "record_trades": 10500,
    "open_alerts": {},
-   "min_usd": 0.0
+   "min_usd": 0.0,
+   "sports": []
   },
   {
    "wallet": "0xe30e74595517de48f1fb19f4553dd3d9f1e96b87",
@@ -2631,7 +2465,122 @@
    "record_to": "2026-08-25",
    "record_trades": 8437,
    "open_alerts": {},
-   "min_usd": 50000.0
+   "min_usd": 50000.0,
+   "sports": []
+  },
+  {
+   "wallet": "0xd9e0aaca471f489be338fd0f91a26e8669a805f2",
+   "label": "0xD9E0AACa",
+   "venue": "polymarket",
+   "added_at": "2026-09-16T01:03:22.943313+00:00",
+   "last_seen_ts": 1789520602,
+   "by_sport": {},
+   "by_size": {},
+   "sports_refreshed_at": "",
+   "record_from": "",
+   "record_to": "",
+   "record_trades": 0,
+   "open_alerts": {},
+   "min_usd": 0.0,
+   "sports": [
+    "NFL",
+    "NCAAF"
+   ]
+  },
+  {
+   "wallet": "0x6d3c5bd13984b2de47c3a88ddc455309aab3d294",
+   "label": "VeryLucky888",
+   "venue": "polymarket",
+   "added_at": "2026-09-16T01:03:23.422589+00:00",
+   "last_seen_ts": 1789520603,
+   "by_sport": {},
+   "by_size": {},
+   "sports_refreshed_at": "",
+   "record_from": "",
+   "record_to": "",
+   "record_trades": 0,
+   "open_alerts": {},
+   "min_usd": 0.0,
+   "sports": [
+    "NFL",
+    "NCAAF"
+   ]
+  },
+  {
+   "wallet": "0x0a77bc0638f13892c8b1d1d2c13ba178540f9d74",
+   "label": "0x0A77exmm",
+   "venue": "polymarket",
+   "added_at": "2026-09-16T01:03:23.879427+00:00",
+   "last_seen_ts": 1789520603,
+   "by_sport": {},
+   "by_size": {},
+   "sports_refreshed_at": "",
+   "record_from": "",
+   "record_to": "",
+   "record_trades": 0,
+   "open_alerts": {},
+   "min_usd": 0.0,
+   "sports": [
+    "NFL",
+    "NCAAF"
+   ]
+  },
+  {
+   "wallet": "0xf68a281980f8c13828e84e147e3822381d6e5b1b",
+   "label": "Nooserac",
+   "venue": "polymarket",
+   "added_at": "2026-09-16T01:03:24.332893+00:00",
+   "last_seen_ts": 1789520604,
+   "by_sport": {},
+   "by_size": {},
+   "sports_refreshed_at": "",
+   "record_from": "",
+   "record_to": "",
+   "record_trades": 0,
+   "open_alerts": {},
+   "min_usd": 0.0,
+   "sports": [
+    "NFL",
+    "NCAAF"
+   ]
+  },
+  {
+   "wallet": "0xb4f978be63cdf75554b0b46a4262a6db597cc9a7",
+   "label": "0xb4F978BE",
+   "venue": "polymarket",
+   "added_at": "2026-09-16T01:03:24.805446+00:00",
+   "last_seen_ts": 1789520604,
+   "by_sport": {},
+   "by_size": {},
+   "sports_refreshed_at": "",
+   "record_from": "",
+   "record_to": "",
+   "record_trades": 0,
+   "open_alerts": {},
+   "min_usd": 0.0,
+   "sports": [
+    "NFL",
+    "NCAAF"
+   ]
+  },
+  {
+   "wallet": "0x5268527977f700f9bf9b6d5cd843859e4e70135d",
+   "label": "HomeRunHazard",
+   "venue": "polymarket",
+   "added_at": "2026-09-16T01:03:25.273578+00:00",
+   "last_seen_ts": 1789520605,
+   "by_sport": {},
+   "by_size": {},
+   "sports_refreshed_at": "",
+   "record_from": "",
+   "record_to": "",
+   "record_trades": 0,
+   "open_alerts": {},
+   "min_usd": 0.0,
+   "sports": [
+    "NFL",
+    "NCAAF"
+   ]
   }
  ]
 }

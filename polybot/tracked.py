@@ -1,7 +1,8 @@
 """Manually-tracked wallets: a raw activity mirror, separate from the
 auto-vetted copy scout. You name the wallets; every new trade above a minimum
-size (any market, buy or sell) fires a Discord alert. No win-rate vetting —
-these are wallets you've explicitly chosen to follow.
+size (buy or sell, in any sport unless the wallet lists the sports it's
+tracked for) fires a Discord alert. No win-rate vetting — these are wallets
+you've explicitly chosen to follow.
 """
 
 import json
@@ -17,7 +18,7 @@ from . import archive
 from .config import Config
 from .copytrade import (_current_mid, _recent_trades, _trades_since, bucket_for,
                         compute_track_record, ResolutionCache, size_breakdown,
-                        sport_from_slug)
+                        sport_from_slug, _SPORT_BY_PREFIX)
 
 log = logging.getLogger("polybot.tracked")
 
@@ -46,6 +47,25 @@ VENUES = {
 }
 DEFAULT_VENUE = "polymarket"
 
+# Every bucket sport_from_slug() can return, plus the names people actually
+# type. "CFB" is what the schedule calls it; the slug prefix maps to "NCAAF".
+_SPORT_ALIASES = {"CFB": "NCAAF", "NCAAFB": "NCAAF", "COLLEGE-FOOTBALL": "NCAAF",
+                  "CBB": "NCAAB", "NCAABB": "NCAAB", "UFC": "MMA",
+                  "FOOTBALL": "NFL", "FUTBOL": "Soccer"}
+
+
+def canonical_sport(name: str) -> str:
+    """Map a typed sport name onto the exact bucket sport_from_slug() emits —
+    case matters there ('Tennis', not 'TENNIS'), so a filter built from raw
+    user input would silently match nothing."""
+    s = (name or "").strip().replace("_", "-").upper()
+    if s in _SPORT_ALIASES:
+        return _SPORT_ALIASES[s]
+    for bucket in set(_SPORT_BY_PREFIX.values()) | {"Other"}:
+        if bucket.upper() == s:
+            return bucket
+    return name.strip()      # unknown: keep as typed rather than guess
+
 
 @dataclass
 class TrackedWallet:
@@ -72,6 +92,11 @@ class TrackedWallet:
     # high-frequency wallet (Talvez10) alert only on real bets ($1k+) while
     # small-sharp wallets keep the $100 floor.
     min_usd: float = 0.0
+    # Sports this wallet is tracked FOR; empty = every sport. Several wallets
+    # earn their place on one league's record but bet a dozen others daily —
+    # alerting on all of it buries the bets we actually want to copy.
+    # Values are sport_from_slug() buckets: NFL, NCAAF, MLB, NBA, Tennis, ...
+    sports: list = field(default_factory=list)
 
 
 class TrackedList:
@@ -94,7 +119,8 @@ class TrackedList:
         return next((w for w in self.wallets if w.wallet == wallet), None)
 
     def add(self, wallet: str, label: str = "", min_usd: float = 0.0,
-            venue: str = DEFAULT_VENUE) -> TrackedWallet:
+            venue: str = DEFAULT_VENUE,
+            sports: Optional[List[str]] = None) -> TrackedWallet:
         existing = self.find(wallet)
         if existing:
             if label:
@@ -103,12 +129,15 @@ class TrackedList:
                 existing.min_usd = min_usd
             if venue:
                 existing.venue = venue
+            if sports is not None:      # [] is meaningful: clear the filter
+                existing.sports = [canonical_sport(s) for s in sports]
             self.save()
             return existing
         # Seed last_seen_ts to now so we only alert on trades from here on,
         # not the wallet's entire backlog.
         w = TrackedWallet(wallet=wallet, label=label, min_usd=min_usd,
                           venue=venue,
+                          sports=[canonical_sport(s) for s in (sports or [])],
                           added_at=datetime.now(timezone.utc).isoformat(),
                           last_seen_ts=int(time.time()))
         self.wallets.append(w)
@@ -231,8 +260,14 @@ def scan_tracked(cfg: Config, tracked: TrackedList) -> List[dict]:
         newest = max(int(t.get("timestamp") or 0) for t in fresh)
 
         # Coalesce this cycle's fills by position (market + side + outcome).
+        # Sport-filtered wallets drop everything off-list here, before it can
+        # accumulate in open_alerts — a wallet we follow for football must not
+        # bank $99 of tennis fills and fire once they cross the floor.
+        only = set(w.sports or ())
         groups: dict = {}
         for t in fresh:
+            if only and sport_from_slug(t.get("eventSlug") or "") not in only:
+                continue
             cid = t.get("conditionId") or t.get("eventSlug") or "?"
             key = f"{cid}|{t.get('side')}|{t.get('outcome')}"
             g = groups.setdefault(key, {

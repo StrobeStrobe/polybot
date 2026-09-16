@@ -89,6 +89,9 @@ def main() -> None:
                         help="which exchange this account trades on (default: polymarket)")
     pt_add.add_argument("--min-usd", type=float, default=0.0,
                         help="per-wallet alert floor (default: global tracked_min_usd)")
+    pt_add.add_argument("--sports", default=None,
+                        help="only alert on these sports, comma-separated "
+                             "(e.g. NFL,NCAAF); 'all' clears the filter")
     pt_rm = track_sub.add_parser("remove", help="stop tracking a wallet")
     pt_rm.add_argument("wallet")
     track_sub.add_parser("list", help="list tracked wallets")
@@ -301,18 +304,24 @@ def main() -> None:
                 print(f"\n{v['emoji']} {v['label']} ({len(group)})")
                 for w in group:
                     floor = f"  (min ${w.min_usd:,.0f})" if w.min_usd else ""
-                    print(f"  {w.label or '(no label)':20} {w.wallet}{floor}")
+                    only = f"  [{'/'.join(w.sports)} only]" if w.sports else ""
+                    print(f"  {w.label or '(no label)':20} {w.wallet}{floor}{only}")
             return
         wallet = normalize_wallet(args.wallet)
         if not wallet:
             print(f"Not a valid wallet address or profile URL: {args.wallet}")
             return
         if args.track_cmd == "add":
-            w = tl.add(wallet, args.label, args.min_usd, args.venue)
+            sports = None
+            if args.sports is not None:
+                sports = [] if args.sports.strip().lower() == "all" else [
+                    s for s in args.sports.split(",") if s.strip()]
+            w = tl.add(wallet, args.label, args.min_usd, args.venue, sports)
             floor = f" (alerts only above ${w.min_usd:,.0f})" if w.min_usd else ""
             vlabel = VENUES.get(w.venue, VENUES[DEFAULT_VENUE])["label"]
+            only = f", {'/'.join(w.sports)} only" if w.sports else ""
             print(f"Now tracking {args.label or wallet}  ({wallet}) "
-                  f"on {vlabel}{floor}")
+                  f"on {vlabel}{floor}{only}")
             if w.venue != DEFAULT_VENUE:
                 print("NOTE: Polymarket US monitoring isn't wired up yet — this "
                       "wallet is recorded but won't alert until the API probe "
