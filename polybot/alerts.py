@@ -185,6 +185,10 @@ def send_test_alert(cfg: Config) -> None:
         print("(No DISCORD_WEBHOOK_URL set — add it to .env to enable Discord.)")
 
 
+# Fewer resolved bets than this and we show the count instead of a ✅/❌.
+MIN_VERDICT = 10
+
+
 def _sport_tag(a: dict) -> str:
     """Human-readable profitability tag for the bet's sport, from the trader's
     cached per-sport record (with the date it was computed, so you know how
@@ -194,10 +198,15 @@ def _sport_tag(a: dict) -> str:
     asof = _window(a)
     if rec and rec.get("markets"):
         pnl, wr, n = rec.get("pnl", 0), rec.get("win_rate", 0), rec["markets"]
-        thin = " ⚠️thin" if n < 10 else ""
+        # Below MIN_VERDICT the sample decides nothing, so don't render a
+        # verdict at all. Hyperactive wallets hit Polymarket's ~10,500-fill
+        # per-wallet API ceiling in a day or two, so their record covers a
+        # sliver of a season — a red ❌ off 3 games is worse than silence.
+        if n < MIN_VERDICT:
+            return f"❔ too few {sport} bets to judge: {n}{asof}"
         if pnl > 0:
-            return f"✅ profitable at {sport}: {wr:.0%} W, ${pnl:+,.0f} / {n} bets{thin}{asof}"
-        return f"❌ UNprofitable at {sport}: {wr:.0%} W, ${pnl:+,.0f} / {n} bets{thin}{asof}"
+            return f"✅ profitable at {sport}: {wr:.0%} W, ${pnl:+,.0f} / {n} bets{asof}"
+        return f"❌ UNprofitable at {sport}: {wr:.0%} W, ${pnl:+,.0f} / {n} bets{asof}"
     return f"❔ no track record at {sport}"
 
 
@@ -230,10 +239,11 @@ def _size_tag(a: dict) -> str:
         pnl, wr, n = rec.get("pnl", 0), rec.get("win_rate", 0), rec["markets"]
         roi = rec.get("roi")
         roi_s = f", {roi:+.0%} roi" if roi else ""
-        thin = " ⚠️thin" if n < 10 else ""
+        if n < MIN_VERDICT:
+            return f"❔ too few {bucket} bets to judge: {n}{_window(a)}"
         verdict = "✅ profitable" if pnl > 0 else "❌ UNprofitable"
         return (f"{verdict} at {bucket} bets: {wr:.0%} W, ${pnl:+,.0f} "
-                f"/ {n} bets{roi_s}{thin}{_window(a)}")
+                f"/ {n} bets{roi_s}{_window(a)}")
     return f"❔ no track record at {bucket} bets"
 
 
@@ -263,6 +273,7 @@ def alert_tracked(cfg: Config, a: dict) -> None:
         msg += f" | now {drift}"
     tag = _sport_tag(a)
     stag = _size_tag(a)
+    note = (a.get("note") or "").strip()
     wallet = a.get("wallet", "")
     profile = v["profile"].format(w=wallet) if wallet else ""
     links = " · ".join(filter(None, [
@@ -273,6 +284,7 @@ def alert_tracked(cfg: Config, a: dict) -> None:
         "title": f"{emoji} {title}",
         "color": GREEN if side == "BUY" else RED if side == "SELL" else BLUE,
         "description": (f"`{v['label']}`  **{a.get('title')}**\n{tag}\n{stag}"
+                        + (f"\n📌 {note}" if note else "")
                         + (f"\n{links}" if links else "")),
         "fields": [
             {"name": "Venue", "value": f"{v['emoji']} {v['label']}", "inline": True},
@@ -287,15 +299,19 @@ def alert_tracked(cfg: Config, a: dict) -> None:
              "value": tag, "inline": False},
             {"name": f"{a.get('label', '—')} at {a.get('size_bucket', '?')} bets",
              "value": stag, "inline": False},
+        ] + ([{"name": "📌 Verified (market-side scan)", "value": note,
+               "inline": False}] if note else []) + [
             {"name": "Wallet", "value": wallet or "—", "inline": False},
         ],
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
     post_discord(cfg, embed)
     print(f"\n{'=' * 70}\n{emoji} [{v['label']}] {title}\n{msg}\n{tag}\n{stag}\n"
-          f"{profile}\n{url}\n{'=' * 70}")
+          + (f"📌 {note}\n" if note else "")
+          + f"{profile}\n{url}\n{'=' * 70}")
     _log_alert(cfg, f"TRACK| {v['label']} | {a.get('label')} | {wallet} | "
-                    f"{side} {msg} | {tag} | {stag} | {url}")
+                    f"{side} {msg} | {tag} | {stag}"
+                    + (f" | 📌 {note}" if note else "") + f" | {url}")
 
 
 def alert_consensus(cfg: Config, c: dict) -> None:

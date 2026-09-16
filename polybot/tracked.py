@@ -97,6 +97,12 @@ class TrackedWallet:
     # alerting on all of it buries the bets we actually want to copy.
     # Values are sport_from_slug() buckets: NFL, NCAAF, MLB, NBA, Tennis, ...
     sports: list = field(default_factory=list)
+    # Hand-written line shown on every alert, under the computed tags. For
+    # wallets whose computed record is unreadable — hyperactive traders burn
+    # through the ~10,500-fill API ceiling in a day, so their sport tag covers
+    # a sliver of a season — this carries the market-side numbers, which have
+    # no such ceiling. Write the measurement and its date, not a verdict.
+    note: str = ""
 
 
 class TrackedList:
@@ -120,7 +126,8 @@ class TrackedList:
 
     def add(self, wallet: str, label: str = "", min_usd: float = 0.0,
             venue: str = DEFAULT_VENUE,
-            sports: Optional[List[str]] = None) -> TrackedWallet:
+            sports: Optional[List[str]] = None,
+            note: Optional[str] = None) -> TrackedWallet:
         existing = self.find(wallet)
         if existing:
             if label:
@@ -131,6 +138,8 @@ class TrackedList:
                 existing.venue = venue
             if sports is not None:      # [] is meaningful: clear the filter
                 existing.sports = [canonical_sport(s) for s in sports]
+            if note is not None:        # "" is meaningful: clear the note
+                existing.note = note
             self.save()
             return existing
         # Seed last_seen_ts to now so we only alert on trades from here on,
@@ -138,6 +147,7 @@ class TrackedList:
         w = TrackedWallet(wallet=wallet, label=label, min_usd=min_usd,
                           venue=venue,
                           sports=[canonical_sport(s) for s in (sports or [])],
+                          note=note or "",
                           added_at=datetime.now(timezone.utc).isoformat(),
                           last_seen_ts=int(time.time()))
         self.wallets.append(w)
@@ -320,6 +330,7 @@ def scan_tracked(cfg: Config, tracked: TrackedList) -> List[dict]:
                     # position, matching how the size analysis groups bets).
                     "size_bucket": bucket_for(total),
                     "size_record": (w.by_size or {}).get(bucket_for(total)),
+                    "note": w.note,
                     "venue": w.venue or DEFAULT_VENUE,
                 })
                 st["alerted_usd"] = total
