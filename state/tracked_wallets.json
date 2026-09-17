@@ -2501,7 +2501,7 @@
     "NFL",
     "NCAAF"
    ],
-   "note": "Football verified market-side (2026-09-15): NFL 2025 +31% edge / 270 bets \u00b7 CFB 2025 +27% / 710 \u00b7 CFB 2026 +21% / 17. NFL 2026 so far -2% / 17 bets. Computed tag above is unreadable \u2014 API ceiling reaches ~2 days."
+   "note": "Market-side (2026-09-15): NFL 2025 +31% edge/270 \u00b7 CFB 2025 +27%/710 \u00b7 CFB 2026 +21%/17 \u00b7 NFL 2026 -2%/17"
   },
   {
    "wallet": "0x6d3c5bd13984b2de47c3a88ddc455309aab3d294",
@@ -2521,7 +2521,7 @@
     "NFL",
     "NCAAF"
    ],
-   "note": "Football verified market-side (2026-09-15): NFL 2025 +14% edge / 262 bets \u00b7 NFL 2026 +13% / 31 \u00b7 CFB 2026 +21% / 36. Computed tag above is unreadable \u2014 9,674 fills/day burns the API ceiling in ~1 day."
+   "note": "Market-side (2026-09-15): NFL 2025 +14% edge/262 \u00b7 NFL 2026 +13%/31 \u00b7 CFB 2026 +21%/36"
   },
   {
    "wallet": "0x0a77bc0638f13892c8b1d1d2c13ba178540f9d74",

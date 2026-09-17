@@ -280,27 +280,22 @@ def alert_tracked(cfg: Config, a: dict) -> None:
         f"[View market]({url})" if url else "",
         f"[Trader profile]({profile})" if profile else "",
     ]))
+    # Everything appears exactly once. The title already carries venue, side,
+    # money and fill count; the description carries market, pick and the three
+    # tags — so the fields below add only what isn't said anywhere else.
+    pick = f"**{a.get('outcome', '—')}** @ {a.get('price', '—')}"
+    if drift:
+        pick += f" → now {drift}"
+    if pos > usd + 0.5:      # re-alert on growth: the whole position matters
+        pick += f"\nPosition now **${pos:,.0f}**"
     embed = {
         "title": f"{emoji} {title}",
         "color": GREEN if side == "BUY" else RED if side == "SELL" else BLUE,
-        "description": (f"`{v['label']}`  **{a.get('title')}**\n{tag}\n{stag}"
+        "description": (f"`{v['label']}`  **{a.get('title')}**\n{pick}\n"
+                        f"{tag}\n{stag}"
                         + (f"\n📌 {note}" if note else "")
                         + (f"\n{links}" if links else "")),
         "fields": [
-            {"name": "Venue", "value": f"{v['emoji']} {v['label']}", "inline": True},
-            {"name": "Side", "value": side or "—", "inline": True},
-            {"name": "Outcome", "value": str(a.get("outcome", "—")), "inline": True},
-            {"name": "Avg price", "value": str(a.get("price", "—")), "inline": True},
-            {"name": "Price now", "value": drift or "—", "inline": True},
-            {"name": "New money", "value": f"${usd:,.0f}"
-             + (f" ({fills} fills)" if fills > 1 else ""), "inline": True},
-            {"name": "Position total", "value": f"${pos:,.0f}", "inline": True},
-            {"name": f"{a.get('label', '—')} at {a.get('sport', 'Other')}",
-             "value": tag, "inline": False},
-            {"name": f"{a.get('label', '—')} at {a.get('size_bucket', '?')} bets",
-             "value": stag, "inline": False},
-        ] + ([{"name": "📌 Verified (market-side scan)", "value": note,
-               "inline": False}] if note else []) + [
             {"name": "Wallet", "value": wallet or "—", "inline": False},
         ],
         "timestamp": datetime.now(timezone.utc).isoformat(),
