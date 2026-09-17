@@ -2504,26 +2504,6 @@
    "note": "Market-side (2026-09-15): NFL 2025 +31% edge/270 \u00b7 CFB 2025 +27%/710 \u00b7 CFB 2026 +21%/17 \u00b7 NFL 2026 -2%/17"
   },
   {
-   "wallet": "0x6d3c5bd13984b2de47c3a88ddc455309aab3d294",
-   "label": "VeryLucky888",
-   "venue": "polymarket",
-   "added_at": "2026-09-16T01:03:23.422589+00:00",
-   "last_seen_ts": 1789520603,
-   "by_sport": {},
-   "by_size": {},
-   "sports_refreshed_at": "",
-   "record_from": "",
-   "record_to": "",
-   "record_trades": 0,
-   "open_alerts": {},
-   "min_usd": 1000.0,
-   "sports": [
-    "NFL",
-    "NCAAF"
-   ],
-   "note": "Market-side (2026-09-15): NFL 2025 +14% edge/262 \u00b7 NFL 2026 +13%/31 \u00b7 CFB 2026 +21%/36"
-  },
-  {
    "wallet": "0x0a77bc0638f13892c8b1d1d2c13ba178540f9d74",
    "label": "0x0A77exmm",
    "venue": "polymarket",
