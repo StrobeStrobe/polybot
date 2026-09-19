@@ -2522,26 +2522,6 @@
     "NCAAF"
    ],
    "note": ""
-  },
-  {
-   "wallet": "0xb4f978be63cdf75554b0b46a4262a6db597cc9a7",
-   "label": "0xb4F978BE",
-   "venue": "polymarket",
-   "added_at": "2026-09-16T01:03:24.805446+00:00",
-   "last_seen_ts": 1789520604,
-   "by_sport": {},
-   "by_size": {},
-   "sports_refreshed_at": "",
-   "record_from": "",
-   "record_to": "",
-   "record_trades": 0,
-   "open_alerts": {},
-   "min_usd": 0.0,
-   "sports": [
-    "NFL",
-    "NCAAF"
-   ],
-   "note": ""
   }
  ]
 }
