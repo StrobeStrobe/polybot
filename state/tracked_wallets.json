@@ -2502,26 +2502,6 @@
     "NCAAF"
    ],
    "note": ""
-  },
-  {
-   "wallet": "0xf68a281980f8c13828e84e147e3822381d6e5b1b",
-   "label": "Nooserac",
-   "venue": "polymarket",
-   "added_at": "2026-09-16T01:03:24.332893+00:00",
-   "last_seen_ts": 1789520604,
-   "by_sport": {},
-   "by_size": {},
-   "sports_refreshed_at": "",
-   "record_from": "",
-   "record_to": "",
-   "record_trades": 0,
-   "open_alerts": {},
-   "min_usd": 0.0,
-   "sports": [
-    "NFL",
-    "NCAAF"
-   ],
-   "note": ""
   }
  ]
 }
