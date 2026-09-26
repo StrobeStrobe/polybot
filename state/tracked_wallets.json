@@ -5,15 +5,39 @@
    "label": "DaBossHogg",
    "venue": "polymarket",
    "added_at": "2026-06-25T12:47:12.746780+00:00",
-   "last_seen_ts": 1782391632,
+   "last_seen_ts": 1789868289,
    "by_sport": {
+    "NCAAF": {
+     "markets": 3,
+     "wins": 1,
+     "pnl": -6595.62,
+     "win_rate": 0.3333,
+     "avg_entry": 0.5368,
+     "edge": -0.2035
+    },
     "Soccer": {
-     "markets": 175,
-     "wins": 97,
-     "pnl": 133565.7,
-     "win_rate": 0.5543,
-     "avg_entry": 0.4956,
-     "edge": 0.0587
+     "markets": 177,
+     "wins": 98,
+     "pnl": 133222.33,
+     "win_rate": 0.5537,
+     "avg_entry": 0.4957,
+     "edge": 0.058
+    },
+    "NFL": {
+     "markets": 1,
+     "wins": 1,
+     "pnl": 14265.14,
+     "win_rate": 1.0,
+     "avg_entry": 0.5202,
+     "edge": 0.4798
+    },
+    "Other": {
+     "markets": 22,
+     "wins": 10,
+     "pnl": -21768.48,
+     "win_rate": 0.4545,
+     "avg_entry": 0.5124,
+     "edge": -0.0579
     },
     "MLB": {
      "markets": 79,
@@ -30,14 +54,6 @@
      "win_rate": 0.65,
      "avg_entry": 0.5511,
      "edge": 0.0989
-    },
-    "Other": {
-     "markets": 20,
-     "wins": 10,
-     "pnl": -12239.63,
-     "win_rate": 0.5,
-     "avg_entry": 0.51,
-     "edge": -0.01
     },
     "MMA": {
      "markets": 7,
@@ -111,40 +127,40 @@
      "lo": 2500,
      "hi": 5000,
      "label": "$2k-$5k",
-     "markets": 141,
-     "wins": 79,
-     "pnl": 22147.93,
-     "wagered": 515869.6890340181,
-     "win_rate": 0.5603,
-     "avg_entry": 0.5203,
-     "edge": 0.04,
-     "roi": 0.0429
+     "markets": 146,
+     "wins": 80,
+     "pnl": 6023.45,
+     "wagered": 537549.721848112,
+     "win_rate": 0.5479,
+     "avg_entry": 0.5209,
+     "edge": 0.027,
+     "roi": 0.0112
     },
     "$5k-$10k": {
      "lo": 5000,
      "hi": 10000,
      "label": "$5k-$10k",
-     "markets": 89,
-     "wins": 50,
-     "pnl": 35931.68,
-     "wagered": 616450.2957566278,
-     "win_rate": 0.5618,
+     "markets": 91,
+     "wins": 51,
+     "pnl": 35588.31,
+     "wagered": 626554.1158568809,
+     "win_rate": 0.5604,
      "avg_entry": 0.5118,
-     "edge": 0.05,
-     "roi": 0.0583
+     "edge": 0.0486,
+     "roi": 0.0568
     },
     "$10k-$25k": {
      "lo": 10000,
      "hi": 25000,
      "label": "$10k-$25k",
-     "markets": 49,
-     "wins": 24,
-     "pnl": -57512.05,
-     "wagered": 762095.8223950702,
-     "win_rate": 0.4898,
-     "avg_entry": 0.5114,
-     "edge": -0.0216,
-     "roi": -0.0755
+     "markets": 50,
+     "wins": 25,
+     "pnl": -43246.92,
+     "wagered": 783013.4623956202,
+     "win_rate": 0.5,
+     "avg_entry": 0.5116,
+     "edge": -0.0116,
+     "roi": -0.0552
     },
     "$25k-$50k": {
      "lo": 25000,
@@ -173,11 +189,1326 @@
      "roi": -0.1412
     }
    },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
+   "sports_refreshed_at": "2026-09-24T18:15:50.659985+00:00",
    "record_from": "2026-03-14",
-   "record_to": "2026-09-05",
-   "record_trades": 1692,
-   "open_alerts": {},
+   "record_to": "2026-09-20",
+   "record_trades": 1708,
+   "open_alerts": {
+    "0x8140e107b61f33bc9fb1d605e252558202896a88e767c7bd15ae181c2167bb1f|BUY|Over": {
+     "alerted_usd": 4951.173914000001,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xa05e18eeaa03ed1c4802374342132357e2a041e63564f9008c371d796d2eedd9|BUY|LSU": {
+     "alerted_usd": 4200.0000000400005,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb279731b393e94cb28d45c0ecdda6a4f48a95e838a2efbf53081f734629c2a50|BUY|Over": {
+     "alerted_usd": 3000.00000024,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0348c6f0f2a629583e8510a5c16f5ad0900000000000000000000000000000|BUY|": {
+     "alerted_usd": 4891.959549580396,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x939d545c9002309e3a9d10c5c01401b7623c9a6ee7fe1e245f4a73325edb437d|BUY|Over": {
+     "alerted_usd": 5000.000000253154,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03506f4a1cd2dd79416eab684e6073e6650000000000000000000000000000|BUY|": {
+     "alerted_usd": 4649.759800291115,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x2a1f1b723138d47ea2aa37ae19aded347d11fea8e912f464a12ec7d879f1226b|BUY|Over": {
+     "alerted_usd": 5103.8201,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xce78c5ba09b2ed9d7ac15bf154e2da2b905f9c2bb41491fcb3f8a077079a4031|BUY|Over": {
+     "alerted_usd": 20917.64000055,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x358f1a4c7a775c90b4e2eb2f06c04d3e35cdfd9c295a63b4e8198020c2b07a7b|BUY|Over": {
+     "alerted_usd": 4528.858899976635,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xce78c5ba09b2ed9d7ac15bf154e2da2b905f9c2bb41491fcb3f8a077079a4031|SELL|Over": {
+     "alerted_usd": 5028.625,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0ccf0ead16786ee92bfe4cdbdda8fc8848507c286cef61c20501abee421d44bb|BUY|Over": {
+     "alerted_usd": 4999.99999983717,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x060c9bb9c36dc344a1d76c15155a60595e499092c078fdfc65fac1416fcaaf77|BUY|Yes": {
+     "alerted_usd": 5471.449997580986,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xac39530fcd4a241ef6148aaccf5b494cf643e6f0c6570dd28122cab6e651fa42|SELL|Yes": {
+     "alerted_usd": 5587.21719,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xac39530fcd4a241ef6148aaccf5b494cf643e6f0c6570dd28122cab6e651fa42|BUY|Yes": {
+     "alerted_usd": 3579.4,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x8ec615e0cbd614a813d2b3fce443028e01cd7ab85493ff93349771de93626f5b|BUY|Over": {
+     "alerted_usd": 1402.5199990515916,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0369becc883c87c6b8e1df2a7088bd93830000000000000000000000000000|BUY|": {
+     "alerted_usd": 2632.765590228926,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0383f02bfc7373776628ae6ef4bcb9ad8518a553f8d4d73d719b6fe0f626d3f3|BUY|Over": {
+     "alerted_usd": 820.8104760002379,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x11646181e747f9f60aeecddeadef32c5dd36fc550b87c0af5f7312642573e596|BUY|Over": {
+     "alerted_usd": 4752.29,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9b9df433705ba88c165358843d600a709871fc8d180bec4385dd7157e62188c0|BUY|Over": {
+     "alerted_usd": 3656.379999234741,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x6779b61a15b3bc837d30641496f9df18a8763254ba421ac5e863139113784c56|SELL|Gauff": {
+     "alerted_usd": 3744.40185,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x6779b61a15b3bc837d30641496f9df18a8763254ba421ac5e863139113784c56|BUY|Gauff": {
+     "alerted_usd": 2037.9299990429336,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03be3d3778f2bd424769595177323980700000000000000000000000000000|SELL|": {
+     "alerted_usd": 2086.1220119868212,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x8f5a0a619b4675dd8aa92322d668586d99b3055fa76dc7f2f93886ebc6a2499f|BUY|Over": {
+     "alerted_usd": 1067.449998942883,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc287622d65af4b5958a73855b0d32c664f4e21da430bf6103acd4386bb63e928|SELL|Over": {
+     "alerted_usd": 1104.7608,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc287622d65af4b5958a73855b0d32c664f4e21da430bf6103acd4386bb63e928|BUY|Over": {
+     "alerted_usd": 1199.9999980695238,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03be3d3778f2bd424769595177323980700000000000000000000000000000|BUY|": {
+     "alerted_usd": 579.0755100018588,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb4d9da72499f6cee98113128ddc756ddb7c38e2e5e4c896e8336fc787326b60b|BUY|Yes": {
+     "alerted_usd": 1259.5940001414,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x2010f7c6ae0fcbcefc3421bb00875ce2f928d63f9634ca577074e85c5cb75e1b|BUY|Under": {
+     "alerted_usd": 2971.31,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0311aeee2d2bf95be25ab32a2ae76c37e20000000000000000000000000000|BUY|": {
+     "alerted_usd": 2926.071150216166,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x8c183a99be9a090203538f44f9d09076963ac0c21d611df3ebd3df2e5860ec41|SELL|Luciano Darderi": {
+     "alerted_usd": 3702.1197,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x8c183a99be9a090203538f44f9d09076963ac0c21d611df3ebd3df2e5860ec41|BUY|Luciano Darderi": {
+     "alerted_usd": 1999.99999909,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc70c950069cca82c3f50354c4b2e2f401e38df7723e0b745ce0e0a1144199954|SELL|Over": {
+     "alerted_usd": 4423.581990000001,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc70c950069cca82c3f50354c4b2e2f401e38df7723e0b745ce0e0a1144199954|BUY|Over": {
+     "alerted_usd": 2346.8499980071983,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x79e27a58102c7edd35b73995c30d801e73e3e32a31606b85a46c23a882f8bfaa|BUY|Over": {
+     "alerted_usd": 3999.999999336171,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x1a917747ee2bf9a87e1fc9302a3bc6ee94b47acaace4a01e270fc844424faebb|SELL|Yes": {
+     "alerted_usd": 6511.2399000000005,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x1a917747ee2bf9a87e1fc9302a3bc6ee94b47acaace4a01e270fc844424faebb|BUY|Yes": {
+     "alerted_usd": 2935.6199990518803,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xa9b589eff178bf2e55593f0e9328c3b597a54ff00bd50ac234ef70c4c828d5cd|BUY|Yes": {
+     "alerted_usd": 5499.999997832269,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x032dbdb749f8d48b56156a1f144a7d326e9cd4f9004645679b13a0cacb71d37d|BUY|Over": {
+     "alerted_usd": 1999.9999991771986,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x1e0ad3d6a3df6681af04878b44354bf7eb7c87e2d9d57bf6a9319c1ba6f4de37|BUY|Over": {
+     "alerted_usd": 3500.0000000000005,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x7286559f354da8c066d5746e13ec7bbdf021034d0e30ef823e6837d618f54ee9|BUY|Alexandra Eala": {
+     "alerted_usd": 5679.699999325968,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xf490b664378a5bc4bd1a16b55325ebd8ac580ea2d0f3ee9d3e609a7d095e869c|SELL|Over": {
+     "alerted_usd": 5725.401469756747,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xf490b664378a5bc4bd1a16b55325ebd8ac580ea2d0f3ee9d3e609a7d095e869c|BUY|Over": {
+     "alerted_usd": 6097.02999911,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x7e895ef61b56690cd709ec2b201c6ddf63cc554773a72c483367c863857671ac|SELL|Osaka": {
+     "alerted_usd": 6196.03945983095,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x7e895ef61b56690cd709ec2b201c6ddf63cc554773a72c483367c863857671ac|BUY|Osaka": {
+     "alerted_usd": 2999.999998916376,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x039299ffbc5727fd5d9497215afd10a4480000000000000000000000000000|BUY|": {
+     "alerted_usd": 9621.68948966022,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x363d93b81017fbd5a128b880f67c61ad809e2a4c31566155e6954b01d4561cb3|SELL|Joao Fonseca": {
+     "alerted_usd": 4995.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x8dab6ab68ea4d5d132c0e17e047048cac21df3f826e23d2474db51ae024f0d32|BUY|Over": {
+     "alerted_usd": 3499.9999970263643,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x363d93b81017fbd5a128b880f67c61ad809e2a4c31566155e6954b01d4561cb3|BUY|Joao Fonseca": {
+     "alerted_usd": 3000.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x06ef88a8dd8bb8b38e8b671fc03ae326dcbb5c4ef0af62d4b42f7f2bed7d5021|BUY|Over": {
+     "alerted_usd": 2120.999998039123,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x7725123e81fedd7ec74d65ee7d8b1d09baf1d9e5a6f401bc0f81042cc51b4c26|BUY|Yes": {
+     "alerted_usd": 9925.439998591588,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0108943ea7ccef4186cbd3ca8290985c229a6b3cbdfd5fb63535d523e887866d|BUY|Over": {
+     "alerted_usd": 9733.389999595503,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xdbffb381c0d6fd4d60d1630e6549266e9ef11019924f9ecb4bb57dcf1c40f654|BUY|Over": {
+     "alerted_usd": 9624.479999036192,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x5d5a25aa036ff66f775d9206f5af034f45aadd5c06a664b5d45db157aca61d0b|BUY|Over": {
+     "alerted_usd": 182.50912900030994,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x35a4c05206c9ade8fbbd2548eafacbbe75a4106aadfedc80a8b2ef3de7775241|BUY|Over": {
+     "alerted_usd": 13251.92069949047,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc243c9e598c6e0a718a0b1237c79300da75465f8ddd7038859f28f430cea465e|BUY|Over": {
+     "alerted_usd": 13999.000000147504,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xad01ff0c85027bb189174d9cc93483875bd079d7a2dfad1f4055477b92c74f0d|BUY|Over": {
+     "alerted_usd": 5999.999998649145,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0fa94d114d0d582cdaf2b40e41379568ef8d104406870ad4d344c26bad407112|BUY|Over": {
+     "alerted_usd": 5561.254078953384,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x23f992fb9e07bcf1f584e5d9133e5085be1927218df308e5dbe336fedc77c2d9|SELL|Over": {
+     "alerted_usd": 9989.83017,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x4a366b7392f457e2f04fd5f308155e1b8cb2efcc2d827fb05084d8207193fbaf|BUY|Over": {
+     "alerted_usd": 8999.999998289999,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc6e41a758a6b53fbbfbade5524cea7c1d70a6db91ba7bb1f9c84564bcdc3324b|BUY|Liverpool FC": {
+     "alerted_usd": 4867.101600062318,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x23f992fb9e07bcf1f584e5d9133e5085be1927218df308e5dbe336fedc77c2d9|BUY|Over": {
+     "alerted_usd": 5199.915050803554,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xcfbba45ca4f325a9eafc3c5428ad3edcf71163b57aeb9a9872e4c3741b292249|BUY|Over": {
+     "alerted_usd": 9999.999998285826,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x764035ca08813b95d55eebbd6748d300283adb1527594c20d28eef7a262b28e2|BUY|Over": {
+     "alerted_usd": 9898.311390226649,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x82739e33173869cee3d1f504ce0227c97de44cc14026f1a3518fde6894510f97|BUY|Over": {
+     "alerted_usd": 15499.835991301105,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x29a97260057007f603a199e28d4cd947c08a2051534c90f86c8377a07efcb775|BUY|Over": {
+     "alerted_usd": 1446.9364,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x45df56464f288a0fa269a2a0cf6a20088fe5e4049ba815cdb9c768f845d56556|BUY|Over": {
+     "alerted_usd": 10399.999999069356,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe00869cd92b033dfcf69fd466950ccf75f002b511d42b5c377e31800fd69af36|BUY|Mensik": {
+     "alerted_usd": 4999.999998635782,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x3f2632f8b4e869734233ab165163619750342e8dab113248007fd8fce5324724|BUY|Over": {
+     "alerted_usd": 5158.269530963338,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x7976b8dbacf9077eb1453a62bcefd6ab2df199acd28aad276ff0d920d6992892|BUY|Yes": {
+     "alerted_usd": 26400.020000931054,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x4e803589e3aac8b331a3c930a96ae0f1dffffa43e47776f4d48dd8fa2ef46206|BUY|Over": {
+     "alerted_usd": 15051.770001843086,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xf5bc8db22aa41f0d3f8a1064e63d6c990301187dad76e246fa13009a2934ef5a|BUY|Yes": {
+     "alerted_usd": 13999.99999944,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe6ef89a8799219484b35f1a361873d167ccbdea0cda608fdfa2d4073e8e1e22e|BUY|Yes": {
+     "alerted_usd": 14999.99999908,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xecba7b1db1c698ab73b3572abfcde327a02b5112676144e049edcc1e1e0f5b0b|BUY|France": {
+     "alerted_usd": 14999.999999127502,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0363bca0122da0b1afcbbbadbfb1a94f900000000000000000000000000000|BUY|": {
+     "alerted_usd": 10679.08999941,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe2a5c02078b4f1c058802f4e13ce827ca6641d00c9a2d55101fe668a07eeb063|SELL|Sinner": {
+     "alerted_usd": 14552.09334,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x089cebb482b05f853a24ff8de0151b52f94754a37835f33b5309ca75f2820f31|BUY|Over": {
+     "alerted_usd": 18405.51559965,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe2a5c02078b4f1c058802f4e13ce827ca6641d00c9a2d55101fe668a07eeb063|BUY|Sinner": {
+     "alerted_usd": 9999.999995877293,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x775f42b26ed999f5043f89932f06e01226651601c69368930bf5cf31359e6952|BUY|Yes": {
+     "alerted_usd": 6915.682881004148,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xd92bc27584a025ecd9d7dc273fca9321a725436fa5f3be0a21cc1b94a7cd1207|BUY|Yes": {
+     "alerted_usd": 7499.999997465744,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x95f726bbb693b945f94473908298b2389989550b08a7bfd90f97ce7ba62cb719|BUY|Yes": {
+     "alerted_usd": 29999.99999922,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x85b78ea85ddd6f9b23ee88c1e0ebca096cf44c63a53c1b071fe768f47ff04f42|BUY|Yes": {
+     "alerted_usd": 49128.559998209996,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xac5295ec793cd0561c4dbcc98857c50535bba119ceae6928916667e37840dd05|BUY|Over": {
+     "alerted_usd": 9537.5399994,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb86425238a6bb2abbea65a4730da96a877bb8f1c18e5579271f5bd08fcd7fdff|SELL|Linda Noskova": {
+     "alerted_usd": 12182.92488,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9af4671ce1fb4e7a64e022059a28c1f07f11f54b9631230ddc12590f6e4f38d3|SELL|Over": {
+     "alerted_usd": 7793.755140006644,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9af4671ce1fb4e7a64e022059a28c1f07f11f54b9631230ddc12590f6e4f38d3|BUY|Over": {
+     "alerted_usd": 4999.999999897923,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb86425238a6bb2abbea65a4730da96a877bb8f1c18e5579271f5bd08fcd7fdff|BUY|Linda Noskova": {
+     "alerted_usd": 4999.9999995,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe977a5bb87218f46c1e056bf2befa049a6431a73438f232c42d6f1fe1205242a|BUY|Over": {
+     "alerted_usd": 32000.000001022097,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x2c37e07b722442c2381fac76f8564d580660aa028066e08bad1b32bd11813e9d|BUY|Yes": {
+     "alerted_usd": 19999.999998229996,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xdf12d3ff27b634406947e89e64c0568a61c819462fbe7dd54f9464fa131c8f26|BUY|Yes": {
+     "alerted_usd": 19999.99999923,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe434a067f5430cae7286efb5efda6e3ef8641cd5d71a006c038eced3b1e742c8|SELL|Zverev": {
+     "alerted_usd": 8645.18616,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xa5895f3a153bdd0f5872401640adf3b6aeb04954ac30ec097ba75e498acaff41|BUY|Over": {
+     "alerted_usd": 7722.5107656,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe434a067f5430cae7286efb5efda6e3ef8641cd5d71a006c038eced3b1e742c8|BUY|Zverev": {
+     "alerted_usd": 4499.99999904,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xf3399207871cb96a26550839d18f31f214dcbcfaa5e6aaaafa43a7de885f9ff7|BUY|Over": {
+     "alerted_usd": 29999.99999917522,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x81f6a8cea2b3879ba981efa01e1badab0b43f074ea0abb58eeda897493b19e51|BUY|Over": {
+     "alerted_usd": 32854.36779747974,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x6396b5894f730b6fcfb412946d0c7ecc87e2e5d13b94d1a40c388aa495a41a67|BUY|Over": {
+     "alerted_usd": 4999.999998535704,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x177c9fbf9f6fb07ee532f9b479204d8ae9126954dcea981a9c3ab968eda1550c|SELL|Over": {
+     "alerted_usd": 19096.33455,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x04068db9551ef3a2ad5212a54ba6a19bfe53c2c9c5bd15b57a751bec0ecd69ed|SELL|Coco Gauff": {
+     "alerted_usd": 9762.554699731149,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x04068db9551ef3a2ad5212a54ba6a19bfe53c2c9c5bd15b57a751bec0ecd69ed|BUY|Coco Gauff": {
+     "alerted_usd": 9499.99999836,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x04068db9551ef3a2ad5212a54ba6a19bfe53c2c9c5bd15b57a751bec0ecd69ed|SELL|Karolina Muchova": {
+     "alerted_usd": 7924.526399999999,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x04068db9551ef3a2ad5212a54ba6a19bfe53c2c9c5bd15b57a751bec0ecd69ed|BUY|Karolina Muchova": {
+     "alerted_usd": 9999.999999310001,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x177c9fbf9f6fb07ee532f9b479204d8ae9126954dcea981a9c3ab968eda1550c|BUY|Over": {
+     "alerted_usd": 9999.999999198651,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x4543c6990183b2ae68dc01810615205068394646910aaee05c0f3e59001b2d1b|BUY|Over": {
+     "alerted_usd": 19999.99999787892,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x2462b715458a7f4ddb9a28d22c26b11740735c52292796abf568592057112018|BUY|Over": {
+     "alerted_usd": 23999.999998263265,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x4ac818ea083a05fd123b850d67c7e5bbe29964e8819ae414c8f9a86739fe7733|BUY|Taylor Fritz": {
+     "alerted_usd": 14999.999999050002,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x58a640dc715cef8614ec5d105e38867cd7b3c3ac4e4a7d40dce96a762c53429e|SELL|Linda Noskova": {
+     "alerted_usd": 16112.90097,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xf1b67639e4f64d6ffaa1766d396bb22a902249101db60393484f5e444ae085fc|BUY|Over": {
+     "alerted_usd": 6499.99999960422,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x58a640dc715cef8614ec5d105e38867cd7b3c3ac4e4a7d40dce96a762c53429e|BUY|Linda Noskova": {
+     "alerted_usd": 9999.99999934,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe925f30538d3eda3f9390ad8d42417e8bf9e1c5204ab20f8e6c066998c88ee46|BUY|Over": {
+     "alerted_usd": 12455.9162,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xdb013062e7782a29ace79cc640e6a1f4c3799ee1c0bfd4572306baf847ece8f0|BUY|Over": {
+     "alerted_usd": 19911.628233583153,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x6d621f9a6690d234786025521c650f3f65738e0f877ff776c8f50275a2b3aee7|BUY|Switzerland": {
+     "alerted_usd": 9999.999999818048,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x71cf19220d20cbad74d50c08f51995fc8aa7f93455878bffbbec739d1d63cee6|SELL|Novak Djokovic": {
+     "alerted_usd": 6241.514399955264,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc42e397be306e83cac5903083748639b5a019add8d98a091c3aff16b9a631ce2|BUY|Yes": {
+     "alerted_usd": 5000.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xcc4026621ceda33b2af38e9d22871b650c632c86daea6ecc62b01ee1aa01188a|BUY|Yes": {
+     "alerted_usd": 15600.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x71cf19220d20cbad74d50c08f51995fc8aa7f93455878bffbbec739d1d63cee6|BUY|Novak Djokovic": {
+     "alerted_usd": 5892.168599115411,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x081bd6e53b0f344a6b516f9dd9ea2c4c26b137dc15fc9d2720405aaf8587c147|BUY|Over": {
+     "alerted_usd": 25999.99999821,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x07c5e3740c6800a18f93b05181547de97b7da237171efb1d8017f7c3ec44e317|SELL|Jessica Pegula": {
+     "alerted_usd": 4642.855799999999,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x07c5e3740c6800a18f93b05181547de97b7da237171efb1d8017f7c3ec44e317|BUY|Jessica Pegula": {
+     "alerted_usd": 12499.999997667142,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x50909d639aa673a462d85c6ee0d24c2d0238e807eff785f38cdb5b0a27c89475|BUY|Over": {
+     "alerted_usd": 10076.2030996,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x32171339b11c462131c67d652cf11ec890f74e524ea82459274f093643d79620|SELL|Over": {
+     "alerted_usd": 11813.709700580072,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x32171339b11c462131c67d652cf11ec890f74e524ea82459274f093643d79620|BUY|Over": {
+     "alerted_usd": 45999.999999370004,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xfc2ce317da4e9c701c792307256258302454d46ad0e3346975b0e9fd2bc95f6c|SELL|Over": {
+     "alerted_usd": 116707.51565999999,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xfc2ce317da4e9c701c792307256258302454d46ad0e3346975b0e9fd2bc95f6c|BUY|Over": {
+     "alerted_usd": 38174.699999863245,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x694d7d379d5fc7277fb437881c85e5460d369f83c0eea7e3bc68e3f8c72c7dfe|BUY|Over": {
+     "alerted_usd": 53438.479600000006,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x84ceac327b0b2a76ced4315420c9f1ad695512b456c6ee565f134fc82384ffc3|SELL|Taylor Fritz": {
+     "alerted_usd": 54369.60877718359,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x84ceac327b0b2a76ced4315420c9f1ad695512b456c6ee565f134fc82384ffc3|BUY|Taylor Fritz": {
+     "alerted_usd": 39306.56999913,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xcfd05b8542186b65050be56282039a00a5099d36b956408b440cddac4bff1f96|BUY|Madison Keys": {
+     "alerted_usd": 39999.9999970966,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x86cba18ae37a3f31e79b4d3dbc0afa367118ad686170e1801e966b1b88a6f8c0|BUY|Over": {
+     "alerted_usd": 5129.23479989549,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xbed3ae21a3ffcdbab298677212283c5ac19a4e98c9c50578ae7f39ac13479a43|BUY|Over": {
+     "alerted_usd": 14772.565284997383,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xcd5a126fcefcdfa03d8e25bfff3d3c4476100f630467622ec6d5fa7595c72636|BUY|Yes": {
+     "alerted_usd": 9906.1068009633,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x6dafddc918d0d3a9853cbe250b9d180f48c07ba277e375faf6f26bec62dd7359|BUY|Over": {
+     "alerted_usd": 10800.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe81ec0ca7357d9e91e9b95e1ecf60606f8b1686290464758b9a3595aeae11a1a|BUY|Yes": {
+     "alerted_usd": 63000.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb36fac65eccec94d4d37c751298e131ff443979e65c0de64fe5d0702c1ac0b82|SELL|Over": {
+     "alerted_usd": 45215.75898,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x4da73e81ca85a3d9715340bea8dc38c102fe0bf63ba6aa1f3efd8a54d56e9d0d|SELL|Felix Auger-Aliassime": {
+     "alerted_usd": 39545.73289948927,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x4da73e81ca85a3d9715340bea8dc38c102fe0bf63ba6aa1f3efd8a54d56e9d0d|BUY|Felix Auger-Aliassime": {
+     "alerted_usd": 26099.999998109997,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb36fac65eccec94d4d37c751298e131ff443979e65c0de64fe5d0702c1ac0b82|BUY|Over": {
+     "alerted_usd": 23396.304582557495,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x13f1c6ff877f18953b4c40b6a21e0e3daf852f7b47b4a6343449e0e680eedb6a|BUY|Over": {
+     "alerted_usd": 0.0,
+     "pending_usd": 56.3814,
+     "ts": 0,
+     "fill_ts": 1790011422
+    },
+    "0x001649e0865024e6e86bc14c95de5dfd2dfec30513565d5cf3462faf9aa54d43|BUY|Yes": {
+     "alerted_usd": 500.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc7b299ae72c2f87d13ae9e9588040bc89df07f23ba11bff7c159e04f3c8eda8f|SELL|Over": {
+     "alerted_usd": 518.95054,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xa2f718cad568d75d390229819c03b78e55b56283b001ad5f19ca48587aaf792f|BUY|Over": {
+     "alerted_usd": 24915.279997736365,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x3777e133fec459b42aac3fdeeed231fc7544442388fe1a266ae0a61bd50cae12|SELL|Frances Tiafoe": {
+     "alerted_usd": 25956.21339951457,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x3777e133fec459b42aac3fdeeed231fc7544442388fe1a266ae0a61bd50cae12|BUY|Frances Tiafoe": {
+     "alerted_usd": 30000.000000194166,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x68210f2621cee6f4fe7ab09cd5e721c0e1428c3914557b08bb26a68508cae680|BUY|Yes": {
+     "alerted_usd": 30000.000001053217,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc7b299ae72c2f87d13ae9e9588040bc89df07f23ba11bff7c159e04f3c8eda8f|SELL|Under": {
+     "alerted_usd": 865.1485990144291,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9710191eef09e331b84c6ed8a7ed24c23639db4856232ec2f3a2fae3629440e2|SELL|Over": {
+     "alerted_usd": 24259.24647,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc7b299ae72c2f87d13ae9e9588040bc89df07f23ba11bff7c159e04f3c8eda8f|BUY|Over": {
+     "alerted_usd": 283.10123299651514,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc7b299ae72c2f87d13ae9e9588040bc89df07f23ba11bff7c159e04f3c8eda8f|BUY|Under": {
+     "alerted_usd": 14623.093465046033,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0c4334e84edeff507fe1907f7c206a883027983f74b81469fd48d8a7746cec97|BUY|Zizou Bergs": {
+     "alerted_usd": 11199.98676299968,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9710191eef09e331b84c6ed8a7ed24c23639db4856232ec2f3a2fae3629440e2|BUY|Over": {
+     "alerted_usd": 13096.866352754023,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x955737abc56ec099459616e792abf3ddc2c4bdbdad1726a86c43562a6fad9d02|BUY|Minaur": {
+     "alerted_usd": 5223.101446893395,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x46527b7dafbb3215e56570be0dd6240c1280798fd319a99474542a498d284136|BUY|Yes": {
+     "alerted_usd": 15749.999999454436,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe2ed6cfe00fc17e671c3a6e1de68be244dccb233b32e40902454dd95df9c60f5|BUY|Over": {
+     "alerted_usd": 5898.998847940945,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xa4721049a0f3db3a80e57aafc6ffae65470e6c63d36fac076aedc5a088878eed|SELL|Yes": {
+     "alerted_usd": 11928.34971,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xa4721049a0f3db3a80e57aafc6ffae65470e6c63d36fac076aedc5a088878eed|BUY|Yes": {
+     "alerted_usd": 7999.99999902,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xf711a2c0a9e6e4bfc91b5e21b365d282227b67fdea3b64b0edecb21d7bcc713c|BUY|Over": {
+     "alerted_usd": 25999.8123405651,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x3984929a5c5bd5cbb99ab545aee11d03fd4c8482eeff9cf200046354a33d4aca|BUY|Yes": {
+     "alerted_usd": 2483.779999680331,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x95fdacd7951fbc8ac1378fe973a1fcb103787cd6a32fa4b56e45dcaa8bb6187f|BUY|Over": {
+     "alerted_usd": 8999.9742,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x961133593d229922010f745ca0e94367c07fbf236c390a1b7b84e559f8d7d349|BUY|Over": {
+     "alerted_usd": 2899.9999987594265,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x49620f9c9bf73728a7abaa8dcba9cf97950ec46736fd016f983f99a781b5f68d|BUY|Fonseca": {
+     "alerted_usd": 2316.5405319973074,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03ac00e31c987752d624aa8d8f331706ed0000000000000000000000000000|BUY|": {
+     "alerted_usd": 2450.879999029783,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xa7fc7df2f67571001a09e24e50c4c787a3b579a5b454b52d39aaa7a4e7af38c3|BUY|Over": {
+     "alerted_usd": 10580.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xbf2f8d3f411619df4a02c6a32ade1e4da4b71cee9ea49b85c9c154a70dd46424|BUY|Yes": {
+     "alerted_usd": 8700.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x6e62d4c9a89e9b86cd8454b38ddc27786c9484a7ad80e3446369447d9538a519|SELL|Over": {
+     "alerted_usd": 9990.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb0e36627c52f6d732ad408f7b25f461a10378260cbf3ae0117cb580fb52be62d|SELL|Over": {
+     "alerted_usd": 0.0,
+     "pending_usd": 4.97,
+     "ts": 0,
+     "fill_ts": 1790011422
+    },
+    "0xc6d98bf585c851f59aac6b4e68e2a32a72e2e1563b1010e17c3b780db334fa40|SELL|Over": {
+     "alerted_usd": 7992.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x6e62d4c9a89e9b86cd8454b38ddc27786c9484a7ad80e3446369447d9538a519|BUY|Over": {
+     "alerted_usd": 6899.999999999999,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03cf77779fe67d27ff77e62d021bb9fa4f0000000000000000000000000000|BUY|": {
+     "alerted_usd": 4917.2399991639995,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc6d98bf585c851f59aac6b4e68e2a32a72e2e1563b1010e17c3b780db334fa40|BUY|Over": {
+     "alerted_usd": 4160.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb0e36627c52f6d732ad408f7b25f461a10378260cbf3ae0117cb580fb52be62d|BUY|Over": {
+     "alerted_usd": 0.0,
+     "pending_usd": 3.0,
+     "ts": 0,
+     "fill_ts": 1790011422
+    },
+    "0x921a063d04cded760e476d1f6a2d68510ac4e03436cc0e976fc845703c495c80|BUY|Cobolli": {
+     "alerted_usd": 4399.593499701251,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe31453841c4d4fdf7d24042a321affa964b24531f1962dc6e24a77f3799e4782|BUY|Over": {
+     "alerted_usd": 5022.977799599999,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb06cef8614c330248ed45ee7ee90e56674a44bce0af00a775190d6b5ac2a3321|BUY|Over": {
+     "alerted_usd": 4999.999999496352,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xeb4be0b8947283dc71214dc77b7ff18d3d0a47d8d38efeba27196a4e220f0c16|SELL|Yes": {
+     "alerted_usd": 9306.97371,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xeb4be0b8947283dc71214dc77b7ff18d3d0a47d8d38efeba27196a4e220f0c16|BUY|Yes": {
+     "alerted_usd": 4499.999999820864,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x54710de5506af6e89c06087d603ced008a2284f1c2edfe48e5ac9ece913d21f3|BUY|Yes": {
+     "alerted_usd": 4488.8172,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc9c405407d5351e9bb14dd826cdb033864c8377cbb171446abad330d4ed7473a|BUY|Senegal": {
+     "alerted_usd": 6100.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0c0f8da3116a620a0b2031f2627ddcdcac3576a0c44284b0c94186bf269426c6|BUY|Over": {
+     "alerted_usd": 6000.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x052a53919f80a40fddd52814c84f02c26ce5f87db780f895f32f44b15f5939fb|BUY|Over": {
+     "alerted_usd": 3521.1916,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xff542c23947ba9d553d37a3b809fcf011cf940986e61ce6f4c21be77009b8653|BUY|Yes": {
+     "alerted_usd": 5225.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9f1d5a8cd29c83d03e84e12189c6731f56095f4b173cf3f3c61de15891aedbc2|BUY|Yes": {
+     "alerted_usd": 1700.0000000000002,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xa09fc6e7f5f7c4d0ef7aaca24447eea283784d831443e3dbdf095f45a651d756|BUY|Under": {
+     "alerted_usd": 3569.8839001,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x480686636099964b80f282393f76e06ccbc8d936822d00d461f8524346796437|BUY|Over": {
+     "alerted_usd": 3999.995999,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x1f54c5d06e9e7a7a11ed24123ab5743ba5b525745cf1338b7ec23d371e6f55ea|SELL|Yes": {
+     "alerted_usd": 1050.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x1f54c5d06e9e7a7a11ed24123ab5743ba5b525745cf1338b7ec23d371e6f55ea|BUY|Yes": {
+     "alerted_usd": 5550.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x47c3dc6f37210a63d5c6520727e94c5fb2d4d8ea4588a2c901fd85d252190019|BUY|Yes": {
+     "alerted_usd": 26423.244999999995,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x92349186d202099ab7dd521786640d33f29b64935b53408f8b732abf60e21216|BUY|Yes": {
+     "alerted_usd": 14750.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9e3591aa318ffeacaa34c6dde24a129f1bb588d0d2156bedebf212a9f39ca179|BUY|Over": {
+     "alerted_usd": 5100.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x1d57ae7d429a50e47843a712d7caf62e76b724310707faa892c1146c8e6a6742|BUY|Morocco": {
+     "alerted_usd": 5000.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc297782d5fa2793fac4d8c5e9fde15e4afcb53412517e9091bdddb54c29de101|BUY|Yes": {
+     "alerted_usd": 25200.000000000004,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xedee2e9c12880879682adebd99c43fb2021200fc64b989ba1b3595a4ffe170a2|BUY|No": {
+     "alerted_usd": 5786.264355907481,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x4b403ec2d0efa1e350027d610a59e2ee9bbe58639ef4d54838b60af3f2a13db1|SELL|Over": {
+     "alerted_usd": 2005.206499374375,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x4b403ec2d0efa1e350027d610a59e2ee9bbe58639ef4d54838b60af3f2a13db1|BUY|Over": {
+     "alerted_usd": 5131.083933998669,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x71e3d6c53ea1aca91a2dcd759c094813ef777bd0270442ab7d7ebf2b6a631382|BUY|Over": {
+     "alerted_usd": 16749.96791799913,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x998efd8b95f1d26b648be6e07c75db99c2be186c5a6b8833394d1347af46ac41|BUY|Yes": {
+     "alerted_usd": 10199.947016086444,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe4f52bd0b886606053e7b41117f0c71bbdcdeb0f8b90f8512cdb20e041649a19|BUY|Hubert Hurkacz": {
+     "alerted_usd": 5499.999998985661,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x5a858b779255d8232373e787c88cb984d927b13f13e4cbfabe248964e9a0c9a5|BUY|Hurkacz": {
+     "alerted_usd": 779.2598659316664,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb50b0f936bcd3538bfa9791e8bfb26a231c298b1df68eff57b8b9620dd60fb15|BUY|Over": {
+     "alerted_usd": 5520.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x688954ad8e279cc5febef6739d4f87acd3e42ca768ac6a8b621386a8578532ed|SELL|Yes": {
+     "alerted_usd": 20060.1457009814,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x688954ad8e279cc5febef6739d4f87acd3e42ca768ac6a8b621386a8578532ed|BUY|Yes": {
+     "alerted_usd": 12888.759999999998,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x31423c109daef60542822ed8b99cd122db05bc85a40d470fbd2d4c2221435418|BUY|Over": {
+     "alerted_usd": 2799.9999978769447,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc8a1e0fda1d072f87aaa9aadcf4618088b362d4a7c4944207d098b30b80b82d2|BUY|Over": {
+     "alerted_usd": 37529.4289289351,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x7457b18428af38c41feebacdd6213cbd4d5182e3bbd66370868d8bc3a83dd05c|BUY|Yes": {
+     "alerted_usd": 34095.009,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x1a0f89a97f8fb8ffa677f30358ec0aca6e5e14e2e3bf870cf7005386731bb895|BUY|Over": {
+     "alerted_usd": 819.1822209753191,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb68b4b4a824d7b00aee926bc2b9e36365a5f5839a3a298b045038e57b6bfa5c5|BUY|Over": {
+     "alerted_usd": 2000.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb0ae1d79a2366d2fd77351077b950a8a0dfb3cdc9ebe70a2f5c7ae5d1924b13c|SELL|Over": {
+     "alerted_usd": 642.496699965848,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb0ae1d79a2366d2fd77351077b950a8a0dfb3cdc9ebe70a2f5c7ae5d1924b13c|BUY|Over": {
+     "alerted_usd": 674.3784620012106,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xdf77b5390425f7ad2fc2f248debd4fdac31238f6508c63b9dd20eeb9f0538268|BUY|Over": {
+     "alerted_usd": 6200.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xd0fa27da024261ba5edb5e9eda33651a224fb5a2137d3c9e73b216109b12dd79|BUY|Yes": {
+     "alerted_usd": 2500.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe322faca2a534900680db54e3a4349a61427d347b6f906d2eeb01f81ae1b082c|SELL|Yes": {
+     "alerted_usd": 14800.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe322faca2a534900680db54e3a4349a61427d347b6f906d2eeb01f81ae1b082c|BUY|Yes": {
+     "alerted_usd": 12000.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03ad5b505ce26b378bcda845387bf015a90000000000000000000000000000|BUY|": {
+     "alerted_usd": 4368.921670617723,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xaa850b5f700f1dd8322765c85908f11af042ac4a6697f3f6ffc468143534034e|BUY|Zizou Bergs": {
+     "alerted_usd": 3999.999997960287,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x824d5ee33704d8fa71acfd41c60f4978a2b8fb7d349ec7f22f4d18f512ccd627|BUY|Osaka": {
+     "alerted_usd": 1999.9999988256898,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x65fb1dd1faa21493b049a543539040d14bdf73a11524477092d3cf8a7d78614b|BUY|Over": {
+     "alerted_usd": 5999.999999457289,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x7c37bb4c2dbd430d4f69d7c7df7f98f8b30774f9b110401bc6f6d19e7789334e|BUY|Yes": {
+     "alerted_usd": 14817.75999849,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe690620297dfea974d20df84b4cf90460e46a26ec864353482717b90509a3c0b|BUY|Yes": {
+     "alerted_usd": 10875.615472495254,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x69adc46a5cb15e91b7e3910458574930d398753fbf77a8d75620d379b1603863|SELL|Over": {
+     "alerted_usd": 3424.0137999999997,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x69adc46a5cb15e91b7e3910458574930d398753fbf77a8d75620d379b1603863|BUY|Over": {
+     "alerted_usd": 5024.8536,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03a7af6898d65a51153faca9c9633c8e8f0000000000000000000000000000|BUY|": {
+     "alerted_usd": 2999.995045223697,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x44e25f753ae47dbdf2705d35e0a45db24d3a1b2996b82a1350ade2c7e92c4f93|BUY|No": {
+     "alerted_usd": 0.0,
+     "pending_usd": 4.999999000205936,
+     "ts": 0,
+     "fill_ts": 1790011422
+    }
+   },
    "min_usd": 0.0,
    "sports": [],
    "note": ""
@@ -187,15 +1518,15 @@
    "label": "Portly-Derivation",
    "venue": "polymarket",
    "added_at": "2026-06-27T20:42:47.931938+00:00",
-   "last_seen_ts": 1782592967,
+   "last_seen_ts": 1789634563,
    "by_sport": {
     "Tennis": {
-     "markets": 282,
-     "wins": 146,
-     "pnl": 62545.11,
-     "win_rate": 0.5177,
-     "avg_entry": 0.5193,
-     "edge": -0.0016
+     "markets": 286,
+     "wins": 149,
+     "pnl": 66199.53,
+     "win_rate": 0.521,
+     "avg_entry": 0.5195,
+     "edge": 0.0015
     },
     "Soccer": {
      "markets": 13,
@@ -264,14 +1595,14 @@
      "lo": 1000,
      "hi": 2500,
      "label": "$1k-$2k",
-     "markets": 99,
-     "wins": 49,
-     "pnl": 9451.09,
-     "wagered": 174473.5461634197,
-     "win_rate": 0.4949,
-     "avg_entry": 0.4581,
-     "edge": 0.0368,
-     "roi": 0.0542
+     "markets": 100,
+     "wins": 50,
+     "pnl": 10608.31,
+     "wagered": 175673.55926345268,
+     "win_rate": 0.5,
+     "avg_entry": 0.4584,
+     "edge": 0.0416,
+     "roi": 0.0604
     },
     "$2k-$5k": {
      "lo": 2500,
@@ -290,14 +1621,14 @@
      "lo": 5000,
      "hi": 10000,
      "label": "$5k-$10k",
-     "markets": 108,
-     "wins": 61,
-     "pnl": 59524.31,
-     "wagered": 756746.2441055923,
-     "win_rate": 0.5648,
-     "avg_entry": 0.5218,
-     "edge": 0.043,
-     "roi": 0.0787
+     "markets": 111,
+     "wins": 63,
+     "pnl": 62021.51,
+     "wagered": 774249.0451055922,
+     "win_rate": 0.5676,
+     "avg_entry": 0.5222,
+     "edge": 0.0454,
+     "roi": 0.0801
     },
     "$10k-$25k": {
      "lo": 10000,
@@ -352,11 +1683,1482 @@
      "roi": 1.2803
     }
    },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
+   "sports_refreshed_at": "2026-09-24T18:58:50.033641+00:00",
    "record_from": "2026-02-19",
-   "record_to": "2026-09-08",
-   "record_trades": 3475,
-   "open_alerts": {},
+   "record_to": "2026-09-17",
+   "record_trades": 3480,
+   "open_alerts": {
+    "0x7a8e3676595034c9812cfaa5467e78b4b56c9b66113ab083d2ac28a58564644d|BUY|Laura Samson": {
+     "alerted_usd": 5500.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xa528a2fc4c27b1ac7a7c591ff8482bc9382e9f3de3daa830118f60edbd79b805|BUY|Marina Bassols Ribera": {
+     "alerted_usd": 6102.801,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe4f8971db4553964ada1afc3ee5c40877c60e8d3c495bdcbe27a1650c97b3937|BUY|Francisca Jorge": {
+     "alerted_usd": 1200.0131000329839,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x40bd007c3bf433b3ab9f9dc3904b61099a0daec0dbd9127ec4ecd508b3e05746|BUY|Alexander Zverev": {
+     "alerted_usd": 5900.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x821a42878df6222330cd5b2d5c4e7474f3eb339a0788671f678877cb4919cac3|BUY|Sebastian Ofner": {
+     "alerted_usd": 1047.7334000323272,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc4ee385ce2c676398c5fc34eae726956ca59aac463c392826a3fd4882622da48|BUY|Under": {
+     "alerted_usd": 5966.10375991,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03c399b9ccc30f5fedaa439e405c415a3b0000000000000000000000000000|BUY|": {
+     "alerted_usd": 780.3310999708295,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x6c500e18ec25fe03c13543de43df50f1ec7386fd21701e90c20d2a09f52b1e15|BUY|Under": {
+     "alerted_usd": 13000.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x035e3363cdc892493f930761d6bdefea360000000000000000000000000000|BUY|": {
+     "alerted_usd": 489.65362000176935,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03d85125437c8517d730abb127a83ce9eb0000000000000000000000000000|BUY|": {
+     "alerted_usd": 3224.5564989748273,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x50685550af7811a976fb226e76068bb8601ef8bd27c51bc32bd3d8ea8301b34a|BUY|Benjamin Bonzi": {
+     "alerted_usd": 1271.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9b30d2ece4f593e0747668fa667dce004068f9274dda8c5a7dd692d9f9bffe7f|BUY|Zachary Svajda": {
+     "alerted_usd": 1479.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xf2879c8ebb8875ce8a39bccd9e3640915f40a7c01ec91bf457d120d3ee93468c|BUY|Andrey Rublev": {
+     "alerted_usd": 3360.5775,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0305727cd8042b52c6643d8e054a55fa6a0000000000000000000000000000|BUY|": {
+     "alerted_usd": 1961.0246399285563,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x43c640ffec789d41bbc859b6961b43f060f160632ce89f042b1c5330959b221c|BUY|Michael Zheng": {
+     "alerted_usd": 3479.9999999999995,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03b34ae949d50dfa1b2c411948e2bdfd740000000000000000000000000000|BUY|": {
+     "alerted_usd": 979.0833000801657,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03721b6b724291fb97c036ff27257bc9e60000000000000000000000000000|BUY|": {
+     "alerted_usd": 1953.0841300153456,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0d728b0782ebf5ae5423491c1adc692f8bc44c8a93ec8d92272909a0da323b1c|BUY|Valentin Vacherot": {
+     "alerted_usd": 6132.1,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb5183de9e7530d2c2a4008f6f8941cc935c88c88f169cf09d33b94e225870c44|BUY|Over": {
+     "alerted_usd": 0.0,
+     "pending_usd": 68.85,
+     "ts": 0,
+     "fill_ts": 1790011422
+    },
+    "0x575333baa15e9d36bbca6a6abcb0ba087bfeba694c248e4b49c03cf588713c72|BUY|Over": {
+     "alerted_usd": 614.50000001,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x12f8b012d1670ed13493186772e35bd1fe483759db12cb1252d590ec55f52d28|BUY|New York Mets": {
+     "alerted_usd": 4999.9972,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x031c260ecf31340267609cd82d6d5866820000000000000000000000000000|BUY|": {
+     "alerted_usd": 9677.145280114659,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x45ae6446bc3fe24fa1becba819568f9409f2af09b4bf0e65ec24d41dffb9c4af|BUY|Michael Antonius": {
+     "alerted_usd": 1226.501373930425,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xee0bf4589e7c6ca73ccbc99d16f9e02b8ea8808f4fafbf58a29a0f63ee390254|BUY|Christopher OConnell": {
+     "alerted_usd": 196.95890000000003,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x1ccbd092403fc55ebf99144b394cd4edddbf7931a953f1ffbe6c340ac711efcb|BUY|Tom Gentzsch": {
+     "alerted_usd": 2300.3201330004167,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xdfedeb263f90a2e086d3aa0424ecba37a5a9eb2dcf1865a90e23ace6d5f22681|BUY|Aurora Gaming": {
+     "alerted_usd": 4800.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x877e97bc65fec82b3ab74d119e3fe58c4ae650168baa540c1ddfc8d77e61237a|BUY|Aurora Gaming": {
+     "alerted_usd": 4799.990767005039,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x1c38a64c494e01c9bd81362cfadeadb3b87023d1d9ffae1df5a428c03152fc74|BUY|Yes": {
+     "alerted_usd": 899.9969470591868,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x90bd8be511335fd4f99981750764c12a360832d2321bd2c72ed79e4c495b6b8e|BUY|Over": {
+     "alerted_usd": 1713.7432,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03236b4a2532d569a38cd01ada561ccf0b0000000000000000000000000000|BUY|": {
+     "alerted_usd": 11701.542010386798,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03ca05c8145d0cd60abd5330c869adab150000000000000000000000000000|BUY|": {
+     "alerted_usd": 978.6466299139915,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x937dbdccfcd6b1e01b98b3033c19c7870aca985dbbc492792dc3491c18525524|BUY|Yes": {
+     "alerted_usd": 975.4100000024571,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x6dd41d230185eef74e9e34407f3440084533464806ffa49904c1df82e23cd1c4|BUY|Nicolas Mejia": {
+     "alerted_usd": 368.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xaf54c6d5f776f55bcb8b88918fb01dae9426c5dc5d55e8b7ded7425fede6d61a|BUY|Lukas Neumayer": {
+     "alerted_usd": 1037.9540999935,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x88c19e53d18899f7e02435dd32bccde82bf8f92a1b9ea609de2d66940759785d|BUY|Joel Schwaerzler": {
+     "alerted_usd": 5818.9899999,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb80392cac94733be44b956af81273994940b213f91d517ea36e18429f22ed408|BUY|Yes": {
+     "alerted_usd": 548.1167719999164,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x7e15626343cefce6cc5955453db4d47adff733b4fed56d17e51d90ff26f93314|BUY|St. Louis Cardinals": {
+     "alerted_usd": 11999.181953083373,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0e0932c50ca8471051a2437ce08baeaf88cea3b7b87601b87d5cddfd75cfe143|BUY|Over": {
+     "alerted_usd": 639.870494999999,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x36dac35a6fa56364184d19c69ea3cc934c15608c8151103f812a662ef94d1f7d|BUY|Yes": {
+     "alerted_usd": 0.0,
+     "pending_usd": 1.25,
+     "ts": 0,
+     "fill_ts": 1790011422
+    },
+    "0xd4092fd3be4df3b7c1e3d31fd9fbf708f60db5a2c1e106e118f54aec4f7b9869|BUY|Yes": {
+     "alerted_usd": 1086.8803,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc306f1e66703bba2977be508ca724976642f0bd66ca5f6594b3eb57bddb2dc2c|BUY|Spirit": {
+     "alerted_usd": 2118.5066419255454,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe3d1ecb51019aa8a7449879b71b1c903c6b96870911aece69a2ea27d151b6f0d|BUY|Karmine Corp": {
+     "alerted_usd": 6393.948609506393,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xedeb21da344a601fc9c5fefa93657ef5ffcb97eed90c290254fd9574bd0b0a39|BUY|Team Yandex": {
+     "alerted_usd": 12600.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x578636a5a4268f7d60028c4906b459e10d7b9a118b2d34a1543f766de614f4fb|BUY|Legacy": {
+     "alerted_usd": 310.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9b10fcaf654960bc777ddc653d289331cd4719cc120bfb75e5efbba68d48c540|BUY|Spirit": {
+     "alerted_usd": 15839.895007319199,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x16c03919efa35dee2d85cb642f8e060f501b4fc9cc2f910f656107ba2df34417|BUY|Hanwha Life Esports": {
+     "alerted_usd": 6707.996533,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x3bae865f39fd0cc48f2fe2e751567bff85a09a195ff6661a92b376daee3d9351|BUY|Iga Swiatek": {
+     "alerted_usd": 8850.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x07f400a100b3bb2958668b6a33da366d34823a4d49b105aca49a81f330490604|BUY|Under": {
+     "alerted_usd": 10000.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x75eca927b1a3269fcc401a7f78e87eb941b4aaf8edf6eb15f8ce57d23adac2f3|BUY|Over": {
+     "alerted_usd": 403.66650001918003,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xdb179416eb8c1ef9b0becb127775427b133efb7a5a0c568c2d5bfdbbf98773bc|BUY|Andrey Rublev": {
+     "alerted_usd": 4999.999999111484,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x8fa7310a657aedfbbc22d3a3be7d639f4d2330bd44fa4bf5995fe783eb51d261|BUY|New York Yankees": {
+     "alerted_usd": 2080.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9724fb80388a73520427761444bfc1c1bd70fe77934868603dc2183a52be342b|BUY|Forsaken": {
+     "alerted_usd": 1279.995731999322,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x6f910af2570c2db15e39484a1a976ed38ca28f073f71ff9fd5b2604f969b58ab|BUY|Iva Jovic": {
+     "alerted_usd": 5179.3749,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x6a571e1b83c8238df6cf49e89ff815d98b522d01db7af1568a514f3d37ec8ce0|BUY|Jaime Faria": {
+     "alerted_usd": 1960.1158,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x2182f29dc74fa806d339b812e387147dc49422fee17cd67252de6c193f86db18|BUY|Daniil Medvedev": {
+     "alerted_usd": 209.23760000000001,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xd4eee5db908a943598d8d6bb8409f716c429c6d1bbd5be07567741904428c025|BUY|Alexander Blockx": {
+     "alerted_usd": 7567.705924999915,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xf0bf950271fa7d3ff102f76abfd873c9ad6b6ed8c1e879cbb891b1009f11ed73|BUY|Juan Manuel Cerundolo": {
+     "alerted_usd": 9199.996079958368,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03237605d85f6af159c42475ac1f2e2f590000000000000000000000000000|BUY|": {
+     "alerted_usd": 13652.75658045958,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x4b3f111af3af074794f57c2b93d720ff8e146b940a9f60bb410452e5c610074d|BUY|Leylah Fernandez": {
+     "alerted_usd": 2986.9082999999996,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x34f50b753c821ac841e09daf1d7f54a45e0cb37b526e9ce17cd8495bf7a7f931|BUY|Over": {
+     "alerted_usd": 6875.000000000001,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xa73e46d245826d7d83cb597671e5cd205f111d49f29b747f9ac347ac2997e705|BUY|Thiago Agustin Tirante": {
+     "alerted_usd": 2425.3523,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x3398a3bc2f128b8142d5d760d165e7611ce5fe1b4d8e40155533d47d0a82c379|BUY|Luciano Darderi": {
+     "alerted_usd": 6100.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xecfadee9c5969454390ba2967b379749e0cbb078e6f1c9bfdc732f05709c6a09|BUY|Alexander Blockx": {
+     "alerted_usd": 11750.162399999997,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xdedf7852b8880a709ae8da14ab5665f35107fc737a1b9d678adaed6d9818967e|BUY|Sergey Fomin": {
+     "alerted_usd": 170.83251400285715,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x2d17a7368482c6c260162f9dc06a0214a545d502b78180a180ae116f92d6374c|BUY|Jiri Lehecka": {
+     "alerted_usd": 6100.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9eb0fe0ef437ac2c66abc3c424d1dd4a2d8e165d679687e884f3c6db49becc0a|BUY|Mark Lajal": {
+     "alerted_usd": 12000.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x95f58aeb0dec6e4c1f996137b16e3caaeaabf29ab8a68644d7749ec31fb29d99|BUY|Martin Landaluce": {
+     "alerted_usd": 4625.527099729641,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x55d4b02c8a9833d28f8efb020169bd90cf912ba74c313fd6b6b4a877b194d377|BUY|Jaime Faria": {
+     "alerted_usd": 6192.774599907788,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9363d8829c28b135f4952bf56c945d43bfa150417a65d086089e76f6fe68c939|BUY|Pablo Carreno Busta": {
+     "alerted_usd": 5725.315900028172,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc87df8c6fda93d98e77fa12234fa07350f294841c423670dc6ba9182e5bbfc12|BUY|Michael Zheng": {
+     "alerted_usd": 6174.615100272318,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x6c23a9186ac6494f016af534ddfacf07a9544c0b664c634053a127634fef524c|BUY|Mert Alkaya": {
+     "alerted_usd": 10252.1832,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x4583ae29998115189eebd272995745bfde282fcabacbad9c46a017ee6fd5dd30|BUY|Marton Fucsovics": {
+     "alerted_usd": 3399.9832527813355,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x86c081317bffe50f09afed5d8d89a2bdb540c1e35c36fc14d1e0e9494fe9c95a|BUY|Adrian Mannarino": {
+     "alerted_usd": 2519.8149000000003,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xbb62ec2139d280f19b397b3f4a501b258931fbdafaee04729ce007ef7af3a8f9|BUY|Hanne Vandewinkel": {
+     "alerted_usd": 6288.91150037436,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb10168b6ff35cc01fba0f89c77014bd3b4e3acf611c397ade4902aa692090045|BUY|Jan-Lennard Struff": {
+     "alerted_usd": 2164.9334000000003,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb10168b6ff35cc01fba0f89c77014bd3b4e3acf611c397ade4902aa692090045|BUY|Roman Andres Burruchaga": {
+     "alerted_usd": 0.0,
+     "pending_usd": 48.760000000000005,
+     "ts": 0,
+     "fill_ts": 1790011422
+    },
+    "0x5e68ef759e8b9856972b1cbfd70803a2e449a394c77b7c3a778f52ce94ed4f4a|BUY|Dino Prizmic": {
+     "alerted_usd": 4999.9999993,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x034f02594b06bded0be5be4dea3b7a242e0000000000000000000000000000|BUY|": {
+     "alerted_usd": 1955.5184901707562,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x93f78d7248d9fa1f114768c77bd0ddba7a9a5c9e341c3ccdefc71e4de52284f7|BUY|Alexander Shevchenko": {
+     "alerted_usd": 1258.6536,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x2d711b3a977e373a830d00f30f522bb893b47ae0fb6bbb35beef51ea836431ce|BUY|Claire Liu": {
+     "alerted_usd": 5471.678700469154,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0353723da767aee4077ded4a7eedd12bca0000000000000000000000000000|BUY|": {
+     "alerted_usd": 14614.8500196786,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xd29cb3e49b83f973c11b94fd78257d2ab7d2aff346a93c8f1324f541a8f33d7f|BUY|Jaime Faria": {
+     "alerted_usd": 3350.799,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x71db96795b7affe3d25412112344eda7701689a9eee39bad8d44784a009f891b|BUY|Lilli Tagger": {
+     "alerted_usd": 9620.429299457664,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x93bd9f5cd854764ac43b01b0b6d83a7c549feba2a38756698e6c48255c4e5a9d|BUY|Filippo Romano": {
+     "alerted_usd": 1744.2140001253802,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb2504809cd11a47788f193b0ef0b934442266a831dc204c7e965112a93cc8424|BUY|Liam Broady": {
+     "alerted_usd": 1951.72000003,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03b0f6657838e13cc217c0ccf32e1454c20000000000000000000000000000|BUY|": {
+     "alerted_usd": 5872.993638882302,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03e3af5f830c4b58e3b525af6ae54ab4fe0000000000000000000000000000|BUY|": {
+     "alerted_usd": 1958.0224799798339,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xfc20bd5dd64c83b2603ad032c08e17a5c20dc33b19f1cb763ab1362001262f35|BUY|Pablo Llamas Ruiz": {
+     "alerted_usd": 4777.529099956802,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0328887d9b77ee260affc2307b0857b2420000000000000000000000000000|BUY|": {
+     "alerted_usd": 10789.694529058397,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0314b0de6fdcee0acc1114bd3a5c8a6a6c0000000000000000000000000000|BUY|": {
+     "alerted_usd": 4881.698554030701,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03872e60ae299ab2ab14eaf9adb0e87b070000000000000000000000000000|BUY|": {
+     "alerted_usd": 8768.136110018819,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x8c0e1205b8a63ff0a5f04506b99c466d1b97539b962b6aa88293289db640947c|BUY|Mary Stoiana": {
+     "alerted_usd": 7858.932100050605,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x693b65207b4e4cb486aab787e2fc819a4535598d79b34587181afef7c9f51c5d|BUY|Isomura": {
+     "alerted_usd": 1473.8100001028,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xfb3e69c54fb81ddfc56476bde906967edbd5cb831071802b8caaf01d8fb11ec5|BUY|Florian Broska": {
+     "alerted_usd": 4549.6944,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xef08bd1593a6f6205cf2aa9b91faf23fccf0d2bbc738d4327810a18d23ea5150|BUY|Colin Sinclair": {
+     "alerted_usd": 1636.20000005,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x66307670f360e71fe31145cd6b451c6ee16f2f26226704a4a36671fe54b6c1fc|BUY|Amir Omarkhanov": {
+     "alerted_usd": 2750.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x8b84fef96694b31c222cbd48a5761bf72a63edc530eb7de860deda8727aaa404|BUY|Alexandr Binda": {
+     "alerted_usd": 1919.9890240725902,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9a745f325b64c78e74bb059dc59e1a8bec03793b78ecd55df99fd11c6d7b2fbe|BUY|Raul Brancaccio": {
+     "alerted_usd": 3834.1615,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x4a8f9e3da7cae16128caea66b575cbb75549cfd755db32bfd16570ac871d9b6e|BUY|Filippo Romano": {
+     "alerted_usd": 2423.7377,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x5c0e7a0638287625c11d21fa836f30f53a6362dbb1cf49caa095f9a89fac006c|BUY|Pierluigi Basile": {
+     "alerted_usd": 3994.861899900526,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xdcd4d04d52679037f832b1390d72510c83eebb3f1203adcd3e4ba7f7fb937dad|BUY|Felix Balshaw": {
+     "alerted_usd": 2279.12630000744,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x039ced187876c0802f34ada1b02fca61f70000000000000000000000000000|BUY|": {
+     "alerted_usd": 2936.3139498512946,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x033068a93eb67a39fb52891de2541382c30000000000000000000000000000|BUY|": {
+     "alerted_usd": 5871.309098630428,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x3f32d2cbbf49904e099609c9844305aa3c763a10d5ac2d428a16a47ac550b109|BUY|Marvin Moeller": {
+     "alerted_usd": 7079.8758001488795,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc0d4b45343bc78ae8da917972e18cfbe455e3db50fb3019f85477949bfd1b8e0|BUY|Iga Swiatek": {
+     "alerted_usd": 9999.99999936,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0386ef3827e26d4b805c7aabbc4485566c0000000000000000000000000000|BUY|": {
+     "alerted_usd": 9773.906620112128,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x24a2c83ba43359d4ed100fd31427fb8c2bbdb8219b1b6daa84fac304ea9f30cb|BUY|Lucciana Perez Alarcon": {
+     "alerted_usd": 3537.860860091976,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x030d3f5042b455cd04e0f15e89f6dd8bfa0000000000000000000000000000|BUY|": {
+     "alerted_usd": 4879.186859831313,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03ecab8b85330ffa5a0973c49c8fdd6b140000000000000000000000000000|BUY|": {
+     "alerted_usd": 8789.22320924756,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xcf6663bc3f4f4372dbf70f40d43483f44c2b1a2388f4d7dddef5bbe9499d5a9a|BUY|Petr Nesterov": {
+     "alerted_usd": 4620.79739924,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc326d6dfcb27ee8c08a3c7bfadfaac11f44a4caa85d16fde23fd16257ad48863|BUY|Cornea/Cukierman": {
+     "alerted_usd": 2084.207442833521,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x769c3824b99551f34c5d92434dc90391432f1856cce1d96c83329359e1cda6b2|BUY|Rei Sakamoto": {
+     "alerted_usd": 2999.999997775714,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x362b66a3de0b59ecf6a61da0e1ec123e7dcc08628c125b8d13f3981b50064fbb|BUY|Petr Nesterov": {
+     "alerted_usd": 12999.999997785424,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x034dca23db6d34f91307b53c35a26ffc3e0000000000000000000000000000|BUY|": {
+     "alerted_usd": 8776.241809685116,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xfdc87415f6d29a6d6519f03b784fdfc740db3caeb11b2c61f3e6bba140658851|BUY|Alexei Popyrin": {
+     "alerted_usd": 1999.9999990153844,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x63c4e43efe4fa29cdee92aa66c8ce6285402df8c77c2d77cacac438bba53bfa4|BUY|Amelia Rajecki": {
+     "alerted_usd": 5218.674800344156,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x5651585f8c0dd617b7cd6293178f4a5c2209c7301c64d2ef524979ca7a66e362|BUY|Arthur Rinderknech": {
+     "alerted_usd": 331.6608,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x4dbd15eda5751219cba25d8b691a96c068643217e99e9b208a39bc8b0761391c|BUY|Spencer Johnson": {
+     "alerted_usd": 2458.2897000000003,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x035a70dd2449ce1c7633ee8f83c64346120000000000000000000000000000|BUY|": {
+     "alerted_usd": 3914.660410128,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03425442776aed4363186ff4abf33680510000000000000000000000000000|BUY|": {
+     "alerted_usd": 7816.616419451439,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x7a11cdb12522f123a77f0806e4628d9d2a8e748f09aef1da493360510c0cc1cd|BUY|Miomir Kecmanovic": {
+     "alerted_usd": 6346.2279,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x66e113c45e55b58ccd8b27d8f47f00b5fb656aa090ed3e6390726c5eb4cabfd1|BUY|Alexei Popyrin": {
+     "alerted_usd": 13777.6821,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc90f7c73fe8d576e32eaf242248b4943e31eea49d9af15267398903c04db4e21|BUY|Alycia Parks": {
+     "alerted_usd": 3691.7416089999806,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x302c9a008377267f2b2bccc627bb3781d5c8124d05dd2fdbe9c10ceb0f6fb953|BUY|Yanaki Milev": {
+     "alerted_usd": 1965.2502999302553,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xa7ac1c8effa5ee3fb9f327505f40b408065a7ce9970d2dd25dadd14880fa2c22|BUY|Fabian Marozsan": {
+     "alerted_usd": 12131.5178,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb4786d7bf58ec9e49caa2bda28871575a9d73db5dfe87d56b5fc764e15dd5692|BUY|Francisco Cerundolo": {
+     "alerted_usd": 2800.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x90baafe27d62079d15488df7b0edce89efa1b1f3190a37bbf33235ef18ab954b|BUY|Alexei Popyrin": {
+     "alerted_usd": 13093.789658953843,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb3b54f1049afbcaa4f7f3c77d889c1499d562dac0bb6e1e5d499a024854a2372|BUY|Flavio Cobolli": {
+     "alerted_usd": 348.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x01a85ca8e7cbbaeec3012b79fc16c785a7fb148da94316848b0c77b840670cc5|BUY|Arizona Diamondbacks": {
+     "alerted_usd": 5199.998266008334,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x51786624fe082be816ea8bfc6388be001d461596be0cd877259bc607f3bc374e|BUY|BetBoom Team": {
+     "alerted_usd": 5101.351441000198,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x149d28e7f5aaa243c78bd97f670706663b4b34b1aa6b5d466c7f684e91f50b7a|BUY|ARCRED": {
+     "alerted_usd": 20559.672415031855,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9a3106fc33ccebd330af579373a10b10641a717ee879da741874d8bb1ec729cd|BUY|Elisabetta Cocciaretto": {
+     "alerted_usd": 0.0,
+     "pending_usd": 48.7458,
+     "ts": 0,
+     "fill_ts": 1790011422
+    },
+    "0x003f126018a2c050097d82178a8e65cac788196879806097d8b421a13a769d1c|BUY|GamerLegion": {
+     "alerted_usd": 8213.033418999648,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xfd88281729b6096859127b6f409ceefb9ebaf935b1182f6f7754b77808bb4273|BUY|GamerLegion": {
+     "alerted_usd": 4500.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x5e35056cda3e357545dda3ccff224b4e9b752085611f1cd599b6c0c477fd0641|BUY|Mariano Navone": {
+     "alerted_usd": 2216.8107,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xd039f0945d7260c7619855e71654d92749520277ecdb77032b4c4d1ac7645644|BUY|Sho Shimabukuro": {
+     "alerted_usd": 1014.6300000018999,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc1e5b5bbe0b54464e1158336dc64fc50a273e2f405ed95fc605ddfbd3d030bc4|BUY|Seattle Mariners": {
+     "alerted_usd": 6100.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0343635d5a63647347889ea75fb577583b0000000000000000000000000000|BUY|": {
+     "alerted_usd": 9748.533509633673,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xad19956eea014254eff38153646decd5f35dd4acb688ce3760b348909710e18f|BUY|Laura Samson": {
+     "alerted_usd": 6795.259700273281,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x70cbfa383829a1a8152135d44fec9bfd8b9dfc856a77648912a6a811af90ad5f|BUY|Maria Sholokhova": {
+     "alerted_usd": 2369.528400031884,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0313aaddea796a673cb8b522573992c0550000000000000000000000000000|BUY|": {
+     "alerted_usd": 4874.971669589793,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0366969c7fe1a77a9f36b25a5d5136f7700000000000000000000000000000|BUY|": {
+     "alerted_usd": 8773.256229589104,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x1491d77c13bba30471c4aa2177e926b2dee46ddc0718d895fd770719586e2de6|BUY|Anastasia Potapova": {
+     "alerted_usd": 4999.9999992,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x2baa353550490615e6a164c95edb8e3bdd749037832c608c194eb4dd20148032|BUY|Justina Gonzalez Daniele": {
+     "alerted_usd": 3861.063600075,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xcc3248dc7a6507c2afc25ad1abaa954b4f4237cc4bf436cbc7603ae3549357ee|BUY|Daniel Milavsky": {
+     "alerted_usd": 3516.2199998100004,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x51a3a16863e58ced417b82dfb33f29ed94d331128b5694ef0ea1c5290c05f188|BUY|Sandro Kopp": {
+     "alerted_usd": 4841.44410004,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x59132d4c168fb3e819f0b2d22981e7025cd480089ad6af7c3ff98fd8b5e732a0|BUY|Andrea Lazaro Garcia": {
+     "alerted_usd": 3149.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x15bb29d68745730ca192b0c9247a74b90b82acc4a26066e1c29c0ffd0a43159b|BUY|Frederico Ferreira Silva": {
+     "alerted_usd": 3775.7151619621295,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0386888f100b8531ca39b70646e98190f90000000000000000000000000000|BUY|": {
+     "alerted_usd": 4890.75227800349,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03a9d9e8350616f8d7dc22a9f6d12499c10000000000000000000000000000|BUY|": {
+     "alerted_usd": 3911.527499962867,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x5a6832d18ec8498ae464067bc17f46aaba48bf3dfbd490c706873914aa1a9709|BUY|Petr Brunclik": {
+     "alerted_usd": 873.9350779626237,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc47def8dcf6d67008bcc17893a428b9c34ea2cf8e9df6dc391d9e40a7ca6a13f|BUY|Alex de Minaur": {
+     "alerted_usd": 3752.0000000000005,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x5c52f8ec30939c105bf5720d41dfcf902949faf66a26d8602fce364a62ab1988|BUY|Duje Ajdukovic": {
+     "alerted_usd": 804.01,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x65df7653a01459206f595743bde90151fa42cc8af9926acf9b3909d764850876|BUY|Jack Draper": {
+     "alerted_usd": 8549.997746000123,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x88ee50b8308a18fed72f2f79d830b24675617c38c6a2ed7f8e05b7fc5df5f990|BUY|Talia Gibson": {
+     "alerted_usd": 4599.99999928,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xde9ebb2f290bc03104ef13f869ddbf9d78a1f9391f6335455a03b1baea5fcf01|BUY|DN SOOPers": {
+     "alerted_usd": 18599.956757009586,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0307ba22b668370b408ac756f1f198fcb50000000000000000000000000000|BUY|": {
+     "alerted_usd": 976.2681990252805,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9596635fe83273041e52644f596d12cec566a0958de8e4bcf2f24ac7ae629770|BUY|Jamie Mackenzie": {
+     "alerted_usd": 3192.1658031482716,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x030fba0fb2a79ab8d36c28cb4d4f8977bd0000000000000000000000000000|BUY|": {
+     "alerted_usd": 2342.663830073597,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x22b93c13b98f1ed57e5d3180900385976140b208e3105f335de7f0d0cfa5a865|BUY|Moez Echargui": {
+     "alerted_usd": 1636.3473060011179,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x3297c44d13b29f4c7f7d820a62d8755bff75df54e809081067d16edbc0ea9280|BUY|Kallista Liu": {
+     "alerted_usd": 5797.9999999599995,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x3fc54287a54eb7a60d03590badd7ed34d55ec0058a06f5b7b8d89b3bf328da1a|BUY|Alan Magadan": {
+     "alerted_usd": 1009.1100000600002,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe80ad7884c2fa89ebc159ebbe13199e776cf6c3aa883d4c2ac6db97c556057fb|BUY|Andre Ilagan": {
+     "alerted_usd": 999.11,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03bd4b82584236a541cb79fb07a1cd62ca0000000000000000000000000000|BUY|": {
+     "alerted_usd": 2447.3679100247095,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xe311eba0e3973a3498ca5e180a5e8659669b331b6ccde8306b760859cdc34563|BUY|Marc-Andrea Huesler": {
+     "alerted_usd": 2668.011054,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0351c575e576dddc3513c5ee58b0c023ff0000000000000000000000000000|BUY|": {
+     "alerted_usd": 1153.068240119815,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03b4b88c82b2dd6e10c19c7141b360be790000000000000000000000000000|BUY|": {
+     "alerted_usd": 0.0,
+     "pending_usd": 95.60005998886743,
+     "ts": 0,
+     "fill_ts": 1790011422
+    },
+    "0x0356d92fa7c7792ad589712f9c4655b4cf0000000000000000000000000000|BUY|": {
+     "alerted_usd": 482.0206399729124,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x035cae6c98564dd295491f7f020fea3cb60000000000000000000000000000|BUY|": {
+     "alerted_usd": 288.9477499452176,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xdadaa33411b199e2ee417d83e40fb5fe6eb05ec8f55beb2c92349d2f6de0db9b|BUY|Tereza Valentova": {
+     "alerted_usd": 9520.000000000002,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xcf291b7242f008007f3950ee83e0957cada2162ad7ee9f0ce5affb7d31ecd2ce|BUY|Matias Soto": {
+     "alerted_usd": 1550.9010001177742,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x037604507b3557eaf9a0cf96c0afac4d380000000000000000000000000000|BUY|": {
+     "alerted_usd": 967.9651201352517,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xfee9e1d43d6c2ba4c494174cf109a8752946a81bbe9d60982f32216af808594a|BUY|Gauthier Onclin": {
+     "alerted_usd": 5640.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x032cdc01937dc12fa3497b7c942f531bff0000000000000000000000000000|BUY|": {
+     "alerted_usd": 2930.5440099668754,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x481b5bc54a46664448785e4e54d2f6c21e0bf7227fd762b198933abe0efdcf5a|BUY|Marie Bouzkova": {
+     "alerted_usd": 958.5419999999999,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xbc2b8d97d6b31622450df0d3044e6183b8b1651686fdf59d215b845715bed852|BUY|Maks Kasnikowski": {
+     "alerted_usd": 5993.706246004219,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x43498aebc6387dcaa3515b3902f58d21f831d02c1ee14ef398a33f7ec890de52|BUY|Michael Zheng": {
+     "alerted_usd": 4879.788799844244,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xa15dafef42d09f6fb3d004e37565ec3d98e197ba14b1a4386fd1c5e7fe2adb0d|BUY|Mert Alkaya": {
+     "alerted_usd": 1315.696551996546,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x8c7211a571917281e6a6c4f35db253baf4fc099c5a1df1cc270944cd00f1f672|BUY|Lea Nilsson": {
+     "alerted_usd": 5921.56919992,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb518b7d0205bde1624126a8d4e9d3d1fbe9ee3a60275b103465d438b3a4ea043|BUY|Andrea Obradovic": {
+     "alerted_usd": 6719.8652999000005,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x229d6bf978e59872f6f9cd59953f3ff7df22250187ef9e32963caf10637e433d|BUY|Tomas Etcheverry": {
+     "alerted_usd": 6435.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x04c5022b6726f117867012a37e57216e598577b791d91ba9254425e7045bcb0c|BUY|Yannick Hanfmann": {
+     "alerted_usd": 3072.358700024146,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xfbf9d5365a14663906fa2de3448369ede13720e9e7165effbd3ea1abf17aca18|BUY|Igor Ribeiro Marcondes": {
+     "alerted_usd": 2762.041600265628,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x8898e349c7ded7166fa761fc08c7d3e82c7a217a318526b8641a0231e6674d78|BUY|Dylan Dietrich": {
+     "alerted_usd": 1004.8611169751339,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x4a8f12e4ce16003be93f2c142d689b24a58e3a5b6231147d63737c55ad1b8b94|BUY|Nikola Bartunkova": {
+     "alerted_usd": 7685.66619976376,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb17eedde7f6535764e16cea706a8d9005baf55a31c73cc681011b83e831a9d97|BUY|Pablo Llamas Ruiz": {
+     "alerted_usd": 6601.417399360875,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x305d7c3d8e2961e20ccd787118c5934bef98bc2ad9e3b55a0ab8a573371bd6eb|BUY|Arthur Rinderknech": {
+     "alerted_usd": 9473.5647,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc6b91a03b729d6b4c265dfd39e1a3a8c83a526005c8cef148fcbdb874fb79c07|BUY|Thanasi Kokkinakis": {
+     "alerted_usd": 7098.959609484714,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x239a0ea5b8903089d4a5218ee76e1cd39f1aa60a7f8239ca94af2e070da1514d|BUY|Mees Rottgering": {
+     "alerted_usd": 4544.944835180246,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xfa086a518e7f6045b17e542de8fbab13f20b19fbbbcf05c3e26e78540c48b38d|BUY|Kilian Feldbausch": {
+     "alerted_usd": 259.157000005,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xf7e8178ca9cc1ffe202ac6c9444cf71f11a16f8b50cb0dcf591a6ab675d7383d|BUY|Fenerbah\u00e7e SK": {
+     "alerted_usd": 5849.995780324959,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xdc13c6cdf7473869ac93f3490c8c13cb141b685bdff4d585af32a9c5274f84bf|BUY|Darwin Blanch": {
+     "alerted_usd": 6725.715830031024,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc919ddf7450515cf2b519ef95d879467fc3b178b348c2c76c84d734cb65ebf64|BUY|Roger Pascual": {
+     "alerted_usd": 7300.539000257673,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x084dc6571b876fb7e7e19c547900945df6f39f6f89604e2e3ec8441f58510580|BUY|Joao Lucas Da Silva": {
+     "alerted_usd": 2989.707898945303,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x17c0c0028f946a21f5535ef65b32fb84173d9e2bc376365da9533af44b0f2a15|BUY|Martin Krumich": {
+     "alerted_usd": 5800.9934001237,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x53a60d1ce4bcff0a133d51f16ecdbd4bf61f901d039519f8b494a0de0e19a829|BUY|Norbert Gombos": {
+     "alerted_usd": 10958.171100355232,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x28309f25d6784c47979a61fec58ab19c67425c17cc9d08831c5caf9d632fdb7a|BUY|Henry Bernet": {
+     "alerted_usd": 10653.669000081183,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x8f6425c8e31f9fcefd3e81507959b188d629c2d7236001589b607f363d277b6b|BUY|Daniel Altmaier": {
+     "alerted_usd": 5026.4682,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x1433b7f8d28d06deae8a4a2bd835262c52312432e10effb04a2ea5eb6397ca5d|BUY|Alex Marti Pujolras": {
+     "alerted_usd": 1109.4154689309887,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x08729c6fb825e149d823b63fd2c2783070918f925d0b70ad22a4851779fce0c9|BUY|Minnesota Lynx": {
+     "alerted_usd": 11999.999999999998,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9f8cdef3c09133ad03bd01447ee774e2b88dfbacf7084a275e741afdfeae0eb8|BUY|Houston Astros": {
+     "alerted_usd": 5940.166690172264,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x672e866f88271710773b8556ebd7a322d35b4129849618da06dc470ee8ac91be|BUY|Under": {
+     "alerted_usd": 2438.9048649943165,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x381803b9dd2ce69b81c54bd8ec55022a6746fb5c29e449846cf038e069aa3f43|BUY|Jay Clarke": {
+     "alerted_usd": 3449.9837407875366,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x2fdce6b7b80c99e765e708d936bc7818ce595ece20ecf3908afafeaaa670afe9|BUY|Dallas Wings": {
+     "alerted_usd": 7600.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x329dffe45a6b68ee04b0c291632752c635bdde4dbcc6801c5852e004f1be5454|BUY|Adolfo Vallejo": {
+     "alerted_usd": 1094.9578440181149,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x10c546e31528e4902bdc564101f18870fbff80ccab3975e38172e2fe24978ec6|BUY|Antonia Ruzic": {
+     "alerted_usd": 10405.745400000002,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xa2ce64ad860b6038c2c9077630775367fdbce8972f70b1e7300cf6b86730acf3|BUY|Frederico Ferreira Silva": {
+     "alerted_usd": 619.92,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xd7af69e160e429ab7b930ead114bc9c299c1827ec68f6b9b9bdec008f4e508ed|BUY|Ane Mintegi Del Olmo": {
+     "alerted_usd": 5163.818999975944,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x1b23397818c0d4c704f9ca4945794b4cdb57c916770744cf7f10b43a56ce2be0|BUY|Tiago Torres": {
+     "alerted_usd": 4552.995166,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x7911972775aec59216e9ec803d768a5b78d9f77bbfd65310dcb64b5c5e60d6bf|BUY|Alvaro Guillen Meza": {
+     "alerted_usd": 7527.757312869806,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x38fb3da657b9ccd009e1510c46e6c4728a3c9e6d4d43a781c9cd73bf521b4918|BUY|Camilo Ugo Carabelli": {
+     "alerted_usd": 6723.5384004,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0f568c8c8d439b13109756e84266ec36ea3ab87680e36dc5250842f56e987102|BUY|Jaime Faria": {
+     "alerted_usd": 4399.9945,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xf3827638b287a2b705f7415ca0358981f5d9157c659be5288862846db38b82db|BUY|Taro Daniel": {
+     "alerted_usd": 4368.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x5d0c47d17b1707b8def47e0dc4e9637f157819b0eb8264a26723de1352ed9ca5|BUY|Oleksandra Oliynykova": {
+     "alerted_usd": 8460.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc9c0f757eec0134e95664f7016fdeaaa047d2e0aeacc7c07eb85138efc63ad86|BUY|Daniel Merida Aguilar": {
+     "alerted_usd": 14580.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x721d32b6146ba2f581a21854c669d22379ca9adaf7b6adb691fdb8ce875d06d4|BUY|Jan Kumstat": {
+     "alerted_usd": 4130.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0e5125374927e50323d83b31ef5da58c91c8eb007b617a64b6e3e83a417fec93|BUY|Guy Den Ouden": {
+     "alerted_usd": 420.00000000000006,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x8015c1c5633f488ec6fc7d759aa13621bc3ca1b91f1473e0ba850787f8cc9df4|BUY|Panna Udvardy": {
+     "alerted_usd": 1728.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x2c15da8a09a2744f979ea99f67f63dba45d1c57c6b3d6d837d3cc08c9452f119|BUY|Oleksandra Oliynykova": {
+     "alerted_usd": 942.14038998,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xf5c66fd82a354ed384f53b3258c23badf7f754abbabd18e07c9e356a6f852b73|BUY|Alex Molcan": {
+     "alerted_usd": 2460.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x3065a37a66dc5d8088593269e04c58c693b6442e9bbda540250f84cbb441b921|BUY|Daniel Merida Aguilar": {
+     "alerted_usd": 4800.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x0eb51cc4be51a4b833f77823398a1ccbdeabbaf4d14657c80d895fd8b11f4e7f|BUY|Adolfo Vallejo": {
+     "alerted_usd": 15435.6856,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x80adc7ff91da2524083a249065a824f675ede40d09c194f626663614e70b54e5|BUY|Guido Justo": {
+     "alerted_usd": 8506.732899999999,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x920fa15a675642d8ec06f69fbe4bec8e54c0a3f2f3228e499c57910353e37070|BUY|Andrea Pellegrino": {
+     "alerted_usd": 1199.2728,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x352a35a4b79594a83dcca4c9853bab3b5f38b88e833d33a7446f4bc55c2cdcf9|BUY|Vitaliy Sachko": {
+     "alerted_usd": 4235.1809999,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xb145204e6a572a90857212a1f4095fdc02f81d4a386733c04090f60929dd8a56|BUY|Dylan Dietrich": {
+     "alerted_usd": 9231.9736997,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x07aa1ed032c322fb361b2295d0362616a464bf42b09fad0f93489447b3efef41|BUY|Frederico Ferreira Silva": {
+     "alerted_usd": 5827.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9584bfc69b816fe97bdf4a589d14c9131b05ae893fccafb2bf549b73075ac42c|BUY|Vukadin": {
+     "alerted_usd": 1182.2589999,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x064d466467f51007e9a31ef1108dcc913e92f507ea6a3e876617c6804c42e27d|BUY|Mili Poljicak": {
+     "alerted_usd": 3750.6667001200003,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xa6f923b61926aa7b4a5693c64dd3e44cbf3325c3cc0911d187fc0a53bcc41774|BUY|Cezar Gabriel Papoe": {
+     "alerted_usd": 5500.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x03a0b173524f8c0be65087a0e71c7933cd754f9f6f18b99d21d2cf2ed7868500|BUY|Taro Daniel": {
+     "alerted_usd": 1960.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x94ed16877a0155234554a2d19c8b39bd523870b2ce8cbc36b333e66698cc6d69|BUY|Lorenzo Claverie": {
+     "alerted_usd": 1584.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x010048d1206b30658bbaaa7f3147ed6e50855a959bcba38b91420a0938bcdd36|BUY|Damir Dzumhur": {
+     "alerted_usd": 2162.689357001051,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x1aaec0ba2906b792af578682b0df84579b38c55f06c5837a7c73ac5619b333bd|BUY|Samuel Heredia": {
+     "alerted_usd": 1612.407899932565,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xc3d8df7d17f5ee1d4878a9aab27ef4a35af98098307b5dda79b83c53ef94bcf8|BUY|Niels McDonald": {
+     "alerted_usd": 486.00000000000006,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xfa9d72d0ee531989fd08ae7c1652eae82fec5c4b3276137ca5b154d8b31fb221|BUY|Matias Soto": {
+     "alerted_usd": 967.4261000299999,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x509b0e13a3007f986e6b2563e8d9818711d114a3399d6cc192a429ee53eebd0c|BUY|Elizabeth Mandlik": {
+     "alerted_usd": 13135.9371197,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x1762752aa32d47f535ee77518eb9850a4afb9c5f081488dcdcc89cfc28b98955|BUY|Sinja Kraus": {
+     "alerted_usd": 1644.184149980064,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x00a98be91394689188f2979411d033b64ac94e86fd64c8cdec0e47a44b2b5f2a|BUY|Marta Kostyuk": {
+     "alerted_usd": 2254.0217140800423,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x77b752f379b203ebdf75ea9ca6504cb738ba42c0dc4356f8d61b7f3455dc01ef|BUY|Andrea Pellegrino": {
+     "alerted_usd": 408.0,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x9cb66b799671e8e6e59b81f2de4a2a623310fc46593d62a3cdb3f8dcea8212cc|BUY|Swiatek": {
+     "alerted_usd": 880.0000000000001,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xae887c192a97a7e79b62bcd823debe2c2fdc6ab80b0fd5c925a348a818840b71|BUY|Over 3.5": {
+     "alerted_usd": 3849.0000003,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x8850a5146e21864506ab43b05043eacd8d80139a4abc98f9138d2d26c17b7d8f|BUY|Juan Pablo Varillas": {
+     "alerted_usd": 3239.65409985,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x36020482b58626b4fecae7de20823270a8d30236aa92596d04910780ab459503|BUY|Juan Sebastian Gomez": {
+     "alerted_usd": 3450.646891004735,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x538583a76d5fcc026c5d0454ca5e29a87370fdbb283093bfec990f82e59dd36f|BUY|Alan Magadan": {
+     "alerted_usd": 2323.23299985,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    }
+   },
    "min_usd": 0.0,
    "sports": [],
    "note": ""
@@ -473,7 +3275,7 @@
      "roi": -0.0105
     }
    },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
+   "sports_refreshed_at": "2026-09-24T22:08:22.023847+00:00",
    "record_from": "2026-03-26",
    "record_to": "2026-06-11",
    "record_trades": 1673,
@@ -652,7 +3454,7 @@
      "roi": -0.3546
     }
    },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
+   "sports_refreshed_at": "2026-09-24T22:47:05.295608+00:00",
    "record_from": "2026-02-01",
    "record_to": "2026-06-20",
    "record_trades": 10500,
@@ -671,10 +3473,10 @@
     "MMA": {
      "markets": 252,
      "wins": 160,
-     "pnl": 473801.29,
+     "pnl": 464301.29,
      "win_rate": 0.6349,
-     "avg_entry": 0.568,
-     "edge": 0.0669
+     "avg_entry": 0.5686,
+     "edge": 0.0663
     },
     "NCAAB": {
      "markets": 1,
@@ -703,10 +3505,10 @@
     "Other": {
      "markets": 7,
      "wins": 2,
-     "pnl": -1293.62,
+     "pnl": 231.38,
      "win_rate": 0.2857,
-     "avg_entry": 0.5428,
-     "edge": -0.2571
+     "avg_entry": 0.54,
+     "edge": -0.2543
     },
     "NCAAF": {
      "markets": 2,
@@ -745,38 +3547,38 @@
      "label": "$1k-$2k",
      "markets": 43,
      "wins": 24,
-     "pnl": 6258.51,
-     "wagered": 72844.87266799969,
+     "pnl": 2458.51,
+     "wagered": 71644.87266799969,
      "win_rate": 0.5581,
-     "avg_entry": 0.3998,
-     "edge": 0.1583,
-     "roi": 0.0859
+     "avg_entry": 0.4043,
+     "edge": 0.1538,
+     "roi": 0.0343
     },
     "$2k-$5k": {
      "lo": 2500,
      "hi": 5000,
      "label": "$2k-$5k",
-     "markets": 44,
+     "markets": 45,
      "wins": 31,
-     "pnl": 38312.02,
-     "wagered": 163980.45063324258,
-     "win_rate": 0.7045,
-     "avg_entry": 0.5052,
-     "edge": 0.1993,
-     "roi": 0.2336
+     "pnl": 33737.02,
+     "wagered": 168555.45063324258,
+     "win_rate": 0.6889,
+     "avg_entry": 0.5076,
+     "edge": 0.1813,
+     "roi": 0.2002
     },
     "$5k-$10k": {
      "lo": 5000,
      "hi": 10000,
      "label": "$5k-$10k",
-     "markets": 42,
+     "markets": 41,
      "wins": 23,
-     "pnl": -7760.83,
-     "wagered": 307443.05751183006,
-     "win_rate": 0.5476,
-     "avg_entry": 0.4664,
-     "edge": 0.0812,
-     "roi": -0.0252
+     "pnl": -1660.83,
+     "wagered": 301343.05751183,
+     "win_rate": 0.561,
+     "avg_entry": 0.4642,
+     "edge": 0.0968,
+     "roi": -0.0055
     },
     "$10k-$25k": {
      "lo": 10000,
@@ -797,12 +3599,12 @@
      "label": "$25k-$50k",
      "markets": 30,
      "wins": 19,
-     "pnl": 153314.36,
-     "wagered": 993635.4538442424,
+     "pnl": 147614.36,
+     "wagered": 989335.4538442424,
      "win_rate": 0.6333,
-     "avg_entry": 0.5434,
-     "edge": 0.0899,
-     "roi": 0.1543
+     "avg_entry": 0.544,
+     "edge": 0.0893,
+     "roi": 0.1492
     },
     "$50k-$100k": {
      "lo": 50000,
@@ -831,10 +3633,10 @@
      "roi": 0.4322
     }
    },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
+   "sports_refreshed_at": "2026-09-24T23:47:56.060445+00:00",
    "record_from": "2025-02-22",
    "record_to": "2026-03-14",
-   "record_trades": 4343,
+   "record_trades": 4339,
    "open_alerts": {},
    "min_usd": 0.0,
    "sports": [],
@@ -845,8 +3647,16 @@
    "label": "Scientific-Fowl",
    "venue": "polymarket",
    "added_at": "2026-06-27T20:42:50.175974+00:00",
-   "last_seen_ts": 1782592970,
+   "last_seen_ts": 1790351576,
    "by_sport": {
+    "NFL": {
+     "markets": 5,
+     "wins": 2,
+     "pnl": 8068.51,
+     "win_rate": 0.4,
+     "avg_entry": 0.4733,
+     "edge": -0.0733
+    },
     "Tennis": {
      "markets": 14,
      "wins": 7,
@@ -858,10 +3668,10 @@
     "MLB": {
      "markets": 96,
      "wins": 47,
-     "pnl": -85758.85,
+     "pnl": -82408.85,
      "win_rate": 0.4896,
-     "avg_entry": 0.5742,
-     "edge": -0.0846
+     "avg_entry": 0.5732,
+     "edge": -0.0836
     },
     "Soccer": {
      "markets": 47,
@@ -910,14 +3720,6 @@
      "win_rate": 0.4773,
      "avg_entry": 0.4603,
      "edge": 0.017
-    },
-    "NFL": {
-     "markets": 1,
-     "wins": 1,
-     "pnl": 11821.14,
-     "win_rate": 1.0,
-     "avg_entry": 0.49,
-     "edge": 0.51
     }
    },
    "by_size": {
@@ -925,14 +3727,14 @@
      "lo": 0,
      "hi": 1000,
      "label": "$0-$1k",
-     "markets": 111,
-     "wins": 68,
-     "pnl": 2059.44,
-     "wagered": 27314.160621786865,
-     "win_rate": 0.6126,
-     "avg_entry": 0.4794,
-     "edge": 0.1332,
-     "roi": 0.0754
+     "markets": 114,
+     "wins": 69,
+     "pnl": 1099.81,
+     "wagered": 29525.20165679126,
+     "win_rate": 0.6053,
+     "avg_entry": 0.4712,
+     "edge": 0.1341,
+     "roi": 0.0372
     },
     "$1k-$2k": {
      "lo": 1000,
@@ -951,40 +3753,40 @@
      "lo": 2500,
      "hi": 5000,
      "label": "$2k-$5k",
-     "markets": 94,
+     "markets": 95,
      "wins": 48,
-     "pnl": -43137.66,
-     "wagered": 339711.613739429,
-     "win_rate": 0.5106,
-     "avg_entry": 0.429,
-     "edge": 0.0816,
-     "roi": -0.127
+     "pnl": -45930.66,
+     "wagered": 342504.613739429,
+     "win_rate": 0.5053,
+     "avg_entry": 0.4295,
+     "edge": 0.0758,
+     "roi": -0.1341
     },
     "$5k-$10k": {
      "lo": 5000,
      "hi": 10000,
      "label": "$5k-$10k",
-     "markets": 91,
+     "markets": 92,
      "wins": 46,
-     "pnl": 21933.2,
-     "wagered": 665409.8997963198,
-     "win_rate": 0.5055,
-     "avg_entry": 0.4742,
-     "edge": 0.0313,
-     "roi": 0.033
+     "pnl": 11983.2,
+     "wagered": 675359.8997963198,
+     "win_rate": 0.5,
+     "avg_entry": 0.4762,
+     "edge": 0.0238,
+     "roi": 0.0177
     },
     "$10k-$25k": {
      "lo": 10000,
      "hi": 25000,
      "label": "$10k-$25k",
-     "markets": 102,
+     "markets": 101,
      "wins": 61,
-     "pnl": 75628.06,
-     "wagered": 1549766.3755465155,
-     "win_rate": 0.598,
-     "avg_entry": 0.4918,
-     "edge": 0.1062,
-     "roi": 0.0488
+     "pnl": 88928.06,
+     "wagered": 1536466.3755465155,
+     "win_rate": 0.604,
+     "avg_entry": 0.4907,
+     "edge": 0.1133,
+     "roi": 0.0579
     },
     "$25k-$50k": {
      "lo": 25000,
@@ -1026,11 +3828,18 @@
      "roi": 0.6728
     }
    },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
+   "sports_refreshed_at": "2026-09-24T23:57:10.645856+00:00",
    "record_from": "2026-01-27",
-   "record_to": "2026-09-10",
-   "record_trades": 10500,
-   "open_alerts": {},
+   "record_to": "2026-09-20",
+   "record_trades": 10577,
+   "open_alerts": {
+    "0xe9956a9b1e5f28d6a587878303ccb46995111ad669be480154dcdba51fa7b2d7|BUY|Over": {
+     "alerted_usd": 1040.0,
+     "pending_usd": 0.0,
+     "ts": 1790352863,
+     "fill_ts": 1790352863
+    }
+   },
    "min_usd": 0.0,
    "sports": [],
    "note": ""
@@ -1040,23 +3849,31 @@
    "label": "Talvez10",
    "venue": "polymarket",
    "added_at": "2026-07-01T15:22:35.703665+00:00",
-   "last_seen_ts": 1782919355,
+   "last_seen_ts": 1790455373,
    "by_sport": {
-    "MMA": {
-     "markets": 89,
-     "wins": 39,
-     "pnl": 226396.13,
-     "win_rate": 0.4382,
-     "avg_entry": 0.4255,
-     "edge": 0.0127
-    },
     "MLB": {
-     "markets": 380,
-     "wins": 172,
-     "pnl": 1210203.91,
-     "win_rate": 0.4526,
-     "avg_entry": 0.4998,
-     "edge": -0.0472
+     "markets": 424,
+     "wins": 192,
+     "pnl": 759103.49,
+     "win_rate": 0.4528,
+     "avg_entry": 0.4943,
+     "edge": -0.0415
+    },
+    "NFL": {
+     "markets": 1,
+     "wins": 1,
+     "pnl": 39188.24,
+     "win_rate": 1.0,
+     "avg_entry": 0.49,
+     "edge": 0.51
+    },
+    "MMA": {
+     "markets": 90,
+     "wins": 39,
+     "pnl": 198210.95,
+     "win_rate": 0.4333,
+     "avg_entry": 0.4248,
+     "edge": 0.0085
     }
    },
    "by_size": {
@@ -1064,112 +3881,275 @@
      "lo": 0,
      "hi": 1000,
      "label": "$0-$1k",
-     "markets": 224,
-     "wins": 75,
-     "pnl": 1240.67,
-     "wagered": 45627.917566747834,
-     "win_rate": 0.3348,
-     "avg_entry": 0.3999,
-     "edge": -0.0651,
-     "roi": 0.0272
+     "markets": 244,
+     "wins": 84,
+     "pnl": 2270.98,
+     "wagered": 49898.25636478473,
+     "win_rate": 0.3443,
+     "avg_entry": 0.406,
+     "edge": -0.0617,
+     "roi": 0.0455
     },
     "$1k-$2k": {
      "lo": 1000,
      "hi": 2500,
      "label": "$1k-$2k",
-     "markets": 24,
-     "wins": 14,
-     "pnl": 2425.1,
-     "wagered": 39524.790791018306,
-     "win_rate": 0.5833,
-     "avg_entry": 0.4357,
-     "edge": 0.1476,
-     "roi": 0.0614
+     "markets": 26,
+     "wins": 16,
+     "pnl": 3625.09,
+     "wagered": 44324.78653701833,
+     "win_rate": 0.6154,
+     "avg_entry": 0.4583,
+     "edge": 0.1571,
+     "roi": 0.0818
     },
     "$2k-$5k": {
      "lo": 2500,
      "hi": 5000,
      "label": "$2k-$5k",
-     "markets": 35,
-     "wins": 20,
-     "pnl": -433.86,
-     "wagered": 123316.04170495241,
-     "win_rate": 0.5714,
-     "avg_entry": 0.5027,
-     "edge": 0.0687,
-     "roi": -0.0035
+     "markets": 38,
+     "wins": 22,
+     "pnl": -47.13,
+     "wagered": 133095.535175059,
+     "win_rate": 0.5789,
+     "avg_entry": 0.5063,
+     "edge": 0.0726,
+     "roi": -0.0004
     },
     "$5k-$10k": {
      "lo": 5000,
      "hi": 10000,
      "label": "$5k-$10k",
-     "markets": 25,
-     "wins": 9,
-     "pnl": -52897.29,
-     "wagered": 181004.03264149764,
-     "win_rate": 0.36,
-     "avg_entry": 0.4246,
-     "edge": -0.0646,
-     "roi": -0.2922
+     "markets": 28,
+     "wins": 11,
+     "pnl": -47994.02,
+     "wagered": 202879.50628445751,
+     "win_rate": 0.3929,
+     "avg_entry": 0.4301,
+     "edge": -0.0372,
+     "roi": -0.2366
     },
     "$10k-$25k": {
      "lo": 10000,
      "hi": 25000,
      "label": "$10k-$25k",
-     "markets": 53,
-     "wins": 28,
-     "pnl": -38753.66,
-     "wagered": 916030.9248575565,
-     "win_rate": 0.5283,
-     "avg_entry": 0.4597,
-     "edge": 0.0686,
-     "roi": -0.0423
+     "markets": 58,
+     "wins": 31,
+     "pnl": -49779.59,
+     "wagered": 1002326.0939466141,
+     "win_rate": 0.5345,
+     "avg_entry": 0.4602,
+     "edge": 0.0743,
+     "roi": -0.0497
     },
     "$25k-$50k": {
      "lo": 25000,
      "hi": 50000,
      "label": "$25k-$50k",
-     "markets": 53,
-     "wins": 30,
-     "pnl": 355124.34,
-     "wagered": 2040534.2134538407,
-     "win_rate": 0.566,
-     "avg_entry": 0.4663,
-     "edge": 0.0997,
-     "roi": 0.174
+     "markets": 59,
+     "wins": 32,
+     "pnl": 272581.2,
+     "wagered": 2290235.0310017704,
+     "win_rate": 0.5424,
+     "avg_entry": 0.4656,
+     "edge": 0.0768,
+     "roi": 0.119
     },
     "$50k-$100k": {
      "lo": 50000,
      "hi": 100000,
      "label": "$50k-$100k",
-     "markets": 48,
-     "wins": 29,
-     "pnl": 837998.84,
-     "wagered": 3308207.1361614317,
-     "win_rate": 0.6042,
-     "avg_entry": 0.4483,
-     "edge": 0.1559,
-     "roi": 0.2533
+     "markets": 54,
+     "wins": 30,
+     "pnl": 585950.04,
+     "wagered": 3727697.588522326,
+     "win_rate": 0.5556,
+     "avg_entry": 0.4535,
+     "edge": 0.1021,
+     "roi": 0.1572
     },
     "$100k+": {
      "lo": 100000,
      "hi": Infinity,
      "label": "$100k+",
-     "markets": 7,
+     "markets": 8,
      "wins": 6,
-     "pnl": 331895.91,
-     "wagered": 918475.3685540654,
-     "win_rate": 0.8571,
-     "avg_entry": 0.6333,
-     "edge": 0.2238,
-     "roi": 0.3614
+     "pnl": 229896.11,
+     "wagered": 1020475.1673514814,
+     "win_rate": 0.75,
+     "avg_entry": 0.583,
+     "edge": 0.167,
+     "roi": 0.2253
     }
    },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
+   "sports_refreshed_at": "2026-09-25T00:00:31.893223+00:00",
    "record_from": "2026-07-01",
-   "record_to": "2026-09-12",
-   "record_trades": 10500,
-   "open_alerts": {},
+   "record_to": "2026-09-24",
+   "record_trades": 11811,
+   "open_alerts": {
+    "0xaf4f9b7fe87016bab487aaa27e2c458a51d9750f8d58a6b7f4ba5d7106c12ea8|BUY|Under": {
+     "alerted_usd": 4085.7312279797857,
+     "pending_usd": 1816.3112739811836,
+     "ts": 1790269152,
+     "fill_ts": 1790290590
+    },
+    "0x7a217d7ae3fcae4fa8969dacaffff8d20b171b28703c65cd2e0d0f151fc76f8c|BUY|Under": {
+     "alerted_usd": 2047.0375999999997,
+     "pending_usd": 811.4872889645761,
+     "ts": 1790454075,
+     "fill_ts": 1790454441
+    },
+    "0xa69826a08aefbfb213677dc6c9e1203c53aef78aaf43a3728bce502b4e37d6ee|BUY|Atlanta Braves": {
+     "alerted_usd": 81943.19090000002,
+     "pending_usd": 288.98215,
+     "ts": 1790290954,
+     "fill_ts": 1790293683
+    },
+    "0xe33f9bbe0a2e2dcdaf5e447a3bccc3b242633c9051ffd2d95087e1cede1c0b6e|BUY|Under": {
+     "alerted_usd": 52800.0,
+     "pending_usd": 0.0,
+     "ts": 1790289840,
+     "fill_ts": 1790289840
+    },
+    "0xc04b0113a4e303f9ff9267c7984569bfae646042db73d27233e8b00c7fc1a179|BUY|San Diego Padres": {
+     "alerted_usd": 29004.9162,
+     "pending_usd": 1666.9284770071688,
+     "ts": 1790290954,
+     "fill_ts": 1790302557
+    },
+    "0x9909b352add3e48cee9da8b4f238ab36f4957c07afd45ab2b3cae8ee1da2dba9|BUY|Over": {
+     "alerted_usd": 16583.383267999627,
+     "pending_usd": 0.0,
+     "ts": 1790293683,
+     "fill_ts": 1790293683
+    },
+    "0x6a998811dcdae6f1f938d6dc64e566a9adbc0a8c2e91f9e952000916f38cc4b9|BUY|Boston Red Sox": {
+     "alerted_usd": 56071.288250952675,
+     "pending_usd": 0.0,
+     "ts": 1790360499,
+     "fill_ts": 1790360499
+    },
+    "0xe78c05c4c1d08a6a37045906edfc5595b1bd364d36ec1d96bd59ecef89a66aac|BUY|Washington Nationals": {
+     "alerted_usd": 2217.775,
+     "pending_usd": 439.51,
+     "ts": 1790370005,
+     "fill_ts": 1790382658
+    },
+    "0xf57c3232b921d8ad505ca60baa641bd962c700ebf92d305183164bae5ac1895c|BUY|Toronto Blue Jays": {
+     "alerted_usd": 45126.809074000244,
+     "pending_usd": 527.9502780012903,
+     "ts": 1790370005,
+     "fill_ts": 1790382658
+    },
+    "0xd2a2da71aec9e99bc16987db822f93e9abf2f00e1efc95d43fc77769c8bba422|BUY|UAB": {
+     "alerted_usd": 99999.99999999999,
+     "pending_usd": 0.0,
+     "ts": 1790370005,
+     "fill_ts": 1790370005
+    },
+    "0x133c1fef1b271667b0ce7cd2dc6acca8faa571f5914915b55fee8a98b6765395|BUY|UAB": {
+     "alerted_usd": 2365.14,
+     "pending_usd": 0.0,
+     "ts": 1790370005,
+     "fill_ts": 1790370005
+    },
+    "0x5c5c384cb86bf2c2e7f5a41e150280cb15639306a16a89b32ca71cf2b782c881|BUY|Over": {
+     "alerted_usd": 6551.000556000223,
+     "pending_usd": 2021.2400000000002,
+     "ts": 1790382658,
+     "fill_ts": 1790395716
+    },
+    "0xe1dcd69461c87df70ea2c02fde860adbacb63979908c2794b7640e9e14054b73|BUY|Los Angeles Angels": {
+     "alerted_usd": 0.0,
+     "pending_usd": 987.9581600131958,
+     "ts": 0,
+     "fill_ts": 1790395716
+    },
+    "0xd797244c5f7c12ff512c078993e1011c5f46fb42ede679e3530d7d0bea0f6c22|BUY|Over": {
+     "alerted_usd": 0.0,
+     "pending_usd": 93.81945200013695,
+     "ts": 0,
+     "fill_ts": 1790382658
+    },
+    "0xc25090d74d05309ce4def590df28486cd9a23df182e20b6722f699fdc73fde87|BUY|Under": {
+     "alerted_usd": 28644.954294958363,
+     "pending_usd": 0.0,
+     "ts": 1790382658,
+     "fill_ts": 1790382658
+    },
+    "0x99dd8d01dc6e4e059e843065fdff67a4369b7bae6b95e6a3b0a741d9731d7440|BUY|Over": {
+     "alerted_usd": 1359.6906,
+     "pending_usd": 74.80347099931844,
+     "ts": 1790382658,
+     "fill_ts": 1790395716
+    },
+    "0x5f87443887e48664e53f77a0cf4639cfc4999a6401189f75f78fb40ae536655b|BUY|Under": {
+     "alerted_usd": 18484.701498833147,
+     "pending_usd": 0.0,
+     "ts": 1790382658,
+     "fill_ts": 1790382658
+    },
+    "0x3d480fd3bc78176c6d191c91e7319971529a19ee429732d662dedaa3b703db11|BUY|Under": {
+     "alerted_usd": 2936.25,
+     "pending_usd": 0.0,
+     "ts": 1790382658,
+     "fill_ts": 1790382658
+    },
+    "0x608defcb1d6d4420071ee91cd48760b2396130e8e0860712a0624ae491c0a667|BUY|Under": {
+     "alerted_usd": 1230.8400000000001,
+     "pending_usd": 53.813607001372134,
+     "ts": 1790413453,
+     "fill_ts": 1790450380
+    },
+    "0x93b81eefe53651000f6719af739f3a89942fb0880361415199516f45c276fc91|BUY|San Diego Padres": {
+     "alerted_usd": 7807.15888367325,
+     "pending_usd": 2408.2567849967168,
+     "ts": 1790440020,
+     "fill_ts": 1790455718
+    },
+    "0xba85a1739eb8c2acfcbd405b2f6ca61c206b860097dca2128c85e87689b62594|BUY|Minnesota Twins": {
+     "alerted_usd": 7851.393723000755,
+     "pending_usd": 831.9000059518778,
+     "ts": 1790440020,
+     "fill_ts": 1790454075
+    },
+    "0xee2e40b86f5ad4c9f36ded2196aff8841bd29401119c454f40208cdc750b73e7|BUY|Under": {
+     "alerted_usd": 11062.076400081985,
+     "pending_usd": 109.2,
+     "ts": 1790444287,
+     "fill_ts": 1790454075
+    },
+    "0x64442641c21e4ae653232c20baa831671a07ccb9386c01fad7d54510e435c30b|BUY|Under": {
+     "alerted_usd": 30246.018102655842,
+     "pending_usd": 0.0,
+     "ts": 1790454075,
+     "fill_ts": 1790454075
+    },
+    "0xbcb87469fba7381ea52b6aefa4b38a1a56d1fbb5601465089bdd51e60faa791d|BUY|Under": {
+     "alerted_usd": 4760.69357701349,
+     "pending_usd": 432.55680000000007,
+     "ts": 1790446209,
+     "fill_ts": 1790454075
+    },
+    "0xeb523a23fffe6b04db598573d1a709b5e45d8500cc81c2829e8e12d4e0632f34|BUY|Over": {
+     "alerted_usd": 53988.30204938662,
+     "pending_usd": 0.0,
+     "ts": 1790450380,
+     "fill_ts": 1790450380
+    },
+    "0xe1c94d36fc691466c02a4f52550f2faf12b71e911c3b95af78452bf8b4aea005|BUY|Atlanta Braves": {
+     "alerted_usd": 14965.405000840377,
+     "pending_usd": 0.0,
+     "ts": 1790454075,
+     "fill_ts": 1790454075
+    },
+    "0xf15504afc153677457348284c8ddfca7a488931e4d1e28a08289318571dfaab3|BUY|Vanessa Demopoulos": {
+     "alerted_usd": 1135.472127,
+     "pending_usd": 0.0,
+     "ts": 1790455354,
+     "fill_ts": 1790455354
+    }
+   },
    "min_usd": 1000.0,
    "sports": [],
    "note": ""
@@ -1179,7 +4159,7 @@
    "label": "Unkempt-Storey",
    "venue": "polymarket",
    "added_at": "2026-07-10T02:40:03.294449+00:00",
-   "last_seen_ts": 1783651203,
+   "last_seen_ts": 1783710388,
    "by_sport": {
     "Soccer": {
      "markets": 21,
@@ -1231,182 +4211,18 @@
      "roi": 0.13
     }
    },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
+   "sports_refreshed_at": "2026-09-25T00:03:57.003570+00:00",
    "record_from": "2026-06-29",
    "record_to": "2026-07-10",
    "record_trades": 6330,
-   "open_alerts": {},
-   "min_usd": 0.0,
-   "sports": [],
-   "note": ""
-  },
-  {
-   "wallet": "0xd38b71f3e8ed1af71983e5c309eac3dfa9b35029",
-   "label": "Careful-Gazebo",
-   "venue": "polymarket",
-   "added_at": "2026-08-06T02:49:57.503751+00:00",
-   "last_seen_ts": 1785984597,
-   "by_sport": {
-    "NCAAB": {
-     "markets": 12,
-     "wins": 7,
-     "pnl": 24013.54,
-     "win_rate": 0.5833,
-     "avg_entry": 0.4849,
-     "edge": 0.0984
-    },
-    "NBA": {
-     "markets": 7,
-     "wins": 4,
-     "pnl": 11281.08,
-     "win_rate": 0.5714,
-     "avg_entry": 0.5576,
-     "edge": 0.0138
-    },
-    "NFL": {
-     "markets": 197,
-     "wins": 107,
-     "pnl": 2147378.17,
-     "win_rate": 0.5431,
-     "avg_entry": 0.4113,
-     "edge": 0.1318
-    },
-    "NCAAF": {
-     "markets": 328,
-     "wins": 150,
-     "pnl": 265705.33,
-     "win_rate": 0.4573,
-     "avg_entry": 0.4407,
-     "edge": 0.0166
-    },
-    "MLB": {
-     "markets": 18,
-     "wins": 12,
-     "pnl": 283330.0,
-     "win_rate": 0.6667,
-     "avg_entry": 0.4748,
-     "edge": 0.1919
-    },
-    "Other": {
-     "markets": 1,
-     "wins": 0,
-     "pnl": -59865.05,
-     "win_rate": 0.0,
-     "avg_entry": 0.3074,
-     "edge": -0.3074
+   "open_alerts": {
+    "0x744df2cb98d5dd869623f254c6bdfb167c9caf1e5dd16732106cb61b2d4bc577|BUY|Belgium": {
+     "alerted_usd": 186567.1926179148,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
     }
    },
-   "by_size": {
-    "$0-$1k": {
-     "lo": 0,
-     "hi": 1000,
-     "label": "$0-$1k",
-     "markets": 12,
-     "wins": 4,
-     "pnl": -2212.8,
-     "wagered": 6912.257224999758,
-     "win_rate": 0.3333,
-     "avg_entry": 0.3305,
-     "edge": 0.0028,
-     "roi": -0.3201
-    },
-    "$1k-$2k": {
-     "lo": 1000,
-     "hi": 2500,
-     "label": "$1k-$2k",
-     "markets": 26,
-     "wins": 13,
-     "pnl": 8541.75,
-     "wagered": 47387.669209994194,
-     "win_rate": 0.5,
-     "avg_entry": 0.3265,
-     "edge": 0.1735,
-     "roi": 0.1803
-    },
-    "$2k-$5k": {
-     "lo": 2500,
-     "hi": 5000,
-     "label": "$2k-$5k",
-     "markets": 71,
-     "wins": 31,
-     "pnl": 1026.6,
-     "wagered": 261837.23045692858,
-     "win_rate": 0.4366,
-     "avg_entry": 0.4267,
-     "edge": 0.0099,
-     "roi": 0.0039
-    },
-    "$5k-$10k": {
-     "lo": 5000,
-     "hi": 10000,
-     "label": "$5k-$10k",
-     "markets": 109,
-     "wins": 50,
-     "pnl": -65828.94,
-     "wagered": 778987.9311524249,
-     "win_rate": 0.4587,
-     "avg_entry": 0.3937,
-     "edge": 0.065,
-     "roi": -0.0845
-    },
-    "$10k-$25k": {
-     "lo": 10000,
-     "hi": 25000,
-     "label": "$10k-$25k",
-     "markets": 170,
-     "wins": 86,
-     "pnl": 279000.85,
-     "wagered": 2897236.850425072,
-     "win_rate": 0.5059,
-     "avg_entry": 0.4125,
-     "edge": 0.0934,
-     "roi": 0.0963
-    },
-    "$25k-$50k": {
-     "lo": 25000,
-     "hi": 50000,
-     "label": "$25k-$50k",
-     "markets": 100,
-     "wins": 53,
-     "pnl": 1024990.42,
-     "wagered": 3539365.413746887,
-     "win_rate": 0.53,
-     "avg_entry": 0.3972,
-     "edge": 0.1328,
-     "roi": 0.2896
-    },
-    "$50k-$100k": {
-     "lo": 50000,
-     "hi": 100000,
-     "label": "$50k-$100k",
-     "markets": 61,
-     "wins": 33,
-     "pnl": 396722.72,
-     "wagered": 4117064.8488411168,
-     "win_rate": 0.541,
-     "avg_entry": 0.4449,
-     "edge": 0.0961,
-     "roi": 0.0964
-    },
-    "$100k+": {
-     "lo": 100000,
-     "hi": Infinity,
-     "label": "$100k+",
-     "markets": 14,
-     "wins": 10,
-     "pnl": 1029602.47,
-     "wagered": 2335276.39524111,
-     "win_rate": 0.7143,
-     "avg_entry": 0.5028,
-     "edge": 0.2115,
-     "roi": 0.4409
-    }
-   },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
-   "record_from": "2025-08-23",
-   "record_to": "2026-04-04",
-   "record_trades": 2167,
-   "open_alerts": {},
    "min_usd": 0.0,
    "sports": [],
    "note": ""
@@ -1589,7 +4405,7 @@
      "roi": 0.3268
     }
    },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
+   "sports_refreshed_at": "2026-09-25T00:10:17.193338+00:00",
    "record_from": "2026-02-04",
    "record_to": "2026-05-20",
    "record_trades": 10500,
@@ -1763,7 +4579,7 @@
      "roi": 0.1599
     }
    },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
+   "sports_refreshed_at": "2026-09-25T00:13:35.592407+00:00",
    "record_from": "2025-09-21",
    "record_to": "2026-05-16",
    "record_trades": 5705,
@@ -1782,10 +4598,10 @@
     "NFL": {
      "markets": 112,
      "wins": 77,
-     "pnl": 498140.82,
+     "pnl": 486640.82,
      "win_rate": 0.6875,
-     "avg_entry": 0.5305,
-     "edge": 0.157
+     "avg_entry": 0.5283,
+     "edge": 0.1592
     },
     "NBA": {
      "markets": 183,
@@ -1914,27 +4730,27 @@
      "lo": 25000,
      "hi": 50000,
      "label": "$25k-$50k",
-     "markets": 75,
-     "wins": 48,
-     "pnl": 331395.41,
-     "wagered": 2533516.218116524,
-     "win_rate": 0.64,
-     "avg_entry": 0.5445,
-     "edge": 0.0955,
-     "roi": 0.1308
+     "markets": 76,
+     "wins": 49,
+     "pnl": 342895.41,
+     "wagered": 2572016.218116524,
+     "win_rate": 0.6447,
+     "avg_entry": 0.5469,
+     "edge": 0.0978,
+     "roi": 0.1333
     },
     "$50k-$100k": {
      "lo": 50000,
      "hi": 100000,
      "label": "$50k-$100k",
-     "markets": 28,
-     "wins": 18,
-     "pnl": -31628.17,
-     "wagered": 1833041.2805211968,
-     "win_rate": 0.6429,
-     "avg_entry": 0.5937,
-     "edge": 0.0492,
-     "roi": -0.0173
+     "markets": 27,
+     "wins": 17,
+     "pnl": -54628.17,
+     "wagered": 1756041.2805211968,
+     "win_rate": 0.6296,
+     "avg_entry": 0.5878,
+     "edge": 0.0418,
+     "roi": -0.0311
     },
     "$100k+": {
      "lo": 100000,
@@ -1950,10 +4766,10 @@
      "roi": 0.0147
     }
    },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
+   "sports_refreshed_at": "2026-09-25T00:16:45.261462+00:00",
    "record_from": "2025-10-26",
    "record_to": "2025-12-23",
-   "record_trades": 7380,
+   "record_trades": 7379,
    "open_alerts": {},
    "min_usd": 0.0,
    "sports": [],
@@ -1964,15 +4780,23 @@
    "label": "Bland-Crawdad",
    "venue": "polymarket",
    "added_at": "2026-08-06T02:49:59.468632+00:00",
-   "last_seen_ts": 1785984599,
+   "last_seen_ts": 1790455436,
    "by_sport": {
     "NFL": {
-     "markets": 189,
-     "wins": 111,
-     "pnl": 259409.91,
-     "win_rate": 0.5873,
-     "avg_entry": 0.5287,
-     "edge": 0.0586
+     "markets": 240,
+     "wins": 139,
+     "pnl": 141722.04,
+     "win_rate": 0.5792,
+     "avg_entry": 0.511,
+     "edge": 0.0682
+    },
+    "Tennis": {
+     "markets": 13,
+     "wins": 3,
+     "pnl": 13975.68,
+     "win_rate": 0.2308,
+     "avg_entry": 0.4678,
+     "edge": -0.237
     },
     "Other": {
      "markets": 6,
@@ -1993,7 +4817,7 @@
     "Soccer": {
      "markets": 14,
      "wins": 7,
-     "pnl": 81930.91,
+     "pnl": 81918.57,
      "win_rate": 0.5,
      "avg_entry": 0.5931,
      "edge": -0.0931
@@ -2022,14 +4846,6 @@
      "avg_entry": 0.4605,
      "edge": 0.0395
     },
-    "Tennis": {
-     "markets": 12,
-     "wins": 2,
-     "pnl": -18784.22,
-     "win_rate": 0.1667,
-     "avg_entry": 0.3484,
-     "edge": -0.1817
-    },
     "NCAAF": {
      "markets": 14,
      "wins": 7,
@@ -2052,79 +4868,79 @@
      "lo": 0,
      "hi": 1000,
      "label": "$0-$1k",
-     "markets": 93,
-     "wins": 48,
-     "pnl": 1143.13,
-     "wagered": 27584.04771191894,
-     "win_rate": 0.5161,
-     "avg_entry": 0.3229,
-     "edge": 0.1932,
-     "roi": 0.0414
+     "markets": 105,
+     "wins": 58,
+     "pnl": 1005.29,
+     "wagered": 29803.52251195814,
+     "win_rate": 0.5524,
+     "avg_entry": 0.3332,
+     "edge": 0.2192,
+     "roi": 0.0337
     },
     "$1k-$2k": {
      "lo": 1000,
      "hi": 2500,
      "label": "$1k-$2k",
-     "markets": 20,
-     "wins": 10,
-     "pnl": -1733.43,
-     "wagered": 35052.23846500278,
-     "win_rate": 0.5,
-     "avg_entry": 0.2959,
-     "edge": 0.2041,
-     "roi": -0.0495
+     "markets": 26,
+     "wins": 14,
+     "pnl": 1861.13,
+     "wagered": 43221.678465002784,
+     "win_rate": 0.5385,
+     "avg_entry": 0.319,
+     "edge": 0.2195,
+     "roi": 0.0431
     },
     "$2k-$5k": {
      "lo": 2500,
      "hi": 5000,
      "label": "$2k-$5k",
-     "markets": 42,
-     "wins": 23,
-     "pnl": 16309.91,
-     "wagered": 157392.68881587524,
-     "win_rate": 0.5476,
-     "avg_entry": 0.4647,
-     "edge": 0.0829,
-     "roi": 0.1036
+     "markets": 52,
+     "wins": 28,
+     "pnl": 18267.14,
+     "wagered": 193759.4335411081,
+     "win_rate": 0.5385,
+     "avg_entry": 0.4694,
+     "edge": 0.0691,
+     "roi": 0.0943
     },
     "$5k-$10k": {
      "lo": 5000,
      "hi": 10000,
      "label": "$5k-$10k",
-     "markets": 34,
-     "wins": 18,
-     "pnl": 314.95,
-     "wagered": 241271.02493800034,
-     "win_rate": 0.5294,
-     "avg_entry": 0.4948,
-     "edge": 0.0346,
-     "roi": 0.0013
+     "markets": 42,
+     "wins": 22,
+     "pnl": 9565.06,
+     "wagered": 300185.3456520136,
+     "win_rate": 0.5238,
+     "avg_entry": 0.4955,
+     "edge": 0.0283,
+     "roi": 0.0319
     },
     "$10k-$25k": {
      "lo": 10000,
      "hi": 25000,
      "label": "$10k-$25k",
-     "markets": 58,
-     "wins": 32,
-     "pnl": 76163.76,
-     "wagered": 918196.4991191147,
-     "win_rate": 0.5517,
-     "avg_entry": 0.5115,
-     "edge": 0.0402,
-     "roi": 0.0829
+     "markets": 68,
+     "wins": 34,
+     "pnl": -2635.32,
+     "wagered": 1094227.0766263946,
+     "win_rate": 0.5,
+     "avg_entry": 0.5073,
+     "edge": -0.0073,
+     "roi": -0.0024
     },
     "$25k-$50k": {
      "lo": 25000,
      "hi": 50000,
      "label": "$25k-$50k",
-     "markets": 23,
-     "wins": 11,
-     "pnl": -150278.53,
-     "wagered": 781213.406570243,
-     "win_rate": 0.4783,
-     "avg_entry": 0.5414,
-     "edge": -0.0631,
-     "roi": -0.1924
+     "markets": 28,
+     "wins": 15,
+     "pnl": -81540.59,
+     "wagered": 976042.6512632543,
+     "win_rate": 0.5357,
+     "avg_entry": 0.551,
+     "edge": -0.0153,
+     "roi": -0.0835
     },
     "$50k-$100k": {
      "lo": 50000,
@@ -2138,13 +4954,135 @@
      "avg_entry": 0.6317,
      "edge": 0.3683,
      "roi": 0.4995
+    },
+    "$100k+": {
+     "lo": 100000,
+     "hi": Infinity,
+     "label": "$100k+",
+     "markets": 1,
+     "wins": 0,
+     "pnl": -89543.21,
+     "wagered": 103815.61923054361,
+     "win_rate": 0.0,
+     "avg_entry": 0.3026,
+     "edge": -0.3026,
+     "roi": -0.8625
     }
    },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
+   "sports_refreshed_at": "2026-09-25T00:19:58.316124+00:00",
    "record_from": "2025-08-21",
-   "record_to": "2026-09-13",
-   "record_trades": 4984,
-   "open_alerts": {},
+   "record_to": "2026-09-24",
+   "record_trades": 5802,
+   "open_alerts": {
+    "0xd14c6037d0237da81fa84c98d2fb8a4c9e2db058abd2589413e0138ea03a70b2|BUY|Cowboys": {
+     "alerted_usd": 4946.118268980448,
+     "pending_usd": 2156.874206988717,
+     "ts": 1790430542,
+     "fill_ts": 1790446209
+    },
+    "0xd0ee09bc3955e774c42df27cc3b4685a483f8498000c2de26625f20fc9ed4f78|BUY|Lions": {
+     "alerted_usd": 29481.0358789952,
+     "pending_usd": 0.0,
+     "ts": 1790395716,
+     "fill_ts": 1790395716
+    },
+    "0x5bc57a6b6345a157ec379ce0940c09dcbfdadebc30b915efe993db1805999dea|BUY|Cowboys": {
+     "alerted_usd": 20433.308500000003,
+     "pending_usd": 0.0,
+     "ts": 1790341184,
+     "fill_ts": 1790341184
+    },
+    "0xaa1b9e9bc1e6b4f1d79e5e15c0451885478e61685bd3b3ff20b27c2cce681e87|BUY|Under": {
+     "alerted_usd": 13757.320876929727,
+     "pending_usd": 0.0,
+     "ts": 1790382658,
+     "fill_ts": 1790382658
+    },
+    "0xed537832cbf6774d5b54da06732b53ce6866d82941e593ca71292f8e247babc5|BUY|Dolphins": {
+     "alerted_usd": 8087.7730560221335,
+     "pending_usd": 0.0,
+     "ts": 1790382658,
+     "fill_ts": 1790382658
+    },
+    "0x2b6f5c1f7c6562bf2699a102dbd8536c9c0d56926a23ec4fc9521f5296579b0d|BUY|Cowboys": {
+     "alerted_usd": 4821.5804,
+     "pending_usd": 38.09,
+     "ts": 1790289840,
+     "fill_ts": 1790395716
+    },
+    "0xc4c47aa2f37a68d5f500939cf2be654fce34a003e8e5dafe0ad9fb6e36878811|BUY|Steelers": {
+     "alerted_usd": 0.0,
+     "pending_usd": 4.817929999840328,
+     "ts": 0,
+     "fill_ts": 1790341184
+    },
+    "0xdff427fce82c22dca74075108b8d6dbe6c97395225b60e20f10ab782e221727c|BUY|Dolphins": {
+     "alerted_usd": 8750.0,
+     "pending_usd": 7576.152000000001,
+     "ts": 1790362501,
+     "fill_ts": 1790382658
+    },
+    "0xcc6a9563c0eb41b3b09876088fd24f0e8ecf7bccf95053cc21d45c68db2b6581|BUY|Dolphins": {
+     "alerted_usd": 981.6294369996723,
+     "pending_usd": 0.0,
+     "ts": 1790440020,
+     "fill_ts": 1790440020
+    },
+    "0xe62c2b8913f0569f4fc7896b8eee30c40326e27e58525d7d2d5ad4ba1dbe77dd|BUY|Steelers": {
+     "alerted_usd": 11059.1571,
+     "pending_usd": 0.0,
+     "ts": 1790382658,
+     "fill_ts": 1790382658
+    },
+    "0x229d019c7ee7343310cc432b3ee44a44ade9ccd7bf87dc2886cfc284bb95be41|BUY|Cowboys": {
+     "alerted_usd": 0.0,
+     "pending_usd": 79.46,
+     "ts": 0,
+     "fill_ts": 1790395716
+    },
+    "0xf7abe329b5bea6a7706fa70041a935053436df8d736a68a63d171a43f360afd3|BUY|Lions": {
+     "alerted_usd": 9057.6404,
+     "pending_usd": 0.0,
+     "ts": 1790440020,
+     "fill_ts": 1790440020
+    },
+    "0x78d330c13885ac6fd36f082f2c502aefdb2a9bd53cc6a5765ce4375b650b9d35|BUY|Patriots": {
+     "alerted_usd": 435.5758,
+     "pending_usd": 0.0,
+     "ts": 1790446209,
+     "fill_ts": 1790446209
+    },
+    "0xa78c477a9283ea6fb05f016013eb3f4e03980f65b724e1e7ab9d9f7611d661aa|BUY|Ole Miss": {
+     "alerted_usd": 13624.606617983976,
+     "pending_usd": 0.0,
+     "ts": 1790452066,
+     "fill_ts": 1790452066
+    },
+    "0xe5a54eaf6a6b729ed0a9b5e1247662b4177ac3a7692086b748a2ed101b2a0673|BUY|Florida": {
+     "alerted_usd": 0.0,
+     "pending_usd": 21.607,
+     "ts": 0,
+     "fill_ts": 1790452066
+    },
+    "0xe5a54eaf6a6b729ed0a9b5e1247662b4177ac3a7692086b748a2ed101b2a0673|BUY|Ole Miss": {
+     "alerted_usd": 12209.997005,
+     "pending_usd": 0.0,
+     "ts": 1790452066,
+     "fill_ts": 1790452066
+    },
+    "0x979dfc9a79907bc18372c6b2152f68cf154ad818752b41b47e7f3788d3ac4c61|BUY|Florida": {
+     "alerted_usd": 298.08259998185497,
+     "pending_usd": 0.0,
+     "ts": 1790454259,
+     "fill_ts": 1790454259
+    },
+    "0xef26ef7e760ce265f8f1388ea94c4fd6c65f9e06a790b97052cccb5fc3868b6b|BUY|Ole Miss": {
+     "alerted_usd": 2032.5488249990333,
+     "pending_usd": 0.0,
+     "ts": 1790455536,
+     "fill_ts": 1790455536
+    }
+   },
    "min_usd": 0.0,
    "sports": [],
    "note": ""
@@ -2167,7 +5105,7 @@
     "MLB": {
      "markets": 10,
      "wins": 3,
-     "pnl": -253396.23,
+     "pnl": -253395.23,
      "win_rate": 0.3,
      "avg_entry": 0.4489,
      "edge": -0.1489
@@ -2175,15 +5113,15 @@
     "NHL": {
      "markets": 73,
      "wins": 49,
-     "pnl": 51821.91,
+     "pnl": 143667.52,
      "win_rate": 0.6712,
-     "avg_entry": 0.6705,
-     "edge": 0.0007
+     "avg_entry": 0.6721,
+     "edge": -0.0009
     },
     "NBA": {
      "markets": 14,
      "wins": 6,
-     "pnl": -161276.77,
+     "pnl": -161271.07,
      "win_rate": 0.4286,
      "avg_entry": 0.5214,
      "edge": -0.0928
@@ -2204,12 +5142,12 @@
      "label": "$0-$1k",
      "markets": 27,
      "wins": 17,
-     "pnl": -417.71,
-     "wagered": 529.7007169998191,
+     "pnl": -411.66,
+     "wagered": 508.650716999819,
      "win_rate": 0.6296,
-     "avg_entry": 0.13,
-     "edge": 0.4996,
-     "roi": -0.7886
+     "avg_entry": 0.1261,
+     "edge": 0.5035,
+     "roi": -0.8093
     },
     "$1k-$2k": {
      "lo": 1000,
@@ -2217,12 +5155,12 @@
      "label": "$1k-$2k",
      "markets": 2,
      "wins": 1,
-     "pnl": 4468.76,
-     "wagered": 2976.4565030030108,
+     "pnl": 4473.36,
+     "wagered": 2971.8565030030113,
      "win_rate": 0.5,
-     "avg_entry": 0.2769,
-     "edge": 0.2231,
-     "roi": 1.5014
+     "avg_entry": 0.2767,
+     "edge": 0.2233,
+     "roi": 1.5052
     },
     "$2k-$5k": {
      "lo": 2500,
@@ -2256,8 +5194,8 @@
      "label": "$10k-$25k",
      "markets": 16,
      "wins": 12,
-     "pnl": 38489.97,
-     "wagered": 271627.3802266764,
+     "pnl": 38496.07,
+     "wagered": 271616.28022667643,
      "win_rate": 0.75,
      "avg_entry": 0.5858,
      "edge": 0.1642,
@@ -2267,27 +5205,27 @@
      "lo": 25000,
      "hi": 50000,
      "label": "$25k-$50k",
-     "markets": 25,
+     "markets": 26,
      "wins": 16,
-     "pnl": 42323.96,
-     "wagered": 874246.2006468046,
-     "win_rate": 0.64,
-     "avg_entry": 0.6248,
-     "edge": 0.0152,
-     "roi": 0.0484
+     "pnl": 9323.96,
+     "wagered": 907246.2006468046,
+     "win_rate": 0.6154,
+     "avg_entry": 0.626,
+     "edge": -0.0106,
+     "roi": 0.0103
     },
     "$50k-$100k": {
      "lo": 50000,
      "hi": 100000,
      "label": "$50k-$100k",
-     "markets": 18,
+     "markets": 17,
      "wins": 8,
-     "pnl": -263357.07,
-     "wagered": 1335363.6697739577,
-     "win_rate": 0.4444,
-     "avg_entry": 0.62,
-     "edge": -0.1756,
-     "roi": -0.1972
+     "pnl": -165021.51,
+     "wagered": 1234591.1097739576,
+     "win_rate": 0.4706,
+     "avg_entry": 0.6169,
+     "edge": -0.1463,
+     "roi": -0.1337
     },
     "$100k+": {
      "lo": 100000,
@@ -2295,18 +5233,18 @@
      "label": "$100k+",
      "markets": 16,
      "wins": 11,
-     "pnl": -135653.55,
-     "wagered": 2861142.550374567,
+     "pnl": -109153.55,
+     "wagered": 2834642.550374567,
      "win_rate": 0.6875,
-     "avg_entry": 0.6099,
-     "edge": 0.0776,
-     "roi": -0.0474
+     "avg_entry": 0.6108,
+     "edge": 0.0767,
+     "roi": -0.0385
     }
    },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
+   "sports_refreshed_at": "2026-09-25T00:23:13.566733+00:00",
    "record_from": "2026-04-23",
    "record_to": "2026-06-29",
-   "record_trades": 10500,
+   "record_trades": 10476,
    "open_alerts": {},
    "min_usd": 0.0,
    "sports": [],
@@ -2317,7 +5255,7 @@
    "label": "Tennis Expert",
    "venue": "polymarket",
    "added_at": "2026-08-22T21:22:11.364896+00:00",
-   "last_seen_ts": 1787433731,
+   "last_seen_ts": 1787697046,
    "by_sport": {
     "Tennis": {
      "markets": 90,
@@ -2474,11 +5412,36 @@
      "roi": 0.2275
     }
    },
-   "sports_refreshed_at": "2026-09-13T00:08:06.042025+00:00",
+   "sports_refreshed_at": "2026-09-25T00:26:23.999514+00:00",
    "record_from": "2026-03-10",
    "record_to": "2026-08-25",
    "record_trades": 8437,
-   "open_alerts": {},
+   "open_alerts": {
+    "0xd03f18bd641ddbabf68fd8e6fff9eb1f802bff91c897f413eeb4cead633c64cc|BUY|Mees Rottgering": {
+     "alerted_usd": 77192.20640928014,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x7d130bc0a6386f3ef22564165af87c128dce53a2c85101be02df67a5b97a5759|BUY|Daniil Glinka": {
+     "alerted_usd": 162224.09460035266,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0xcdc49824ddff541a8b6de3496c860ac1174b64d25314e365e2732ea07012b6fd|BUY|Thiago Seyboth Wild": {
+     "alerted_usd": 57406.942100395856,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    },
+    "0x760d2aacb850ead4567f44a79706bb7e08dcf04766891986c29127452bd50f37|BUY|Lucia Bronzetti": {
+     "alerted_usd": 110463.12696602872,
+     "pending_usd": 0.0,
+     "ts": 1790011422,
+     "fill_ts": 1790011422
+    }
+   },
    "min_usd": 50000.0,
    "sports": [],
    "note": ""
