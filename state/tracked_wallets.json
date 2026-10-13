@@ -5445,6 +5445,23 @@
    "min_usd": 50000.0,
    "sports": [],
    "note": ""
+  },
+  {
+   "wallet": "0xcbc666209b4c17ea84c03c0dda71b5dab9e4ec62",
+   "label": "raybanman",
+   "venue": "polymarket",
+   "added_at": "2026-10-13T00:13:20.699637+00:00",
+   "last_seen_ts": 1791850400,
+   "by_sport": {},
+   "by_size": {},
+   "sports_refreshed_at": "",
+   "record_from": "",
+   "record_to": "",
+   "record_trades": 0,
+   "open_alerts": {},
+   "min_usd": 10000.0,
+   "sports": [],
+   "note": ""
   }
  ]
 }

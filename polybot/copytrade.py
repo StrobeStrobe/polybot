@@ -33,7 +33,7 @@ SEASON_SERIES = {"NFL": 10187, "CFB": 10210, "UFC": 38, "MLB": 3}
 # Fill 2026 in once markets exist: run.py find-series NFL
 SEASON_SERIES_BY_YEAR = {
     "NFL": {"2025": 10187, "2026": 12185},   # 12185 = 2026 season incl. preseason
-    "CFB": {"2025": 10210},
+    "CFB": {"2025": 10210, "2026": 12756},
 }
 DEFAULT_SEASON = {"NFL": "2025", "CFB": "2025"}
 # Sports with no per-season series — enumerated via their sport TAG instead
@@ -736,6 +736,11 @@ def _is_full_game_alt(q: str) -> bool:
         return False
     if " vs" in ql and "o/u" in ql:          # "Team vs. Team: O/U 8.5"
         return True
+    # Some events phrase the full-game total with no team names at all —
+    # "O/U 47.5", slug "...-total-47pt5" — and were silently dropped. Period
+    # totals carry a prefix ("1H O/U …"), so only a bare leading O/U counts.
+    if ql.strip().startswith("o/u "):
+        return True
     if ql.strip().startswith("spread:"):     # "Spread: Team (-1.5)"
         return True
     return False
@@ -964,6 +969,67 @@ def positions_trades_gap(wallet: str, min_usd: float = 1000,
     return gaps
 
 
+def open_positions(wallet: str, sports: Optional[List[str]] = None,
+                   min_usd: float = 0.0) -> List[dict]:
+    """Every position a wallet currently holds in an UNRESOLVED market, newest
+    kickoff first. Read-only.
+
+    Deciding what counts as open takes care: the API's `redeemable` flag is not
+    a settled-flag. One wallet shows 0 redeemable across 1,074 positions while
+    another shows 578 of 585 — it means "won and not yet claimed", so it misses
+    both losers (nothing to claim) and anyone who already redeemed. A resolved
+    market's price pins to exactly 0 or 1, so the reliable test is a live price
+    strictly between the two, with redeemable excluded to drop won-but-unclaimed.
+    """
+    poss: List[dict] = []
+    offset = 0
+    while offset < 5000:
+        try:
+            r = _session.get(f"{DATA_API}/positions",
+                             params={"user": wallet, "limit": 500,
+                                     "offset": offset}, timeout=30)
+            batch = r.json() if r.ok else []
+        except (requests.RequestException, ValueError):
+            break
+        if not batch:
+            break
+        poss.extend(batch)
+        offset += len(batch)
+        if len(batch) < 500:
+            break
+
+    want = set(sports or ())
+    out = []
+    for p in poss:
+        price = float(p.get("curPrice") or 0)
+        if p.get("redeemable") or not (1e-4 < price < 1 - 1e-4):
+            continue
+        slug = p.get("eventSlug") or p.get("slug") or ""
+        sport = sport_from_slug(slug)
+        if want and sport not in want:
+            continue
+        stake = float(p.get("initialValue") or 0)
+        if stake < min_usd:
+            continue
+        out.append({
+            "sport": sport,
+            "title": p.get("title") or slug or "?",
+            "outcome": p.get("outcome") or "?",
+            "slug": slug,
+            "market_slug": p.get("slug") or slug,
+            "shares": float(p.get("size") or 0),
+            "stake": stake,
+            "entry": float(p.get("avgPrice") or 0),
+            "price": price,
+            "value": float(p.get("currentValue") or 0),
+            "pnl": float(p.get("cashPnl") or 0),
+            "pct": float(p.get("percentPnl") or 0),
+            "ends": (p.get("endDate") or "")[:10],
+        })
+    out.sort(key=lambda x: (x["ends"], -x["stake"]))
+    return out
+
+
 def weekly_wallet_pnl(cfg: Config, days: float = 7) -> List[dict]:
     """For each tracked wallet: net PnL over the last `days` (Polymarket's
     official figure) plus a per-sport breakdown of bets placed this week that
@@ -997,26 +1063,81 @@ def _market_trades(cid: str, max_pages: int = 60) -> List[dict]:
     """All trades on a market, paginated. Cap is high because busy game markets
     can carry well over 4k fills — truncating drops heavy bettors' positions and
     made position-builders (e.g. Talvez10) vanish from the reverse-lookup. Light
-    markets still exit early once a short page is returned."""
-    trades: List[dict] = []
+    markets still exit early once a short page is returned.
+
+    The API refuses any offset past 10,000 ("max historical trades offset of
+    10000 exceeded"), so plain paging returns only a market's NEWEST ~10,500
+    fills — and used to return them as if complete. A $13M NFL moneyline loses
+    most of its history that way. When that ceiling is hit, re-read the market
+    in start/end time windows (inclusive, each with its own offset budget),
+    halving any window that is itself still over the cap."""
+    trades, truncated = _market_window(cid, None, None, max_pages)
+    if not truncated:
+        return trades
+    # Inclusive [lo, mid] / [mid+1, hi] windows never overlap, so no dedupe —
+    # the API legitimately returns identical-looking fills, and deduping would
+    # silently merge them.
+    rows = _market_windowed(cid, 0, int(time.time()) + 86400, max_pages)
+    return sorted(rows, key=lambda t: int(t.get("timestamp") or 0), reverse=True)
+
+
+_TRADES_OFFSET_CAP = 10000
+
+
+def _window_over_cap(cid: str, lo: int, hi: int) -> bool:
+    """One request: is there a full page at the deepest allowed offset? If so
+    the window holds more fills than a paged read can reach."""
+    try:
+        r = _session.get(f"{DATA_API}/trades",
+                         params={"market": cid, "limit": 500, "takerOnly": "false",
+                                 "offset": _TRADES_OFFSET_CAP, "start": lo, "end": hi},
+                         timeout=30)
+        return r.ok and len(r.json()) >= 500
+    except (requests.RequestException, ValueError):
+        return False
+
+
+def _market_window(cid: str, start: Optional[int], end: Optional[int],
+                   max_pages: int = 60) -> tuple:
+    """One paged read of a market, optionally bounded to [start, end].
+    Returns (fills, hit_offset_ceiling)."""
+    out: List[dict] = []
     off = 0
+    params = {"market": cid, "limit": 500, "takerOnly": "false"}
+    if start is not None:
+        params.update({"start": start, "end": end})
     for _ in range(max_pages):
+        if off > _TRADES_OFFSET_CAP:
+            return out, True
         try:
             resp = _session.get(f"{DATA_API}/trades",
-                                params={"market": cid, "limit": 500, "offset": off,
-                                        "takerOnly": "false"}, timeout=30)
+                                params={**params, "offset": off}, timeout=30)
             if not resp.ok:
-                break
+                return out, resp.status_code == 400 and off > 0
             page = resp.json()
         except (requests.RequestException, ValueError):
-            break
+            return out, False
         if not page:
-            break
-        trades.extend(page)
+            return out, False
+        out.extend(page)
         off += len(page)
         if len(page) < 500:
-            break
-    return trades
+            return out, False
+    return out, True
+
+
+def _market_windowed(cid: str, lo: int, hi: int, max_pages: int,
+                     depth: int = 0) -> List[dict]:
+    # Probe first (1 request) and only page a window once it fits — reading
+    # 21 pages just to learn a window is too big made one $13M market take 2min.
+    if hi > lo and depth <= 40 and _window_over_cap(cid, lo, hi):
+        mid = (lo + hi) // 2
+        return (_market_windowed(cid, lo, mid, max_pages, depth + 1)
+                + _market_windowed(cid, mid + 1, hi, max_pages, depth + 1))
+    rows, truncated = _market_window(cid, lo, hi, max_pages)
+    if truncated:
+        log.warning("market %s: >10.5k fills in one window — some lost", cid[:10])
+    return rows
 
 
 # Heavy-bettor rescue: markets too busy to fully page are EXCLUDED from
@@ -1058,8 +1179,12 @@ def find_series(keyword: str, limit: int = 400) -> List[dict]:
         off = 0
         while off < limit * 4:
             try:
+                # Gamma caps /events at 100 per page whatever `limit` says, so
+                # ask for 100 and stop only on an empty page. Asking for 500
+                # and stopping on a short page read exactly one page and
+                # missed every series not in the newest 100 events.
                 r = _session.get(f"{GAMMA_API}/events",
-                                 params={"closed": closed, "limit": 500,
+                                 params={"closed": closed, "limit": 100,
                                          "offset": off, "order": "startDate",
                                          "ascending": "false"}, timeout=40)
                 evs = r.json() if r.ok else []
@@ -1081,8 +1206,6 @@ def find_series(keyword: str, limit: int = 400) -> List[dict]:
                     if start > d["latest"]:
                         d["latest"] = start
             off += len(evs)
-            if len(evs) < 500:
-                break
     return sorted(found.values(), key=lambda d: d["latest"], reverse=True)
 
 
@@ -1141,13 +1264,12 @@ def season_sport_leaders(cfg: Config, sport: str, min_bets: int = 20,
     per: Dict[str, Dict[str, dict]] = {}
     truncated: set = set()
     for i, (cid, _finals, _slug) in enumerate(markets):
+        # No size cutoff any more. The old ">= 30,000 fills = incomplete" rule
+        # never fired: the API refuses offsets past 10,000, so busy markets
+        # came back at ~10,500 fills — truncated, but scored as complete.
+        # _market_trades now re-reads those in time windows and returns the
+        # whole market, so a big fill count is just a big market.
         mkt_trades = _market_trades(cid)
-        if len(mkt_trades) >= 30_000:  # hit the page cap: data incomplete.
-            # Partial fills mis-score every wallet in the market (seen buys
-            # without the rest -> wrong PnL sign). Better no data than wrong
-            # data: drop the market; heavy-rescue re-checks the big fish.
-            truncated.add(cid)
-            continue
         for t in mkt_trades:
             w = (t.get("proxyWallet") or "").lower()
             idx = t.get("outcomeIndex")
