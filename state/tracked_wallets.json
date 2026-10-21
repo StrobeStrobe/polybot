@@ -5462,6 +5462,23 @@
    "min_usd": 10000.0,
    "sports": [],
    "note": ""
+  },
+  {
+   "wallet": "0x924379a79c64b77ad5816ad362122a5f6228658e",
+   "label": "Kch-Temp",
+   "venue": "polymarket",
+   "added_at": "2026-10-21T02:05:42.979315+00:00",
+   "last_seen_ts": 1792548342,
+   "by_sport": {},
+   "by_size": {},
+   "sports_refreshed_at": "",
+   "record_from": "",
+   "record_to": "",
+   "record_trades": 0,
+   "open_alerts": {},
+   "min_usd": 5000.0,
+   "sports": [],
+   "note": ""
   }
  ]
 }

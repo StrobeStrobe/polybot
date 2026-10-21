@@ -22,7 +22,7 @@ from .market_data import fetch_books
 log = logging.getLogger("polybot.copytrade")
 
 DATA_API = "https://data-api.polymarket.com"
-LB_API = "https://lb-api.polymarket.com"
+LB_V2 = "https://data-api.polymarket.com/v2/leaderboard"   # lb-api.polymarket.com retired
 
 # Per-season "series" ids for out-of-season sports (current leaderboards can't
 # surface them). Found via a known game event's `series` field.
@@ -344,18 +344,32 @@ def _leaderboard(period: str, depth: int = 100, rank_type: str = "pnl") -> List[
     return rows
 
 
+_LB_PERIOD = {"1d": "day", "7d": "week", "30d": "month", "all": "all"}
+_LB_FIELD = {"profit": "pnl", "volume": "volume"}
+
+
 def _wallet_stat(endpoint: str, window: str, wallet: str) -> float:
-    """Per-wallet profit or volume from lb-api. endpoint: 'profit' | 'volume';
-    window: '1d' | '7d' | '30d' | 'all'."""
+    """Per-wallet profit or volume. endpoint: 'profit' | 'volume';
+    window: '1d' | '7d' | '30d' | 'all'.
+
+    lb-api.polymarket.com was retired (HTTP 410) in favour of
+    data-api /v2/leaderboard. The old code turned that 410 into a silent 0.0,
+    so the weekly report and every career-profit filter read $0 with no error.
+    Failures are now logged. Note the wallet must go in `user` — `address` is
+    ignored and returns the top of the global leaderboard instead."""
     try:
-        resp = _session.get(f"{LB_API}/{endpoint}",
-                            params={"window": window, "address": wallet}, timeout=15)
+        resp = _session.get(LB_V2, params={"user": wallet,
+                                           "timePeriod": _LB_PERIOD.get(window, window)},
+                            timeout=15)
         if resp.ok:
-            rows = resp.json()
-            if rows:
-                return float(rows[0].get("amount") or 0)
-    except (requests.RequestException, ValueError):
-        pass
+            data = resp.json().get("data") or {}
+            if isinstance(data, dict) and (data.get("user_id") or "").lower() == wallet.lower():
+                return float(data.get(_LB_FIELD.get(endpoint, endpoint)) or 0)
+            return 0.0                      # wallet has no leaderboard row: genuinely 0
+        log.warning("leaderboard %s for %s returned HTTP %s", endpoint, wallet[:10],
+                    resp.status_code)
+    except (requests.RequestException, ValueError, AttributeError) as e:
+        log.warning("leaderboard %s for %s failed: %s", endpoint, wallet[:10], e)
     return 0.0
 
 
