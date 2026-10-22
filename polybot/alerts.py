@@ -9,6 +9,7 @@ import subprocess
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Optional
 
 import requests
 
@@ -199,15 +200,31 @@ def _sport_tag(a: dict) -> str:
     if rec and rec.get("markets"):
         pnl, wr, n = rec.get("pnl", 0), rec.get("win_rate", 0), rec["markets"]
         # Below MIN_VERDICT the sample decides nothing, so don't render a
-        # verdict at all. Hyperactive wallets hit Polymarket's ~10,500-fill
-        # per-wallet API ceiling in a day or two, so their record covers a
-        # sliver of a season — a red ❌ off 3 games is worse than silence.
+        # verdict at all — a red ❌ off 3 games is worse than silence.
         if n < MIN_VERDICT:
             return f"❔ too few {sport} bets to judge: {n}{asof}"
-        if pnl > 0:
-            return f"✅ profitable at {sport}: {wr:.0%} W, ${pnl:+,.0f} / {n} bets{asof}"
-        return f"❌ UNprofitable at {sport}: {wr:.0%} W, ${pnl:+,.0f} / {n} bets{asof}"
+        edge = rec.get("edge")
+        edge_s = f", {edge:+.1%} edge" if edge is not None else ""
+        verdict = "✅ profitable" if pnl > 0 else "❌ UNprofitable"
+        return (f"{verdict} at {sport}: {wr:.0%} W{edge_s}, ${pnl:+,.0f} / {n:,} bets"
+                f"{_recent_form(rec, a.get('recent_record'))}{asof}")
     return f"❔ no track record at {sport}"
+
+
+def _recent_form(life: dict, recent: Optional[dict]) -> str:
+    """' · last 100: 49% W, -1.2% edge, $-12,340 📉' — recent form beside the
+    lifetime record. Omitted when the lifetime record IS the recent window
+    (fewer bets than the window) or the window is too small to mean anything.
+    The arrow flags a split — lifetime and recent edge on opposite sides of 0:
+    📉 a slump on a winning record, 📈 a hot streak on a losing one."""
+    if not recent or not recent.get("markets") or recent["markets"] >= life["markets"] \
+            or recent["markets"] < MIN_VERDICT:
+        return ""
+    k, wr = recent["markets"], recent.get("win_rate", 0)
+    edge, pnl = recent.get("edge", 0), recent.get("pnl", 0)
+    le = life.get("edge", 0)
+    flag = " 📉" if le > 0 > edge else (" 📈" if le < 0 < edge else "")
+    return f" · last {k}: {wr:.0%} W, {edge:+.1%} edge, ${pnl:+,.0f}{flag}"
 
 
 def _window(a: dict) -> str:

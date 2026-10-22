@@ -1113,6 +1113,15 @@ def _trades_full(flt: dict, max_pages: int = 60,
     return sorted(rows, key=lambda t: int(t.get("timestamp") or 0), reverse=True)
 
 
+def _trades_window_full(flt: dict, lo: int, hi: int, max_pages: int = 60) -> List[dict]:
+    """Every fill matching flt in [lo, hi] — splits the range in time if it
+    holds more than one paged read can reach. Used for incremental syncs."""
+    rows, truncated = _market_window(flt, lo, hi, max_pages)
+    if truncated:
+        rows = _market_windowed(flt, lo, hi, max_pages)
+    return rows
+
+
 _TRADES_OFFSET_CAP = 10000
 
 

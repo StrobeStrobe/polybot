@@ -14,11 +14,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional
 
-from . import archive
+from . import archive, betbook
 from .config import Config
 from .copytrade import (_current_mid, _recent_trades, _trades_since, bucket_for,
-                        compute_track_record, ResolutionCache, size_breakdown,
-                        sport_from_slug, wallet_full_history, _SPORT_BY_PREFIX)
+                        ResolutionCache, sport_from_slug, _SPORT_BY_PREFIX)
 
 log = logging.getLogger("polybot.tracked")
 
@@ -79,6 +78,9 @@ class TrackedWallet:
     # sizes (Talvez10 loses under $10k, makes $1M above it), so alerts tag the
     # bet with their record at that size.
     by_size: dict = field(default_factory=dict)
+    # Same shape as by_sport but over each sport's newest 100 settled bets —
+    # recent form, shown beside the lifetime record.
+    recent_sport: dict = field(default_factory=dict)
     sports_refreshed_at: str = ""                   # when by_sport was last computed
     record_from: str = ""       # oldest trade in the scored sample
     record_to: str = ""         # newest trade in the scored sample
@@ -165,60 +167,60 @@ class TrackedList:
 
 def refresh_tracked_sports(cfg: Config, tracked: TrackedList, force: bool = False,
                            max_refresh: int = 0) -> None:
-    """Compute/refresh each tracked wallet's per-sport record so alerts can be
-    tagged profitable/unprofitable for the bet's sport. Self-gating: only
-    recomputes a wallet whose record is missing or older than refresh_days.
-    max_refresh > 0 caps how many wallets are recomputed per call — the watcher
-    passes 1 so a stale list refreshes gradually instead of blocking alert
-    polling for minutes while all ten recompute at once."""
+    """Keep each tracked wallet's record current so alerts can be tagged with
+    how they've done at the bet's sport and stake — lifetime AND recent form.
+
+    Backed by a per-wallet bet book (betbook.py): the first refresh pulls the
+    wallet's ENTIRE history once (past the API's 10k-offset ceiling — a heavy
+    bettor's newest ~10.5k fills can be days, so the old tag judged a sport on
+    a sliver); every later refresh fetches only fills since the last sync and
+    scores positions that have since settled — seconds, not minutes, so it can
+    run every few hours without stalling alert polling.
+
+    max_refresh > 0 caps how many wallets refresh per call — the watcher
+    passes 1 so a first-time full pull never blocks polling for long."""
     cc = cfg.copytrade
     cache = ResolutionCache(cfg.resolution_cache_file)
     now = datetime.now(timezone.utc)
     changed = False
     refreshed = 0
-    # Wallets with NO record yet (fresh adds) jump the queue — a brand-new
-    # wallet alerting "❔ no track record" is worse than a 3-day-stale tag.
-    for w in sorted(tracked.wallets, key=lambda x: bool(x.by_sport)):
+
+    def _priority(x):
+        # Wallets with no bet book yet (fresh adds, first deploy) go first —
+        # "❔ no track record" is worse than a few-hours-stale tag.
+        return (betbook.load(cfg, x.wallet) is not None, bool(x.by_sport),
+                x.sports_refreshed_at or "")
+
+    for w in sorted(tracked.wallets, key=_priority):
         if max_refresh and refreshed >= max_refresh:
             break
-        if not force and w.sports_refreshed_at:
+        has_book = betbook.load(cfg, w.wallet) is not None
+        if not force and has_book and w.sports_refreshed_at:
             try:
                 age = (now - datetime.fromisoformat(w.sports_refreshed_at)).total_seconds()
-                if age < cc.refresh_days * 86400:
+                if age < cc.tracked_refresh_hours * 3600:
                     continue
             except ValueError:
                 pass
         try:
-            # Use the wallet's ENTIRE history, not a capped sample. Plain paging
-            # stops at the API's 10,000-offset ceiling — the newest ~10.5k
-            # fills, which for a heavy bettor is days or weeks, so their alert
-            # tag judged a whole sport on a sliver ("❔ too few bets").
-            # wallet_full_history reads past it in time windows.
-            live = wallet_full_history(w.wallet, cc.tracked_max_trades)
-            # Score archive ∪ live. The full pull is NOT written to the
-            # archive: the API re-serves it on demand, and banking it made one
-            # heavy wallet's file 38 MB — re-read on every 3-minute poll. The
-            # archive keeps only what scan_tracked banks each poll.
-            trades = archive.merged(cfg, w.wallet, live)
-            rec = compute_track_record(trades, cache, cc.tracked_max_markets)
-            w.by_sport = rec["by_sport"]
-            # Same trade sample, bucketed by stake instead of by sport.
-            w.by_size = {r["label"]: r for r in size_breakdown(trades, cache)
-                         if r["markets"]}
-            # Span of the sample, so alerts can show what the record covers
-            # (and flag it when the data is stale) instead of only when it
-            # was computed.
-            ts = [int(t.get("timestamp") or 0) for t in trades if t.get("timestamp")]
-            w.record_from = (datetime.fromtimestamp(min(ts), timezone.utc).strftime("%Y-%m-%d")
-                             if ts else "")
-            w.record_to = (datetime.fromtimestamp(max(ts), timezone.utc).strftime("%Y-%m-%d")
-                           if ts else "")
-            w.record_trades = len(trades)
+            book = betbook.sync(cfg, w.wallet, cache, cc.tracked_max_trades)
+            rec = betbook.records(book)
+            w.by_sport = rec["by_sport"]          # lifetime, per sport
+            w.recent_sport = rec["recent_sport"]  # newest 100 bets, per sport
+            w.by_size = rec["by_size"]            # lifetime, per stake tier
+            # Span of the history, so alerts can show what the record covers
+            # (and flag it when the data is stale).
+            fmt = lambda ts: (datetime.fromtimestamp(ts, timezone.utc).strftime("%Y-%m-%d")
+                              if ts else "")
+            w.record_from = fmt(book["first_ts"])
+            w.record_to = fmt(book["last_ts"])
+            w.record_trades = book["fills"]
             w.sports_refreshed_at = now.isoformat()
             changed = True
             refreshed += 1
-            log.info("computed per-sport record for %s (%d sports)",
-                     w.label or w.wallet[:10], len(w.by_sport))
+            log.info("computed per-sport record for %s (%d sports, %d settled bets, %d open)",
+                     w.label or w.wallet[:10], len(w.by_sport), len(book["scored"]),
+                     len(book["open"]))
         except Exception as e:  # noqa: BLE001 — one wallet's failure shouldn't block the rest
             log.warning("per-sport refresh failed for %s: %s", w.label or w.wallet[:10], e)
     cache.save()
@@ -318,6 +320,7 @@ def scan_tracked(cfg: Config, tracked: TrackedList) -> List[dict]:
                     "ts": g["ts"],
                     "sport": sport,
                     "sport_record": w.by_sport.get(sport),
+                    "recent_record": (w.recent_sport or {}).get(sport),
                     "record_from": w.record_from, "record_to": w.record_to,
                     "record_trades": w.record_trades,
                     # Their record at this stake size (bucketed on the total

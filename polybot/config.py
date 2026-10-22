@@ -95,6 +95,9 @@ class CopytradeConfig:
     # past the API's 10k-offset ceiling; this only bounds a truly extreme
     # wallet (oldest fills dropped first). Soarin22's two years = ~90k fills.
     tracked_max_trades: int = 250_000
+    # Tracked records sync incrementally from a stored bet book (only fills
+    # since the last sync), so they can refresh every few hours cheaply.
+    tracked_refresh_hours: float = 6.0
     tracked_max_markets: int = 100000        # no cap on resolved markets scored
     min_sports_share: float = 0.6            # min fraction of trades that are sports
     min_trades_sampled: int = 20             # need enough history to judge
@@ -215,7 +218,8 @@ def seed_state_dir() -> None:
         log.warning("could not merge tracked wallets (%s) — leaving volume copy", e)
         return
     KEEP = ("by_sport", "by_size", "sports_refreshed_at", "last_seen_ts",
-            "open_alerts", "record_from", "record_to", "record_trades")
+            "open_alerts", "record_from", "record_to", "record_trades",
+            "recent_sport")
     merged, kept = [], 0
     for w in repo:                      # roster comes from git
         prev = vol.get(w["wallet"])
