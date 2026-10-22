@@ -1085,25 +1085,43 @@ def _market_trades(cid: str, max_pages: int = 60) -> List[dict]:
     most of its history that way. When that ceiling is hit, re-read the market
     in start/end time windows (inclusive, each with its own offset budget),
     halving any window that is itself still over the cap."""
-    trades, truncated = _market_window(cid, None, None, max_pages)
+    return _trades_full({"market": cid}, max_pages)
+
+
+def wallet_full_history(wallet: str, max_fills: int = 250_000) -> List[dict]:
+    """A wallet's entire trade history, newest first, up to max_fills.
+
+    The same 10,000-offset ceiling caps a plain wallet read at its newest
+    ~10,500 fills — days for a heavy bettor (VeryLucky888's record covered one
+    day; Soarin22's 5 months of 25). Time windows get past it per wallet just
+    as per market: Soarin22 reads back to 2024 as 89,818 fills in ~90s.
+    max_fills bounds a truly extreme wallet; windows are read newest-first, so
+    any cut drops the oldest history."""
+    return _trades_full({"user": wallet}, 60, max_fills)
+
+
+def _trades_full(flt: dict, max_pages: int = 60,
+                 max_fills: Optional[int] = None) -> List[dict]:
+    trades, truncated = _market_window(flt, None, None, max_pages)
     if not truncated:
         return trades
     # Inclusive [lo, mid] / [mid+1, hi] windows never overlap, so no dedupe —
     # the API legitimately returns identical-looking fills, and deduping would
     # silently merge them.
-    rows = _market_windowed(cid, 0, int(time.time()) + 86400, max_pages)
+    budget = [max_fills] if max_fills else None
+    rows = _market_windowed(flt, 0, int(time.time()) + 86400, max_pages, budget=budget)
     return sorted(rows, key=lambda t: int(t.get("timestamp") or 0), reverse=True)
 
 
 _TRADES_OFFSET_CAP = 10000
 
 
-def _window_over_cap(cid: str, lo: int, hi: int) -> bool:
+def _window_over_cap(flt: dict, lo: int, hi: int) -> bool:
     """One request: is there a full page at the deepest allowed offset? If so
     the window holds more fills than a paged read can reach."""
     try:
         r = _session.get(f"{DATA_API}/trades",
-                         params={"market": cid, "limit": 500, "takerOnly": "false",
+                         params={**flt, "limit": 500, "takerOnly": "false",
                                  "offset": _TRADES_OFFSET_CAP, "start": lo, "end": hi},
                          timeout=30)
         return r.ok and len(r.json()) >= 500
@@ -1111,13 +1129,13 @@ def _window_over_cap(cid: str, lo: int, hi: int) -> bool:
         return False
 
 
-def _market_window(cid: str, start: Optional[int], end: Optional[int],
+def _market_window(flt: dict, start: Optional[int], end: Optional[int],
                    max_pages: int = 60) -> tuple:
-    """One paged read of a market, optionally bounded to [start, end].
-    Returns (fills, hit_offset_ceiling)."""
+    """One paged read of trades matching flt ({"market": cid} or {"user": w}),
+    optionally bounded to [start, end]. Returns (fills, hit_offset_ceiling)."""
     out: List[dict] = []
     off = 0
-    params = {"market": cid, "limit": 500, "takerOnly": "false"}
+    params = {**flt, "limit": 500, "takerOnly": "false"}
     if start is not None:
         params.update({"start": start, "end": end})
     for _ in range(max_pages):
@@ -1140,17 +1158,26 @@ def _market_window(cid: str, start: Optional[int], end: Optional[int],
     return out, True
 
 
-def _market_windowed(cid: str, lo: int, hi: int, max_pages: int,
-                     depth: int = 0) -> List[dict]:
+def _market_windowed(flt: dict, lo: int, hi: int, max_pages: int,
+                     depth: int = 0, budget: Optional[list] = None) -> List[dict]:
+    """Read [lo, hi] in windows small enough to page fully. Newer half first,
+    so when `budget` (a one-item list of fills still wanted) runs out, what's
+    dropped is the oldest history."""
+    if budget is not None and budget[0] <= 0:
+        return []
     # Probe first (1 request) and only page a window once it fits — reading
     # 21 pages just to learn a window is too big made one $13M market take 2min.
-    if hi > lo and depth <= 40 and _window_over_cap(cid, lo, hi):
+    if hi > lo and depth <= 40 and _window_over_cap(flt, lo, hi):
         mid = (lo + hi) // 2
-        return (_market_windowed(cid, lo, mid, max_pages, depth + 1)
-                + _market_windowed(cid, mid + 1, hi, max_pages, depth + 1))
-    rows, truncated = _market_window(cid, lo, hi, max_pages)
+        newer = _market_windowed(flt, mid + 1, hi, max_pages, depth + 1, budget)
+        older = _market_windowed(flt, lo, mid, max_pages, depth + 1, budget)
+        return newer + older
+    rows, truncated = _market_window(flt, lo, hi, max_pages)
     if truncated:
-        log.warning("market %s: >10.5k fills in one window — some lost", cid[:10])
+        log.warning("%s: >10.5k fills in one window — some lost",
+                    next(iter(flt.values()))[:10])
+    if budget is not None:
+        budget[0] -= len(rows)
     return rows
 
 

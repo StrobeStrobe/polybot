@@ -18,7 +18,7 @@ from . import archive
 from .config import Config
 from .copytrade import (_current_mid, _recent_trades, _trades_since, bucket_for,
                         compute_track_record, ResolutionCache, size_breakdown,
-                        sport_from_slug, _SPORT_BY_PREFIX)
+                        sport_from_slug, wallet_full_history, _SPORT_BY_PREFIX)
 
 log = logging.getLogger("polybot.tracked")
 
@@ -189,22 +189,16 @@ def refresh_tracked_sports(cfg: Config, tracked: TrackedList, force: bool = Fals
             except ValueError:
                 pass
         try:
-            # Use the wallet's ENTIRE reachable history, not a capped sample.
-            # The discovery pipeline's 200-market / 2,500-trade caps exist to
-            # bound cost across ~1,000 candidates; for a handful of tracked
-            # wallets refreshed one per cycle they just discard most of the
-            # record (Talvez10's tag was covering ~1 month of a full season).
-            live = _recent_trades(w.wallet, cc.trades_sample)
-            offset = len(live)
-            while offset < cc.tracked_max_trades:
-                more = _recent_trades(w.wallet, cc.trades_sample, offset)
-                if not more:
-                    break                      # exhausted what the API serves
-                live.extend(more)
-                offset += len(more)
-            # Bank this pull, then score archive ∪ live so the record keeps
-            # growing past the API's ~10.5k-fill ceiling.
-            archive.append(cfg, w.wallet, live)
+            # Use the wallet's ENTIRE history, not a capped sample. Plain paging
+            # stops at the API's 10,000-offset ceiling — the newest ~10.5k
+            # fills, which for a heavy bettor is days or weeks, so their alert
+            # tag judged a whole sport on a sliver ("❔ too few bets").
+            # wallet_full_history reads past it in time windows.
+            live = wallet_full_history(w.wallet, cc.tracked_max_trades)
+            # Score archive ∪ live. The full pull is NOT written to the
+            # archive: the API re-serves it on demand, and banking it made one
+            # heavy wallet's file 38 MB — re-read on every 3-minute poll. The
+            # archive keeps only what scan_tracked banks each poll.
             trades = archive.merged(cfg, w.wallet, live)
             rec = compute_track_record(trades, cache, cc.tracked_max_markets)
             w.by_sport = rec["by_sport"]
