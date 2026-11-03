@@ -146,8 +146,14 @@ def sync(cfg: Config, wallet: str, cache: ResolutionCache, max_fills: int) -> di
         _apply(book, sorted(fresh, key=lambda t: int(t.get("timestamp") or 0)))
         newest = max([book["synced_to"]] + [int(t.get("timestamp") or 0) for t in got])
         tail = [t for t in got if int(t.get("timestamp") or 0) >= newest - OVERLAP_S]
+        if not got:
+            # Nothing came back — either no new fills or the read failed (the
+            # v1 API retirement returned 410s for hours). Keep the old overlap
+            # keys either way; dropping them double-counts the last hour.
+            tail = None
     book["synced_to"] = newest
-    book["tail_keys"] = [_key(t) for t in tail]
+    if tail is not None:
+        book["tail_keys"] = [_key(t) for t in tail]
     _settle(book, cache)
     _save(cfg, wallet, book)
     return book

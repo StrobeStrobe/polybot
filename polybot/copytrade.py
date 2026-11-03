@@ -8,6 +8,7 @@ on-chain and queryable. No LLM calls in this module.
 
 import json
 import logging
+import threading
 import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
@@ -21,8 +22,75 @@ from .market_data import fetch_books
 
 log = logging.getLogger("polybot.copytrade")
 
-DATA_API = "https://data-api.polymarket.com"
-LB_V2 = "https://data-api.polymarket.com/v2/leaderboard"   # lb-api.polymarket.com retired
+# Data API v1 was retired (HTTP 410, 2026-11-02). v2 differs in three ways the
+# rest of this module is shielded from by _v2_iter / _v1_trade / _v1_position:
+#   * responses are {"data": [...], "pagination": {has_more, next_cursor}}
+#   * paging is cursor-only — any `offset` param is rejected (HTTP 400) — and
+#     the cursor has no 10k depth cap
+#   * fields are snake_case (proxy_wallet, condition_id, outcome_index, ...)
+# takerOnly still defaults to TRUE: always pass takerOnly=false.
+DATA_API = "https://data-api.polymarket.com/v2"
+LB_V2 = f"{DATA_API}/leaderboard"   # lb-api.polymarket.com retired too
+
+
+def _v2_iter(path: str, params: dict, cursor: Optional[str] = None):
+    """Yield (rows, next_cursor) pages from a v2 endpoint until exhausted.
+    Unknown params are a hard 400 on v2 (v1 silently ignored them), so a
+    failure is logged rather than read as "no data"."""
+    while True:
+        p = dict(params)
+        if cursor:
+            p["cursor"] = cursor
+        try:
+            resp = _session.get(f"{DATA_API}{path}", params=p, timeout=60)
+        except requests.RequestException as e:
+            log.warning("data-api %s failed: %s", path, e)
+            return
+        if not resp.ok:
+            log.warning("data-api %s HTTP %s: %s", path, resp.status_code, resp.text[:200])
+            return
+        body = resp.json()
+        rows = body.get("data") or []
+        pg = body.get("pagination") or {}
+        cursor = pg.get("next_cursor") if pg.get("has_more") else None
+        yield rows, cursor
+        if not rows or not cursor:
+            return
+
+
+def _v1_trade(r: dict) -> dict:
+    """v2 trade row -> the v1 field names every consumer here reads."""
+    return {"proxyWallet": r.get("proxy_wallet"), "side": r.get("side"),
+            "asset": r.get("token_id"), "conditionId": r.get("condition_id"),
+            "size": r.get("size"), "price": r.get("price"), "timestamp": r.get("timestamp"),
+            "title": r.get("title"), "slug": r.get("slug"), "eventSlug": r.get("event_slug"),
+            "outcome": r.get("outcome"), "outcomeIndex": r.get("outcome_index"),
+            "name": r.get("name"), "pseudonym": r.get("pseudonym"),
+            "transactionHash": r.get("transaction_hash")}
+
+
+def _v1_position(r: dict) -> dict:
+    """v2 position row -> v1 field names (+ status, which v1 lacked)."""
+    size = float(r.get("current_size") or 0)
+    avg = float(r.get("avg_price") or 0)
+    value = float(r.get("current_value") or 0)
+    basis = size * avg
+    return {"conditionId": r.get("condition_id"), "asset": r.get("token_id"),
+            "size": size, "avgPrice": avg, "initialValue": basis,
+            "currentValue": value, "cashPnl": value - basis,
+            "percentPnl": (value - basis) / basis * 100 if basis else 0.0,
+            "curPrice": float(r.get("current_price") or 0),
+            "redeemable": bool(r.get("redeemable")), "status": r.get("status"),
+            "title": r.get("title"), "slug": r.get("slug"), "eventSlug": r.get("event_slug"),
+            "outcome": r.get("outcome"), "outcomeIndex": r.get("outcome_index"),
+            "endDate": r.get("end_date")}
+
+
+def _wallet_positions(wallet: str) -> List[dict]:
+    out: List[dict] = []
+    for page, _ in _v2_iter("/positions", {"user": wallet, "limit": 500}):
+        out.extend(_v1_position(r) for r in page)
+    return out
 
 # Per-season "series" ids for out-of-season sports (current leaderboards can't
 # surface them). Found via a known game event's `series` field.
@@ -322,26 +390,19 @@ def classify_trading_style(trades: List[dict]) -> dict:
 # ------------------------------------------------------------ discovery ----
 
 def _leaderboard(period: str, depth: int = 100, rank_type: str = "pnl") -> List[dict]:
-    """period: day | week | month | all; rank_type: pnl | vol.
-    The API caps each page at 50 rows, so page via offset up to `depth`."""
+    """period: day | week | month | all; rank_type: pnl | vol. Rows carry
+    the v1 names discovery reads (proxyWallet, userName, pnl, vol, rank).
+    v2 sorts with orderBy=PNL|VOLUME — `rankType` is accepted but ignored."""
+    params = {"timePeriod": period, "limit": 50,
+              "orderBy": "VOLUME" if rank_type == "vol" else "PNL"}
     rows: List[dict] = []
-    offset = 0
-    while offset < depth:
-        resp = _session.get(
-            f"{DATA_API}/v1/leaderboard",
-            params={"timePeriod": period, "limit": 50, "offset": offset,
-                    "rankType": rank_type},
-            timeout=30,
-        )
-        resp.raise_for_status()
-        page = resp.json()
-        if not page:
+    for page, _ in _v2_iter("/leaderboard", params):
+        rows.extend({"proxyWallet": r.get("user_id"), "userName": r.get("user_name"),
+                     "pnl": r.get("pnl"), "vol": r.get("volume"), "rank": r.get("rank")}
+                    for r in page)
+        if len(rows) >= depth:
             break
-        rows.extend(page)
-        if len(page) < 50:
-            break
-        offset += len(page)
-    return rows
+    return rows[:depth]
 
 
 _LB_PERIOD = {"1d": "day", "7d": "week", "30d": "month", "all": "all"}
@@ -373,24 +434,47 @@ def _wallet_stat(endpoint: str, window: str, wallet: str) -> float:
     return 0.0
 
 
+_CURSORS: Dict[str, tuple] = {}      # wallet -> (offset reached, cursor there)
+_CURSOR_LOCK = threading.Lock()
+
+
 def _recent_trades(wallet: str, limit: int = 100, offset: int = 0) -> List[dict]:
-    # Never let one wallet's network failure abort a whole discovery scan —
-    # skip the candidate instead (retries already attempted at the adapter).
-    try:
-        resp = _session.get(
-            f"{DATA_API}/trades",
-            # takerOnly=false is REQUIRED — the default returns only taker
-            # (market-order) fills and silently omits maker/limit fills, which
-            # sharp bettors use heavily (this missed DaBossHogg's $12k Spain bet).
-            params={"user": wallet, "limit": limit, "offset": offset,
-                    "takerOnly": "false"},
-            timeout=30,
-        )
-        if not resp.ok:
-            return []
-        return resp.json()
-    except (requests.RequestException, ValueError):
-        return []
+    """`limit` fills starting `offset` back from the newest (newest first).
+
+    v2 has no offset, only cursors. Callers page as offset=0, 500, 1000…, so
+    the cursor where each call stopped is remembered per wallet and the next
+    sequential call resumes from it; any other offset walks from the start.
+    takerOnly=false is REQUIRED — the default omits maker/limit fills, which
+    sharp bettors use heavily (it missed DaBossHogg's $12k Spain bet).
+    Network failures return what was read — one wallet never aborts a scan."""
+    # The cursor remembers the page size it was minted with, so every page in
+    # a chain must use the same size — resizing pages mid-chain shifts them.
+    # `pos` is how many rows the chain has consumed from the newest.
+    key = wallet.lower()
+    page_size = 500
+    cursor, pos = None, 0
+    if offset:
+        with _CURSOR_LOCK:
+            saved = _CURSORS.get(key)
+        if saved and saved[0] == offset:
+            cursor, pos = saved[1], saved[0]
+    params = {"user": wallet, "limit": page_size, "takerOnly": "false"}
+    out: List[dict] = []
+    while pos < offset + limit:
+        page, nxt = next(_v2_iter("/trades", params, cursor), ([], None))
+        lo, hi = max(offset - pos, 0), offset + limit - pos
+        out.extend(_v1_trade(r) for r in page[lo:hi])
+        pos += len(page)
+        cursor = nxt
+        if not page or not nxt:
+            cursor = None
+            break
+    with _CURSOR_LOCK:
+        if cursor:
+            _CURSORS[key] = (pos, cursor)
+        else:
+            _CURSORS.pop(key, None)
+    return out
 
 
 def discover_sports_traders(cfg: Config,
@@ -760,6 +844,31 @@ def _is_full_game_alt(q: str) -> bool:
     return False
 
 
+def gamma_events(params: dict, page: int = 100):
+    """Yield every Gamma event matching params (series_id, tag_id, closed…).
+
+    Offset paging is capped: past offset ~2,100 /events returns HTTP 422
+    "offset too large, use /events/keyset". A big series (a college
+    basketball season has 5,000+ games) silently stopped there. Keyset paging
+    has no cap: pass next_cursor back as `after_cursor` until it runs out."""
+    cursor = None
+    while True:
+        p = {**params, "limit": page}
+        if cursor:
+            p["after_cursor"] = cursor
+        resp = _session.get(f"{GAMMA_API}/events/keyset", params=p, timeout=40)
+        if not resp.ok:
+            log.warning("events/keyset HTTP %s for %s: %s", resp.status_code, params,
+                        resp.text[:200])
+            return
+        body = resp.json()
+        evs = body.get("events") or []
+        yield from evs
+        cursor = body.get("next_cursor")
+        if not evs or not cursor:
+            return
+
+
 def _season_moneyline_markets(series_id: Optional[int], since: Optional[str] = None,
                               include_alt: bool = False,
                               min_volume: float = 0.0,
@@ -772,49 +881,36 @@ def _season_moneyline_markets(series_id: Optional[int], since: Optional[str] = N
     and spreads — but then min_volume should be set to skip the many dead
     alt-lines each game carries."""
     out: List[tuple] = []
-    off = 0
-    params = {"closed": "true", "limit": 100}
+    params = {"closed": "true"}
     if tag_id:
         params["tag_id"] = tag_id
     else:
         params["series_id"] = series_id
-    if since:
-        params.update({"order": "endDate", "ascending": "false"})
-    while True:
-        p = dict(params)
-        p["offset"] = off
-        resp = _session.get(f"{GAMMA_API}/events", params=p, timeout=30)
-        if not resp.ok:
-            break
-        evs = resp.json()
-        if not evs:
-            break
-        stop = False
-        for ev in evs:
-            if since and (ev.get("endDate") or "")[:10] < since:
-                stop = True  # desc order — everything after this is older too
-                break
-            for m in ev.get("markets", []):
-                q = m.get("question") or ""
-                ok = _is_game_moneyline(q) or (include_alt and _is_full_game_alt(q))
-                if not m.get("closed") or not ok:
-                    continue
-                if min_volume:
-                    try:
-                        if float(m.get("volume") or 0) < min_volume:
-                            continue
-                    except (TypeError, ValueError):
-                        continue
-                cid = m.get("conditionId")
+    # Keyset paging (gamma_events): offset paging dies at ~2,100 events with
+    # HTTP 422, which silently cut big series and sport tags short. Keyset
+    # takes no ordering, so `since` is applied per event instead of stopping
+    # early on a date-sorted list.
+    for ev in gamma_events(params):
+        if since and (ev.get("endDate") or "")[:10] < since:
+            continue
+        for m in ev.get("markets", []):
+            q = m.get("question") or ""
+            ok = _is_game_moneyline(q) or (include_alt and _is_full_game_alt(q))
+            if not m.get("closed") or not ok:
+                continue
+            if min_volume:
                 try:
-                    finals = [float(x) for x in json.loads(m.get("outcomePrices") or "[]")]
-                except (ValueError, TypeError):
-                    finals = []
-                if cid and finals and max(finals) >= 0.99:  # cleanly resolved
-                    out.append((cid, finals, ev.get("slug")))
-        off += len(evs)
-        if len(evs) < 100 or stop:
-            break
+                    if float(m.get("volume") or 0) < min_volume:
+                        continue
+                except (TypeError, ValueError):
+                    continue
+            cid = m.get("conditionId")
+            try:
+                finals = [float(x) for x in json.loads(m.get("outcomePrices") or "[]")]
+            except (ValueError, TypeError):
+                finals = []
+            if cid and finals and max(finals) >= 0.99:  # cleanly resolved
+                out.append((cid, finals, ev.get("slug")))
     return out
 
 
@@ -822,17 +918,8 @@ def _trades_since(wallet: str, since_ts: int, max_trades: int = 4000) -> List[di
     """A wallet's trades newer than since_ts, newest-first. Pages until the
     cutoff (or the cap) — a single 100-trade page silently drops fills for
     hyperactive position-builders whenever the watcher was down a few hours."""
-    out: List[dict] = []
-    off = 0
-    while off < max_trades:
-        page = _recent_trades(wallet, 500, off)
-        if not page:
-            break
-        out.extend(page)
-        off += len(page)
-        if int(page[-1].get("timestamp") or 0) <= since_ts:
-            break
-    return [t for t in out if int(t.get("timestamp") or 0) > since_ts]
+    rows = _v2_trades({"user": wallet}, start=int(since_ts) + 1, max_rows=max_trades)
+    return [t for t in rows if int(t.get("timestamp") or 0) > since_ts]
 
 
 # Position-size tiers for the win-rate-by-size breakdown. A trader's edge is
@@ -964,12 +1051,7 @@ def positions_trades_gap(wallet: str, min_usd: float = 1000,
     went unnoticed for months. A hit means either the trades API is dropping
     fills again, or the position predates the lookback (e.g. a futures bet) —
     either way, worth an eyeball rather than silence."""
-    try:
-        r = _session.get(f"{DATA_API}/positions",
-                         params={"user": wallet, "limit": 500}, timeout=30)
-        poss = r.json() if r.ok else []
-    except (requests.RequestException, ValueError):
-        return []
+    poss = [p for p in _wallet_positions(wallet) if p.get("status") == "OPEN"]
     since = int(time.time() - lookback_days * 86400)
     seen = {t.get("conditionId") for t in _trades_since(wallet, since, max_trades=4000)}
     gaps = []
@@ -988,30 +1070,12 @@ def open_positions(wallet: str, sports: Optional[List[str]] = None,
     """Every position a wallet currently holds in an UNRESOLVED market, newest
     kickoff first. Read-only.
 
-    Deciding what counts as open takes care: the API's `redeemable` flag is not
-    a settled-flag. One wallet shows 0 redeemable across 1,074 positions while
-    another shows 578 of 585 — it means "won and not yet claimed", so it misses
-    both losers (nothing to claim) and anyone who already redeemed. A resolved
-    market's price pins to exactly 0 or 1, so the reliable test is a live price
-    strictly between the two, with redeemable excluded to drop won-but-unclaimed.
+    v2 positions carry a real status (OPEN / REDEEMABLE); v1's `redeemable`
+    meant only "won and unclaimed". A decided-but-unsettled market's price
+    pins to ~0 or ~1, so a live price strictly between the two is still
+    required on top of status OPEN.
     """
-    poss: List[dict] = []
-    offset = 0
-    while offset < 5000:
-        try:
-            r = _session.get(f"{DATA_API}/positions",
-                             params={"user": wallet, "limit": 500,
-                                     "offset": offset}, timeout=30)
-            batch = r.json() if r.ok else []
-        except (requests.RequestException, ValueError):
-            break
-        if not batch:
-            break
-        poss.extend(batch)
-        offset += len(batch)
-        if len(batch) < 500:
-            break
-
+    poss = [p for p in _wallet_positions(wallet) if p.get("status") == "OPEN"]
     want = set(sports or ())
     out = []
     for p in poss:
@@ -1073,121 +1137,41 @@ def weekly_wallet_pnl(cfg: Config, days: float = 7) -> List[dict]:
     return reports, window
 
 
-def _market_trades(cid: str, max_pages: int = 60) -> List[dict]:
-    """All trades on a market, paginated. Cap is high because busy game markets
-    can carry well over 4k fills — truncating drops heavy bettors' positions and
-    made position-builders (e.g. Talvez10) vanish from the reverse-lookup. Light
-    markets still exit early once a short page is returned.
-
-    The API refuses any offset past 10,000 ("max historical trades offset of
-    10000 exceeded"), so plain paging returns only a market's NEWEST ~10,500
-    fills — and used to return them as if complete. A $13M NFL moneyline loses
-    most of its history that way. When that ceiling is hit, re-read the market
-    in start/end time windows (inclusive, each with its own offset budget),
-    halving any window that is itself still over the cap."""
-    return _trades_full({"market": cid}, max_pages)
+def _market_trades(cid: str, max_pages: int = 0) -> List[dict]:
+    """Every fill on a market, newest first (maker + taker). The v2 cursor has
+    no depth cap, so a $13M NFL moneyline comes back whole (21k fills) in one
+    pass — the v1 time-window workaround for the 10k-offset ceiling is gone."""
+    return _v2_trades({"condition_id": cid})
 
 
 def wallet_full_history(wallet: str, max_fills: int = 250_000) -> List[dict]:
-    """A wallet's entire trade history, newest first, up to max_fills.
-
-    The same 10,000-offset ceiling caps a plain wallet read at its newest
-    ~10,500 fills — days for a heavy bettor (VeryLucky888's record covered one
-    day; Soarin22's 5 months of 25). Time windows get past it per wallet just
-    as per market: Soarin22 reads back to 2024 as 89,818 fills in ~90s.
-    max_fills bounds a truly extreme wallet; windows are read newest-first, so
-    any cut drops the oldest history."""
-    return _trades_full({"user": wallet}, 60, max_fills)
+    """A wallet's entire trade history, newest first, up to max_fills (the
+    newest are kept). Soarin22's two years ≈ 90k fills."""
+    return _v2_trades({"user": wallet}, max_rows=max_fills)
 
 
-def _trades_full(flt: dict, max_pages: int = 60,
-                 max_fills: Optional[int] = None) -> List[dict]:
-    trades, truncated = _market_window(flt, None, None, max_pages)
-    if not truncated:
-        return trades
-    # Inclusive [lo, mid] / [mid+1, hi] windows never overlap, so no dedupe —
-    # the API legitimately returns identical-looking fills, and deduping would
-    # silently merge them.
-    budget = [max_fills] if max_fills else None
-    rows = _market_windowed(flt, 0, int(time.time()) + 86400, max_pages, budget=budget)
-    return sorted(rows, key=lambda t: int(t.get("timestamp") or 0), reverse=True)
+def _trades_window_full(flt: dict, lo: int, hi: int, max_pages: int = 0) -> List[dict]:
+    """Every fill matching flt ({"user": w} or {"market"/"condition_id": cid})
+    with timestamp in [lo, hi]. Used for incremental bet-book syncs."""
+    return _v2_trades(flt, start=lo, end=hi)
 
 
-def _trades_window_full(flt: dict, lo: int, hi: int, max_pages: int = 60) -> List[dict]:
-    """Every fill matching flt in [lo, hi] — splits the range in time if it
-    holds more than one paged read can reach. Used for incremental syncs."""
-    rows, truncated = _market_window(flt, lo, hi, max_pages)
-    if truncated:
-        rows = _market_windowed(flt, lo, hi, max_pages)
-    return rows
-
-
-_TRADES_OFFSET_CAP = 10000
-
-
-def _window_over_cap(flt: dict, lo: int, hi: int) -> bool:
-    """One request: is there a full page at the deepest allowed offset? If so
-    the window holds more fills than a paged read can reach."""
-    try:
-        r = _session.get(f"{DATA_API}/trades",
-                         params={**flt, "limit": 500, "takerOnly": "false",
-                                 "offset": _TRADES_OFFSET_CAP, "start": lo, "end": hi},
-                         timeout=30)
-        return r.ok and len(r.json()) >= 500
-    except (requests.RequestException, ValueError):
-        return False
-
-
-def _market_window(flt: dict, start: Optional[int], end: Optional[int],
-                   max_pages: int = 60) -> tuple:
-    """One paged read of trades matching flt ({"market": cid} or {"user": w}),
-    optionally bounded to [start, end]. Returns (fills, hit_offset_ceiling)."""
-    out: List[dict] = []
-    off = 0
-    params = {**flt, "limit": 500, "takerOnly": "false"}
+def _v2_trades(flt: dict, start: Optional[int] = None, end: Optional[int] = None,
+               max_rows: Optional[int] = None) -> List[dict]:
+    params = dict(flt)
+    if "market" in params:                     # v2 renamed the market filter
+        params["condition_id"] = params.pop("market")
+    params.update({"limit": 1000, "takerOnly": "false"})
     if start is not None:
-        params.update({"start": start, "end": end})
-    for _ in range(max_pages):
-        if off > _TRADES_OFFSET_CAP:
-            return out, True
-        try:
-            resp = _session.get(f"{DATA_API}/trades",
-                                params={**params, "offset": off}, timeout=30)
-            if not resp.ok:
-                return out, resp.status_code == 400 and off > 0
-            page = resp.json()
-        except (requests.RequestException, ValueError):
-            return out, False
-        if not page:
-            return out, False
-        out.extend(page)
-        off += len(page)
-        if len(page) < 500:
-            return out, False
-    return out, True
-
-
-def _market_windowed(flt: dict, lo: int, hi: int, max_pages: int,
-                     depth: int = 0, budget: Optional[list] = None) -> List[dict]:
-    """Read [lo, hi] in windows small enough to page fully. Newer half first,
-    so when `budget` (a one-item list of fills still wanted) runs out, what's
-    dropped is the oldest history."""
-    if budget is not None and budget[0] <= 0:
-        return []
-    # Probe first (1 request) and only page a window once it fits — reading
-    # 21 pages just to learn a window is too big made one $13M market take 2min.
-    if hi > lo and depth <= 40 and _window_over_cap(flt, lo, hi):
-        mid = (lo + hi) // 2
-        newer = _market_windowed(flt, mid + 1, hi, max_pages, depth + 1, budget)
-        older = _market_windowed(flt, lo, mid, max_pages, depth + 1, budget)
-        return newer + older
-    rows, truncated = _market_window(flt, lo, hi, max_pages)
-    if truncated:
-        log.warning("%s: >10.5k fills in one window — some lost",
-                    next(iter(flt.values()))[:10])
-    if budget is not None:
-        budget[0] -= len(rows)
-    return rows
+        params["start"] = start
+    if end is not None:
+        params["end"] = end
+    out: List[dict] = []
+    for page, _ in _v2_iter("/trades", params):
+        out.extend(_v1_trade(r) for r in page)
+        if max_rows and len(out) >= max_rows:
+            return out[:max_rows]
+    return out
 
 
 # Heavy-bettor rescue: markets too busy to fully page are EXCLUDED from
