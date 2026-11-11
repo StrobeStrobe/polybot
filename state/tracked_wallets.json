@@ -189,6 +189,7 @@
      "roi": -0.1412
     }
    },
+   "recent_sport": {},
    "sports_refreshed_at": "2026-09-24T18:15:50.659985+00:00",
    "record_from": "2026-03-14",
    "record_to": "2026-09-20",
@@ -1683,6 +1684,7 @@
      "roi": 1.2803
     }
    },
+   "recent_sport": {},
    "sports_refreshed_at": "2026-09-24T18:58:50.033641+00:00",
    "record_from": "2026-02-19",
    "record_to": "2026-09-17",
@@ -3275,6 +3277,7 @@
      "roi": -0.0105
     }
    },
+   "recent_sport": {},
    "sports_refreshed_at": "2026-09-24T22:08:22.023847+00:00",
    "record_from": "2026-03-26",
    "record_to": "2026-06-11",
@@ -3454,6 +3457,7 @@
      "roi": -0.3546
     }
    },
+   "recent_sport": {},
    "sports_refreshed_at": "2026-09-24T22:47:05.295608+00:00",
    "record_from": "2026-02-01",
    "record_to": "2026-06-20",
@@ -3633,6 +3637,7 @@
      "roi": 0.4322
     }
    },
+   "recent_sport": {},
    "sports_refreshed_at": "2026-09-24T23:47:56.060445+00:00",
    "record_from": "2025-02-22",
    "record_to": "2026-03-14",
@@ -3828,6 +3833,7 @@
      "roi": 0.6728
     }
    },
+   "recent_sport": {},
    "sports_refreshed_at": "2026-09-24T23:57:10.645856+00:00",
    "record_from": "2026-01-27",
    "record_to": "2026-09-20",
@@ -3982,6 +3988,7 @@
      "roi": 0.2253
     }
    },
+   "recent_sport": {},
    "sports_refreshed_at": "2026-09-25T00:00:31.893223+00:00",
    "record_from": "2026-07-01",
    "record_to": "2026-09-24",
@@ -4211,6 +4218,7 @@
      "roi": 0.13
     }
    },
+   "recent_sport": {},
    "sports_refreshed_at": "2026-09-25T00:03:57.003570+00:00",
    "record_from": "2026-06-29",
    "record_to": "2026-07-10",
@@ -4405,6 +4413,7 @@
      "roi": 0.3268
     }
    },
+   "recent_sport": {},
    "sports_refreshed_at": "2026-09-25T00:10:17.193338+00:00",
    "record_from": "2026-02-04",
    "record_to": "2026-05-20",
@@ -4579,6 +4588,7 @@
      "roi": 0.1599
     }
    },
+   "recent_sport": {},
    "sports_refreshed_at": "2026-09-25T00:13:35.592407+00:00",
    "record_from": "2025-09-21",
    "record_to": "2026-05-16",
@@ -4766,323 +4776,12 @@
      "roi": 0.0147
     }
    },
+   "recent_sport": {},
    "sports_refreshed_at": "2026-09-25T00:16:45.261462+00:00",
    "record_from": "2025-10-26",
    "record_to": "2025-12-23",
    "record_trades": 7379,
    "open_alerts": {},
-   "min_usd": 0.0,
-   "sports": [],
-   "note": ""
-  },
-  {
-   "wallet": "0x68df8708aadb901618f11abf2471805a66a24815",
-   "label": "Bland-Crawdad",
-   "venue": "polymarket",
-   "added_at": "2026-08-06T02:49:59.468632+00:00",
-   "last_seen_ts": 1790455436,
-   "by_sport": {
-    "NFL": {
-     "markets": 240,
-     "wins": 139,
-     "pnl": 141722.04,
-     "win_rate": 0.5792,
-     "avg_entry": 0.511,
-     "edge": 0.0682
-    },
-    "Tennis": {
-     "markets": 13,
-     "wins": 3,
-     "pnl": 13975.68,
-     "win_rate": 0.2308,
-     "avg_entry": 0.4678,
-     "edge": -0.237
-    },
-    "Other": {
-     "markets": 6,
-     "wins": 4,
-     "pnl": 9166.72,
-     "win_rate": 0.6667,
-     "avg_entry": 0.4878,
-     "edge": 0.1789
-    },
-    "WNBA": {
-     "markets": 2,
-     "wins": 2,
-     "pnl": 5139.94,
-     "win_rate": 1.0,
-     "avg_entry": 0.486,
-     "edge": 0.514
-    },
-    "Soccer": {
-     "markets": 14,
-     "wins": 7,
-     "pnl": 81918.57,
-     "win_rate": 0.5,
-     "avg_entry": 0.5931,
-     "edge": -0.0931
-    },
-    "NBA": {
-     "markets": 23,
-     "wins": 9,
-     "pnl": -146333.53,
-     "win_rate": 0.3913,
-     "avg_entry": 0.5246,
-     "edge": -0.1333
-    },
-    "MLB": {
-     "markets": 4,
-     "wins": 0,
-     "pnl": -28428.11,
-     "win_rate": 0.0,
-     "avg_entry": 0.4823,
-     "edge": -0.4823
-    },
-    "NHL": {
-     "markets": 12,
-     "wins": 6,
-     "pnl": 27175.11,
-     "win_rate": 0.5,
-     "avg_entry": 0.4605,
-     "edge": 0.0395
-    },
-    "NCAAF": {
-     "markets": 14,
-     "wins": 7,
-     "pnl": 2105.45,
-     "win_rate": 0.5,
-     "avg_entry": 0.4388,
-     "edge": 0.0612
-    },
-    "Boxing": {
-     "markets": 2,
-     "wins": 2,
-     "pnl": 40566.58,
-     "win_rate": 1.0,
-     "avg_entry": 0.5143,
-     "edge": 0.4857
-    }
-   },
-   "by_size": {
-    "$0-$1k": {
-     "lo": 0,
-     "hi": 1000,
-     "label": "$0-$1k",
-     "markets": 105,
-     "wins": 58,
-     "pnl": 1005.29,
-     "wagered": 29803.52251195814,
-     "win_rate": 0.5524,
-     "avg_entry": 0.3332,
-     "edge": 0.2192,
-     "roi": 0.0337
-    },
-    "$1k-$2k": {
-     "lo": 1000,
-     "hi": 2500,
-     "label": "$1k-$2k",
-     "markets": 26,
-     "wins": 14,
-     "pnl": 1861.13,
-     "wagered": 43221.678465002784,
-     "win_rate": 0.5385,
-     "avg_entry": 0.319,
-     "edge": 0.2195,
-     "roi": 0.0431
-    },
-    "$2k-$5k": {
-     "lo": 2500,
-     "hi": 5000,
-     "label": "$2k-$5k",
-     "markets": 52,
-     "wins": 28,
-     "pnl": 18267.14,
-     "wagered": 193759.4335411081,
-     "win_rate": 0.5385,
-     "avg_entry": 0.4694,
-     "edge": 0.0691,
-     "roi": 0.0943
-    },
-    "$5k-$10k": {
-     "lo": 5000,
-     "hi": 10000,
-     "label": "$5k-$10k",
-     "markets": 42,
-     "wins": 22,
-     "pnl": 9565.06,
-     "wagered": 300185.3456520136,
-     "win_rate": 0.5238,
-     "avg_entry": 0.4955,
-     "edge": 0.0283,
-     "roi": 0.0319
-    },
-    "$10k-$25k": {
-     "lo": 10000,
-     "hi": 25000,
-     "label": "$10k-$25k",
-     "markets": 68,
-     "wins": 34,
-     "pnl": -2635.32,
-     "wagered": 1094227.0766263946,
-     "win_rate": 0.5,
-     "avg_entry": 0.5073,
-     "edge": -0.0073,
-     "roi": -0.0024
-    },
-    "$25k-$50k": {
-     "lo": 25000,
-     "hi": 50000,
-     "label": "$25k-$50k",
-     "markets": 28,
-     "wins": 15,
-     "pnl": -81540.59,
-     "wagered": 976042.6512632543,
-     "win_rate": 0.5357,
-     "avg_entry": 0.551,
-     "edge": -0.0153,
-     "roi": -0.0835
-    },
-    "$50k-$100k": {
-     "lo": 50000,
-     "hi": 100000,
-     "label": "$50k-$100k",
-     "markets": 8,
-     "wins": 8,
-     "pnl": 290028.94,
-     "wagered": 580667.533784048,
-     "win_rate": 1.0,
-     "avg_entry": 0.6317,
-     "edge": 0.3683,
-     "roi": 0.4995
-    },
-    "$100k+": {
-     "lo": 100000,
-     "hi": Infinity,
-     "label": "$100k+",
-     "markets": 1,
-     "wins": 0,
-     "pnl": -89543.21,
-     "wagered": 103815.61923054361,
-     "win_rate": 0.0,
-     "avg_entry": 0.3026,
-     "edge": -0.3026,
-     "roi": -0.8625
-    }
-   },
-   "sports_refreshed_at": "2026-09-25T00:19:58.316124+00:00",
-   "record_from": "2025-08-21",
-   "record_to": "2026-09-24",
-   "record_trades": 5802,
-   "open_alerts": {
-    "0xd14c6037d0237da81fa84c98d2fb8a4c9e2db058abd2589413e0138ea03a70b2|BUY|Cowboys": {
-     "alerted_usd": 4946.118268980448,
-     "pending_usd": 2156.874206988717,
-     "ts": 1790430542,
-     "fill_ts": 1790446209
-    },
-    "0xd0ee09bc3955e774c42df27cc3b4685a483f8498000c2de26625f20fc9ed4f78|BUY|Lions": {
-     "alerted_usd": 29481.0358789952,
-     "pending_usd": 0.0,
-     "ts": 1790395716,
-     "fill_ts": 1790395716
-    },
-    "0x5bc57a6b6345a157ec379ce0940c09dcbfdadebc30b915efe993db1805999dea|BUY|Cowboys": {
-     "alerted_usd": 20433.308500000003,
-     "pending_usd": 0.0,
-     "ts": 1790341184,
-     "fill_ts": 1790341184
-    },
-    "0xaa1b9e9bc1e6b4f1d79e5e15c0451885478e61685bd3b3ff20b27c2cce681e87|BUY|Under": {
-     "alerted_usd": 13757.320876929727,
-     "pending_usd": 0.0,
-     "ts": 1790382658,
-     "fill_ts": 1790382658
-    },
-    "0xed537832cbf6774d5b54da06732b53ce6866d82941e593ca71292f8e247babc5|BUY|Dolphins": {
-     "alerted_usd": 8087.7730560221335,
-     "pending_usd": 0.0,
-     "ts": 1790382658,
-     "fill_ts": 1790382658
-    },
-    "0x2b6f5c1f7c6562bf2699a102dbd8536c9c0d56926a23ec4fc9521f5296579b0d|BUY|Cowboys": {
-     "alerted_usd": 4821.5804,
-     "pending_usd": 38.09,
-     "ts": 1790289840,
-     "fill_ts": 1790395716
-    },
-    "0xc4c47aa2f37a68d5f500939cf2be654fce34a003e8e5dafe0ad9fb6e36878811|BUY|Steelers": {
-     "alerted_usd": 0.0,
-     "pending_usd": 4.817929999840328,
-     "ts": 0,
-     "fill_ts": 1790341184
-    },
-    "0xdff427fce82c22dca74075108b8d6dbe6c97395225b60e20f10ab782e221727c|BUY|Dolphins": {
-     "alerted_usd": 8750.0,
-     "pending_usd": 7576.152000000001,
-     "ts": 1790362501,
-     "fill_ts": 1790382658
-    },
-    "0xcc6a9563c0eb41b3b09876088fd24f0e8ecf7bccf95053cc21d45c68db2b6581|BUY|Dolphins": {
-     "alerted_usd": 981.6294369996723,
-     "pending_usd": 0.0,
-     "ts": 1790440020,
-     "fill_ts": 1790440020
-    },
-    "0xe62c2b8913f0569f4fc7896b8eee30c40326e27e58525d7d2d5ad4ba1dbe77dd|BUY|Steelers": {
-     "alerted_usd": 11059.1571,
-     "pending_usd": 0.0,
-     "ts": 1790382658,
-     "fill_ts": 1790382658
-    },
-    "0x229d019c7ee7343310cc432b3ee44a44ade9ccd7bf87dc2886cfc284bb95be41|BUY|Cowboys": {
-     "alerted_usd": 0.0,
-     "pending_usd": 79.46,
-     "ts": 0,
-     "fill_ts": 1790395716
-    },
-    "0xf7abe329b5bea6a7706fa70041a935053436df8d736a68a63d171a43f360afd3|BUY|Lions": {
-     "alerted_usd": 9057.6404,
-     "pending_usd": 0.0,
-     "ts": 1790440020,
-     "fill_ts": 1790440020
-    },
-    "0x78d330c13885ac6fd36f082f2c502aefdb2a9bd53cc6a5765ce4375b650b9d35|BUY|Patriots": {
-     "alerted_usd": 435.5758,
-     "pending_usd": 0.0,
-     "ts": 1790446209,
-     "fill_ts": 1790446209
-    },
-    "0xa78c477a9283ea6fb05f016013eb3f4e03980f65b724e1e7ab9d9f7611d661aa|BUY|Ole Miss": {
-     "alerted_usd": 13624.606617983976,
-     "pending_usd": 0.0,
-     "ts": 1790452066,
-     "fill_ts": 1790452066
-    },
-    "0xe5a54eaf6a6b729ed0a9b5e1247662b4177ac3a7692086b748a2ed101b2a0673|BUY|Florida": {
-     "alerted_usd": 0.0,
-     "pending_usd": 21.607,
-     "ts": 0,
-     "fill_ts": 1790452066
-    },
-    "0xe5a54eaf6a6b729ed0a9b5e1247662b4177ac3a7692086b748a2ed101b2a0673|BUY|Ole Miss": {
-     "alerted_usd": 12209.997005,
-     "pending_usd": 0.0,
-     "ts": 1790452066,
-     "fill_ts": 1790452066
-    },
-    "0x979dfc9a79907bc18372c6b2152f68cf154ad818752b41b47e7f3788d3ac4c61|BUY|Florida": {
-     "alerted_usd": 298.08259998185497,
-     "pending_usd": 0.0,
-     "ts": 1790454259,
-     "fill_ts": 1790454259
-    },
-    "0xef26ef7e760ce265f8f1388ea94c4fd6c65f9e06a790b97052cccb5fc3868b6b|BUY|Ole Miss": {
-     "alerted_usd": 2032.5488249990333,
-     "pending_usd": 0.0,
-     "ts": 1790455536,
-     "fill_ts": 1790455536
-    }
-   },
    "min_usd": 0.0,
    "sports": [],
    "note": ""
@@ -5241,6 +4940,7 @@
      "roi": -0.0385
     }
    },
+   "recent_sport": {},
    "sports_refreshed_at": "2026-09-25T00:23:13.566733+00:00",
    "record_from": "2026-04-23",
    "record_to": "2026-06-29",
@@ -5412,6 +5112,7 @@
      "roi": 0.2275
     }
    },
+   "recent_sport": {},
    "sports_refreshed_at": "2026-09-25T00:26:23.999514+00:00",
    "record_from": "2026-03-10",
    "record_to": "2026-08-25",
@@ -5454,6 +5155,7 @@
    "last_seen_ts": 1791850400,
    "by_sport": {},
    "by_size": {},
+   "recent_sport": {},
    "sports_refreshed_at": "",
    "record_from": "",
    "record_to": "",
@@ -5471,6 +5173,7 @@
    "last_seen_ts": 1792548342,
    "by_sport": {},
    "by_size": {},
+   "recent_sport": {},
    "sports_refreshed_at": "",
    "record_from": "",
    "record_to": "",
@@ -5488,6 +5191,7 @@
    "last_seen_ts": 1792633883,
    "by_sport": {},
    "by_size": {},
+   "recent_sport": {},
    "sports_refreshed_at": "",
    "record_from": "",
    "record_to": "",
@@ -5498,6 +5202,24 @@
     "NBA",
     "NFL"
    ],
+   "note": ""
+  },
+  {
+   "wallet": "0x27f738fe203827445690339104aae35b20bc44b0",
+   "label": "ic4cream",
+   "venue": "polymarket",
+   "added_at": "2026-11-11T03:06:24.438212+00:00",
+   "last_seen_ts": 1794366384,
+   "by_sport": {},
+   "by_size": {},
+   "recent_sport": {},
+   "sports_refreshed_at": "",
+   "record_from": "",
+   "record_to": "",
+   "record_trades": 0,
+   "open_alerts": {},
+   "min_usd": 1000.0,
+   "sports": [],
    "note": ""
   }
  ]
